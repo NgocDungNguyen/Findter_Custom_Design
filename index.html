@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Design | Filter & Product Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: 0.2s;
+      border-radius: 9999px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+      background-color: #2563eb;
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(16px);
+    }
+    select, input[type="text"], input[type="color"] {
+      border: 1px solid #1f2937 !important;
+      border-radius: 0.375rem;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.75rem;
+      outline: none;
+    }
+    .option-card { transition: all 0.2s; }
+    .selected { border: 2px solid #2563eb; background-color: #eff6ff; }
+    .tab-active { background-color: #18181b; color: white; }
+    .swatch-square { border-radius: 0px !important; }
+    .color-picker-compact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border: 1px solid #1f2937;
+      border-radius: 0.375rem;
+      padding: 0.1rem 0.3rem;
+      background: white;
+    }
+    .color-picker-compact input[type="color"] {
+      width: 24px;
+      height: 24px;
+      border: none !important;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+    }
+    .color-picker-compact input[type="text"] {
+      width: 65px;
+      border: none !important;
+      padding: 0.1rem 0;
+      font-size: 0.7rem;
+      font-family: monospace;
+    }
+    .setting-inline {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    .setting-inline .label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      min-width: 70px;
+    }
+    .slider-inline {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .slider-inline .label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      min-width: 70px;
+    }
+    .slider-inline .slider-value {
+      font-size: 0.7rem;
+      color: #2563eb;
+      font-family: monospace;
+      min-width: 35px;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    select, input[type="text"] {
+      font-size: 0.7rem;
+    }
+    .inline-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .custom-field {
+      margin-top: 0.5rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div class="max-w-7xl mx-auto my-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center px-8 py-4 border-b border-gray-200">
+    <h1 class="text-xl font-semibold text-gray-900">Custom design</h1>
+    <div class="flex gap-2 bg-gray-100 p-1 rounded-lg">
+      <button onclick="switchTab(0)" id="tab-filter" class="tab-button px-5 py-2 text-sm font-medium rounded-md tab-active">Filter design</button>
+      <button onclick="switchTab(1)" id="tab-grid" class="tab-button px-5 py-2 text-sm font-medium rounded-md">Product Grid & Card</button>
+    </div>
+  </div>
+
+  <!-- ==================== FILTER DESIGN TAB ==================== -->
+  <div id="filter-tab" class="tab-content">
+    <div class="flex gap-6 p-6 bg-gray-50">
+      <div class="w-2/3 space-y-5">
+        <!-- Filter layout -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title mb-1">Filter layout</h2>
+          <p class="text-xs text-gray-500 mb-4">Choose one option</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div onclick="selectLayout(this)" class="option-card cursor-pointer border-2 border-transparent rounded-lg p-3">
+              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" class="w-3 h-3"><span class="text-sm">Vertical</span></div>
+              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex"><div class="w-20 bg-blue-300 rounded-md"></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card cursor-pointer border-2 border-transparent rounded-lg p-3">
+              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" class="w-3 h-3"><span class="text-sm">Horizontal</span></div>
+              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex flex-col"><div class="flex gap-1 mb-2"><div class="flex-1 h-6 bg-blue-300 rounded-md"></div></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card selected cursor-pointer border-2 border-blue-500 rounded-lg p-3">
+              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" checked class="w-3 h-3"><span class="text-sm">Off-canvas</span></div>
+              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex"><div class="w-8 bg-blue-300 rounded-md"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Option Label -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title mb-4">Filter Option Label</h2>
+          <div class="space-y-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="opt-font-size" min="8" max="25" value="16" class="w-40 accent-blue-500"><span id="opt-font-val" class="slider-value">16px</span></div>
+            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="opt-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="opt-color" value="#111827"><input type="text" id="opt-color-hex" value="#111827"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Filter Value -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title mb-4">Filter Value</h2>
+          <div class="space-y-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="val-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="val-font-val" class="slider-value">14px</span></div>
+            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="val-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="val-color" value="#374151"><input type="text" id="val-color-hex" value="#374151"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Filter Button with interaction settings -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title mb-3">Filter Button</h2>
+          <div class="space-y-4">
+            <div class="setting-inline"><span class="label">Button text</span><div class="control"><input type="text" id="btn-text" value="Apply Filters" class="w-36"></div></div>
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="btn-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="btn-font-val" class="slider-value">14px</span></div>
+            <div class="slider-inline"><span class="label">Border radius</span><input type="range" id="btn-radius" min="0" max="50" value="12" class="w-40 accent-blue-500"><span id="btn-radius-val" class="slider-value">12px</span></div>
+            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="btn-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="btn-text-color" value="#ffffff"><input type="text" id="btn-text-color-hex" value="#ffffff"></div></div></div>
+            <div class="setting-inline"><span class="label">Button background</span><div class="control"><div class="color-picker-compact"><input type="color" id="btn-bg-color" value="#f59e0b"><input type="text" id="btn-bg-color-hex" value="#f59e0b"></div></div></div>
+            
+            <!-- Filter interaction setting -->
+            <div class="border-t border-gray-200 pt-3 mt-2">
+              <h3 class="text-xs font-bold mb-2">Filter interaction setting</h3>
+              <div class="space-y-2">
+                <label class="inline-flex items-center gap-2 text-xs"><input type="radio" name="filterBehavior" value="auto" class="accent-blue-500"> Auto-filter (real-time)</label>
+                <label class="inline-flex items-center gap-2 text-xs"><input type="radio" name="filterBehavior" value="manual" checked class="accent-blue-500"> Manual filter (click button to apply)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Preview -->
+      <div class="w-1/3">
+        <div class="sticky top-6 bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 class="section-title mb-3">Preview</h3>
+          <div id="filter-preview-panel" class="bg-gray-50 border border-gray-200 rounded-md p-5 min-h-[500px] flex flex-col">
+            <div class="text-blue-600 text-xs font-bold mb-4">FILTERS</div>
+            <div class="mb-5"><div id="preview-opt-label-1" class="text-sm font-semibold mb-2">Category</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-1" class="text-sm">T-Shirts</span></label><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-2">Hoodies</span></label></div></div>
+            <div class="mb-5"><div id="preview-opt-label-2" class="text-sm font-semibold mb-2">Price Range</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-4">$0 — $50</span></label><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-5">$50 — $150</span></label></div></div>
+            <div class="mb-5"><div id="preview-opt-label-3" class="text-sm font-semibold mb-2">Color</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-6">Black</span></label><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-7">White</span></label></div></div>
+            <div class="flex-1"></div>
+            <button id="preview-btn" class="w-full py-2 text-sm font-medium text-white rounded-md bg-zinc-800">Apply Filters</button>
+            <div id="filter-status" class="text-xs text-gray-500 mt-2 text-center"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRODUCT GRID & CARD DESIGN TAB ==================== -->
+  <div id="grid-tab" class="tab-content hidden">
+    <div class="flex gap-6 p-6 bg-gray-50">
+      <div class="w-2/3 space-y-5">
+        <!-- Product grid (Desktop) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title">Product grid (Desktop)</h2>
+          <div class="space-y-3 mt-3">
+            <div class="slider-inline"><span class="label">Products per page</span><input type="range" id="products-per-page" min="1" max="36" value="24" class="w-40 accent-blue-500"><span id="perpage-val" class="slider-value">24</span></div>
+            <div class="setting-inline"><span class="label">Items per row</span><div class="control"><select id="items-row" class="w-20"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div></div>
+            <div class="setting-inline"><span class="label">Pagination</span><div class="control"><select id="pagination" class="w-36"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div></div>
+          </div>
+        </div>
+        
+        <!-- Product grid (Mobile) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title">Product grid (Mobile)</h2>
+          <p class="text-xs text-gray-500 mt-1">Pagination is not available.</p>
+          <p class="text-xs text-gray-500 mt-1">Number of items in a row is 2.</p>
+          <a href="#" class="text-blue-600 text-xs mt-2 inline-block">Contact us to customize on Mobile.</a>
+        </div>
+        
+        <!-- General Settings (rating removed) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title">General Settings</h2>
+          <div class="space-y-2 mt-3">
+            <label class="flex items-center gap-2 text-xs"><input type="checkbox" id="hover-second" checked class="accent-blue-500"> Show second image</label>
+            <label class="flex items-center gap-2 text-xs"><input type="checkbox" id="hover-zoom" checked class="accent-blue-500"> Zoom in</label>
+            <div class="setting-inline"><span class="label">Content align</span><div class="control"><select id="content-align" class="w-28"><option value="left" selected>Left</option><option value="center">Center</option><option value="right">Right</option></select></div></div>
+          </div>
+        </div>
+        
+        <!-- Product Image -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title">Product Image</h2>
+          <div class="grid grid-cols-2 gap-4 mt-3">
+            <div><label class="text-xs block">Image Ratio</label><select id="image-ratio" class="w-full"><option value="square">Square</option><option value="portrait">Portrait</option><option value="adapt">Adapt to image</option></select></div>
+            <div><label class="text-xs block">Image shape</label><select id="image-shape" class="w-full"><option value="default">Default</option></select></div>
+          </div>
+          <div class="slider-inline mt-3"><span class="label">Image radius</span><input type="range" id="image-radius" min="0" max="50" value="12" class="w-40 accent-blue-500"><span id="img-radius-val" class="slider-value">12px</span></div>
+        </div>
+        
+        <!-- Product title -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h2 class="section-title">Product title</h2>
+          <div class="space-y-2 mt-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="title-font-size" min="8" max="25" value="16" class="w-40 accent-blue-500"><span id="title-font-val" class="slider-value">16px</span></div>
+            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="title-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
+            <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="title-color" value="#111827"><input type="text" id="title-color-hex" value="#111827"></div></div></div>
+          </div>
+        </div>
+        
+        <!-- Product vendor -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Product vendor</h2><label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label></div>
+          <div class="space-y-2 mt-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="vendor-font-size" min="8" max="25" value="13" class="w-40 accent-blue-500"><span id="vendor-font-val" class="slider-value">13px</span></div>
+            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="vendor-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
+            <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="vendor-color" value="#6b7280"><input type="text" id="vendor-color-hex" value="#6b7280"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Rating Star (new box) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Rating Star</h2><label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label></div>
+          <div class="space-y-3 mt-3">
+            <div class="setting-inline"><span class="label">Rating Type</span><div class="control"><select id="rating-type" class="w-28"><option value="star">Star</option><option value="text">Text</option></select></div></div>
+            <div class="setting-inline"><span class="label">Review count</span><div class="control inline-toggle"><label class="toggle-switch"><input type="checkbox" id="show-review-count" checked><span class="toggle-slider"></span></label><span class="text-xs">Show count</span></div></div>
+          </div>
+        </div>
+
+        <!-- Price settings with hide price option -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Price settings</h2><label class="toggle-switch"><input type="checkbox" id="show-price" checked><span class="toggle-slider"></span></label></div>
+          <div class="mt-2 setting-inline"><span class="label">Hide Price</span><div class="control"><select id="hide-price" class="w-40"><option value="none">None</option><option value="all">All</option><option value="non-login">For non-login customer</option></select></div></div>
+          <div class="mt-3 space-y-4">
+            <div class="border-b border-gray-300 pb-3">
+              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Fixed price</span><label class="toggle-switch"><input type="checkbox" id="show-fixed-price" checked><span class="toggle-slider"></span></label></div>
+              <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="slider-inline"><span class="label">Size</span><input type="range" id="fixed-price-font" min="8" max="28" value="16" class="w-32 accent-blue-500"><span id="fixed-font-val" class="slider-value">16px</span></div>
+                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="fixed-price-color" value="#1f2937"><input type="text" id="fixed-price-color-hex" value="#1f2937"></div></div></div>
+              </div>
+            </div>
+            <div class="border-b border-gray-300 pb-3">
+              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Old price</span><label class="toggle-switch"><input type="checkbox" id="show-old-price" checked><span class="toggle-slider"></span></label></div>
+              <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="slider-inline"><span class="label">Size</span><input type="range" id="old-price-font" min="8" max="28" value="14" class="w-32 accent-blue-500"><span id="old-font-val" class="slider-value">14px</span></div>
+                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="old-price-color" value="#9ca3af"><input type="text" id="old-price-color-hex" value="#9ca3af"></div></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Sale price</span><label class="toggle-switch"><input type="checkbox" id="show-sale-price" checked><span class="toggle-slider"></span></label></div>
+              <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="slider-inline"><span class="label">Size</span><input type="range" id="sale-price-font" min="8" max="32" value="20" class="w-32 accent-blue-500"><span id="sale-font-val" class="slider-value">20px</span></div>
+                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-price-color" value="#f59e0b"><input type="text" id="sale-price-color-hex" value="#f59e0b"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add to cart button -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Add to cart button</h2><label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label></div>
+          <div class="space-y-2 mt-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="atc-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="atc-font-val" class="slider-value">14px</span></div>
+            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="atc-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff"></div></div></div>
+            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#f59e0b"><input type="text" id="atc-bg-color-hex" value="#f59e0b"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Sale badge with Other style -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Sale badge</h2><label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label></div>
+          <div class="space-y-2 mt-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="sale-font-size" min="8" max="25" value="12" class="w-40 accent-blue-500"><span id="sale-font-size-val" class="slider-value">12px</span></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-text-color" value="#ffffff"><input type="text" id="sale-text-color-hex" value="#ffffff"></div></div></div>
+            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-bg-color" value="#22c55e"><input type="text" id="sale-bg-color-hex" value="#22c55e"></div></div></div>
+            <div class="setting-inline"><span class="label">Style</span><div class="control"><select id="sale-style" class="w-32"><option value="percentage">Sale percentage</option><option value="amount">Sale Amount</option><option value="text">Sale Text</option><option value="other">Other</option></select></div></div>
+            <div id="sale-custom-field" class="custom-field hidden">
+              <div class="setting-inline"><span class="label">Custom text</span><div class="control"><input type="text" id="sale-custom-text" value="Special Offer" class="w-32"></div></div>
+            </div>
+            <div class="setting-inline"><span class="label">Position</span><div class="control"><select id="sale-position" class="w-24"><option value="left" selected>Left</option><option value="right">Right</option></select></div></div>
+          </div>
+        </div>
+        
+        <!-- Sold out badge with Style dropdown (Sold Out / Out Of Stock / Other) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center"><h2 class="section-title">Sold out badge</h2><label class="toggle-switch"><input type="checkbox" id="show-soldout" checked><span class="toggle-slider"></span></label></div>
+          <div class="space-y-2 mt-3">
+            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="soldout-font-size" min="8" max="25" value="12" class="w-40 accent-blue-500"><span id="soldout-font-size-val" class="slider-value">12px</span></div>
+            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="soldout-text-color" value="#ffffff"><input type="text" id="soldout-text-color-hex" value="#ffffff"></div></div></div>
+            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="soldout-bg-color" value="#ef4444"><input type="text" id="soldout-bg-color-hex" value="#ef4444"></div></div></div>
+            <div class="setting-inline"><span class="label">Style</span><div class="control"><select id="soldout-style" class="w-32"><option value="soldout">Sold Out</option><option value="outofstock">Out Of Stock</option><option value="other">Other</option></select></div></div>
+            <div id="soldout-custom-field" class="custom-field hidden">
+              <div class="setting-inline"><span class="label">Custom text</span><div class="control"><input type="text" id="soldout-custom-text" value="Coming Soon" class="w-32"></div></div>
+            </div>
+            <div class="setting-inline"><span class="label">Position</span><div class="control"><select id="soldout-position" class="w-24"><option value="left">Left</option><option value="right" selected>Right</option></select></div></div>
+          </div>
+        </div>
+
+        <!-- Swatches (combined, renamed) -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <div class="flex justify-between items-center mb-3"><h2 class="section-title">Swatches</h2><label class="toggle-switch"><input type="checkbox" id="show-swatches" checked><span class="toggle-slider"></span></label></div>
+          <div class="setting-inline mb-3"><span class="label">Style</span><div class="control"><select id="swatch-style" class="w-28"><option value="square">Square</option><option value="circle">Circle</option></select></div></div>
+          <table class="w-full mt-2 border-collapse text-xs">
+            <thead><tr class="border-b"><th class="text-left py-1">Source</th><th class="text-left py-1">Display Type</th><th class="w-8"></th>}</thead>
+            <tbody id="color-swatch-body"></tbody>
+          </table>
+          <button onclick="addColorSwatchRow()" class="mt-2 px-3 py-1 bg-white border border-gray-800 rounded-md text-xs font-medium"><i class="fas fa-plus mr-1"></i> Add swatch option</button>
+
+          <div class="mt-6 pt-3 border-t border-gray-200">
+            <div class="flex justify-between items-center mb-3"><h2 class="section-title">Size variants</h2><label class="toggle-switch"><input type="checkbox" id="show-size-variants" checked><span class="toggle-slider"></span></label></div>
+            <table class="w-full mt-2 border-collapse text-xs">
+              <thead><tr class="border-b"><th class="text-left py-1">Source</th><th class="text-left py-1">Display Type</th><th class="w-8"></th>}</thead>
+              <tbody id="size-variant-body"></tbody>
+            </table>
+            <button onclick="addSizeVariantRow()" class="mt-2 px-3 py-1 bg-white border border-gray-800 rounded-md text-xs font-medium"><i class="fas fa-plus mr-1"></i> Add size option</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PREVIEW -->
+      <div class="w-1/3">
+        <div class="sticky top-6 bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 class="section-title mb-3">Preview</h3>
+          <div id="product-preview" class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+            <div class="relative">
+              <div id="badge-container" class="absolute top-3 left-0 right-0 flex flex-wrap gap-1 px-3 pointer-events-none">
+                <div id="sale-badge-preview" class="z-10 px-2 py-0.5 text-[10px] font-medium text-white bg-green-500 rounded-md">Sale 30%</div>
+                <div id="soldout-badge-preview" class="z-10 px-2 py-0.5 text-[10px] font-medium text-white bg-red-500 rounded-md">Sold Out</div>
+              </div>
+              <div class="aspect-square bg-gray-100 relative overflow-hidden" id="preview-image-container">
+                <img src="https://picsum.photos/id/1015/600/600" id="preview-image" class="w-full h-full object-cover transition-transform duration-300">
+                <div id="preview-color-swatches" class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-20 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow"></div>
+                <div id="preview-size-variants" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow"></div>
+              </div>
+            </div>
+            <div id="preview-content" class="p-4">
+              <div id="preview-title" class="font-semibold text-base">Essential Oversized T-Shirt</div>
+              <div id="preview-vendor" class="text-xs mb-1">Nike Sportswear</div>
+              <div id="preview-rating-container" class="mb-2">
+                <div id="preview-rating" class="flex text-amber-400 text-sm">★★★★☆</div>
+                <div id="preview-review-count" class="text-xs text-gray-500">(124 reviews)</div>
+              </div>
+              <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-3 mb-3">
+                <span id="preview-fixed-price" class="font-medium">$59.00</span>
+                <span id="preview-old-price" class="line-through text-xs">$89.00</span>
+                <span id="preview-sale-price" class="font-bold">$49.00</span>
+              </div>
+              <button id="preview-atc-btn" class="w-full py-2 rounded-md text-sm font-medium bg-zinc-800 text-white">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end px-6 py-4 border-t border-gray-200 bg-white">
+    <button onclick="saveSettings()" class="px-6 py-2 bg-zinc-800 border border-zinc-800 text-white text-sm rounded-md hover:bg-zinc-700">Save Changes</button>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(n) {
+    document.getElementById('filter-tab').classList.toggle('hidden', n !== 0);
+    document.getElementById('grid-tab').classList.toggle('hidden', n !== 1);
+    document.getElementById('tab-filter').classList.toggle('tab-active', n === 0);
+    document.getElementById('tab-grid').classList.toggle('tab-active', n === 1);
+  }
+  function selectLayout(el) { document.querySelectorAll('#filter-tab .option-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
+
+  // Filter preview update (styles + behavior)
+  function updateFilterPreview() {
+    document.querySelectorAll('[id^="preview-opt-label"]').forEach(el => { el.style.fontSize = document.getElementById('opt-font-size').value+'px'; el.style.textTransform = document.getElementById('opt-transform').value; el.style.color = document.getElementById('opt-color').value; });
+    document.querySelectorAll('[id^="preview-val-"]').forEach(el => { el.style.fontSize = document.getElementById('val-font-size').value+'px'; el.style.textTransform = document.getElementById('val-transform').value; el.style.color = document.getElementById('val-color').value; });
+    const btn = document.getElementById('preview-btn'); 
+    btn.textContent = document.getElementById('btn-text').value; 
+    btn.style.fontSize = document.getElementById('btn-font-size').value+'px'; 
+    btn.style.borderRadius = document.getElementById('btn-radius').value+'px'; 
+    btn.style.textTransform = document.getElementById('btn-transform').value; 
+    btn.style.color = document.getElementById('btn-text-color').value; 
+    btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
+    document.getElementById('opt-color-hex').value = document.getElementById('opt-color').value;
+    document.getElementById('val-color-hex').value = document.getElementById('val-color').value;
+    document.getElementById('btn-text-color-hex').value = document.getElementById('btn-text-color').value;
+    document.getElementById('btn-bg-color-hex').value = document.getElementById('btn-bg-color').value;
+    
+    const behavior = document.querySelector('input[name="filterBehavior"]:checked').value;
+    const applyBtn = document.getElementById('preview-btn');
+    if (behavior === 'auto') {
+      applyBtn.style.display = 'none';
+      document.getElementById('filter-status').innerText = 'Auto-filter: results update instantly';
+      document.querySelectorAll('.filter-checkbox').forEach(cb => {
+        cb.removeEventListener('change', autoFilterHandler);
+        cb.addEventListener('change', autoFilterHandler);
+      });
+    } else {
+      applyBtn.style.display = 'block';
+      document.getElementById('filter-status').innerText = 'Manual: click "Apply Filters" to see results';
+      document.querySelectorAll('.filter-checkbox').forEach(cb => cb.removeEventListener('change', autoFilterHandler));
+      const newBtn = applyBtn.cloneNode(true);
+      applyBtn.parentNode.replaceChild(newBtn, applyBtn);
+      newBtn.addEventListener('click', () => { document.getElementById('filter-status').innerText = 'Filters applied! (demo)'; setTimeout(()=>{document.getElementById('filter-status').innerText = 'Manual: click "Apply Filters" to see results';},1500); });
+      document.getElementById('preview-btn').style.display = 'block';
+    }
+  }
+  function autoFilterHandler() { document.getElementById('filter-status').innerText = 'Auto-updated! (demo)'; setTimeout(()=>{document.getElementById('filter-status').innerText = 'Auto-filter: results update instantly';},1000); }
+
+  // Sale badge Other field visibility and custom text
+  function toggleSaleCustomField() {
+    const style = document.getElementById('sale-style').value;
+    const customField = document.getElementById('sale-custom-field');
+    if (style === 'other') customField.classList.remove('hidden');
+    else customField.classList.add('hidden');
+    updateProductPreview();
+  }
+  function toggleSoldoutCustomField() {
+    const style = document.getElementById('soldout-style').value;
+    const customField = document.getElementById('soldout-custom-field');
+    if (style === 'other') customField.classList.remove('hidden');
+    else customField.classList.add('hidden');
+    updateProductPreview();
+  }
+
+  // Product preview update with rating, hide price, badge positioning and custom texts
+  function updateProductPreview() {
+    const align = document.getElementById('content-align').value;
+    const contentDiv = document.getElementById('preview-content');
+    contentDiv.className = `p-4 text-${align}`;
+    const priceBlock = document.getElementById('preview-price-block');
+    if (align === 'left') { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-start mb-3'; }
+    else if (align === 'center') { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-center mb-3'; }
+    else { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-end mb-3'; }
+    
+    document.getElementById('preview-image-container').style.borderRadius = document.getElementById('image-radius').value+'px';
+    if (document.getElementById('hover-zoom').checked) document.getElementById('preview-image').classList.add('group-hover:scale-110'); else document.getElementById('preview-image').classList.remove('group-hover:scale-110');
+    
+    document.getElementById('preview-title').style.fontSize = document.getElementById('title-font-size').value+'px';
+    document.getElementById('preview-title').style.textTransform = document.getElementById('title-transform').value;
+    document.getElementById('preview-title').style.color = document.getElementById('title-color').value;
+    
+    const showVendor = document.getElementById('show-vendor').checked;
+    const vendorEl = document.getElementById('preview-vendor');
+    vendorEl.classList.toggle('hidden', !showVendor);
+    vendorEl.style.fontSize = document.getElementById('vendor-font-size').value+'px';
+    vendorEl.style.textTransform = document.getElementById('vendor-transform').value;
+    vendorEl.style.color = document.getElementById('vendor-color').value;
+    
+    const showRating = document.getElementById('show-rating').checked;
+    const ratingContainer = document.getElementById('preview-rating-container');
+    ratingContainer.classList.toggle('hidden', !showRating);
+    const ratingType = document.getElementById('rating-type').value;
+    const ratingEl = document.getElementById('preview-rating');
+    if (ratingType === 'star') ratingEl.innerHTML = '★★★★☆';
+    else ratingEl.innerHTML = '4.5 / 5';
+    const showReviewCount = document.getElementById('show-review-count').checked;
+    document.getElementById('preview-review-count').classList.toggle('hidden', !showReviewCount);
+    
+    const hidePriceOption = document.getElementById('hide-price').value;
+    const priceBlockVisible = document.getElementById('show-price').checked;
+    let finalHide = false;
+    if (hidePriceOption === 'all') finalHide = true;
+    if (hidePriceOption === 'non-login') finalHide = true;
+    if (!priceBlockVisible) finalHide = true;
+    document.getElementById('preview-price-block').classList.toggle('hidden', finalHide);
+    if (!finalHide) {
+      document.getElementById('preview-fixed-price').classList.toggle('hidden', !document.getElementById('show-fixed-price').checked);
+      document.getElementById('preview-fixed-price').style.fontSize = document.getElementById('fixed-price-font').value+'px';
+      document.getElementById('preview-fixed-price').style.color = document.getElementById('fixed-price-color').value;
+      document.getElementById('preview-old-price').classList.toggle('hidden', !document.getElementById('show-old-price').checked);
+      document.getElementById('preview-old-price').style.fontSize = document.getElementById('old-price-font').value+'px';
+      document.getElementById('preview-old-price').style.color = document.getElementById('old-price-color').value;
+      document.getElementById('preview-sale-price').classList.toggle('hidden', !document.getElementById('show-sale-price').checked);
+      document.getElementById('preview-sale-price').style.fontSize = document.getElementById('sale-price-font').value+'px';
+      document.getElementById('preview-sale-price').style.color = document.getElementById('sale-price-color').value;
+    }
+    
+    const showATC = document.getElementById('show-atc').checked;
+    const atcBtn = document.getElementById('preview-atc-btn');
+    atcBtn.classList.toggle('hidden', !showATC);
+    atcBtn.style.fontSize = document.getElementById('atc-font-size').value+'px';
+    atcBtn.style.textTransform = document.getElementById('atc-transform').value;
+    atcBtn.style.color = document.getElementById('atc-text-color').value;
+    atcBtn.style.backgroundColor = document.getElementById('atc-bg-color').value;
+    
+    // Sale badge custom text
+    const showSale = document.getElementById('show-sale').checked;
+    const saleStyle = document.getElementById('sale-style').value;
+    let saleText = '';
+    if (saleStyle === 'percentage') saleText = 'Sale 30%';
+    else if (saleStyle === 'amount') saleText = '- $20';
+    else if (saleStyle === 'text') saleText = 'SALE';
+    else if (saleStyle === 'other') saleText = document.getElementById('sale-custom-text').value || 'Special';
+    
+    // Sold out badge custom text
+    const showSold = document.getElementById('show-soldout').checked;
+    const soldStyle = document.getElementById('soldout-style').value;
+    let soldText = '';
+    if (soldStyle === 'soldout') soldText = 'Sold Out';
+    else if (soldStyle === 'outofstock') soldText = 'Out Of Stock';
+    else if (soldStyle === 'other') soldText = document.getElementById('soldout-custom-text').value || 'Unavailable';
+    
+    const salePos = document.getElementById('sale-position').value;
+    const soldPos = document.getElementById('soldout-position').value;
+    const saleBadge = document.getElementById('sale-badge-preview');
+    const soldBadge = document.getElementById('soldout-badge-preview');
+    const badgeContainer = document.getElementById('badge-container');
+    
+    if (showSale) {
+      saleBadge.classList.remove('hidden');
+      saleBadge.style.fontSize = document.getElementById('sale-font-size').value+'px';
+      saleBadge.style.color = document.getElementById('sale-text-color').value;
+      saleBadge.style.backgroundColor = document.getElementById('sale-bg-color').value;
+      saleBadge.textContent = saleText;
+    } else saleBadge.classList.add('hidden');
+    if (showSold) {
+      soldBadge.classList.remove('hidden');
+      soldBadge.style.fontSize = document.getElementById('soldout-font-size').value+'px';
+      soldBadge.style.color = document.getElementById('soldout-text-color').value;
+      soldBadge.style.backgroundColor = document.getElementById('soldout-bg-color').value;
+      soldBadge.textContent = soldText;
+    } else soldBadge.classList.add('hidden');
+    
+    // Positioning logic
+    if (salePos === soldPos) {
+      badgeContainer.className = 'absolute top-3 left-0 right-0 flex flex-col items-start gap-1 px-3 pointer-events-none';
+      if (salePos === 'right') badgeContainer.className = 'absolute top-3 left-0 right-0 flex flex-col items-end gap-1 px-3 pointer-events-none';
+      saleBadge.style.position = 'relative';
+      soldBadge.style.position = 'relative';
+      saleBadge.style.margin = '0';
+      soldBadge.style.margin = '0';
+    } else {
+      badgeContainer.className = 'absolute top-3 left-0 right-0 flex justify-between px-3 pointer-events-none';
+      saleBadge.style.position = 'relative';
+      soldBadge.style.position = 'relative';
+      if (salePos === 'left') {
+        saleBadge.style.order = '1';
+        soldBadge.style.order = '2';
+      } else {
+        saleBadge.style.order = '2';
+        soldBadge.style.order = '1';
+      }
+    }
+    
+    // Swatches and size variants
+    const showSwatches = document.getElementById('show-swatches').checked;
+    const swatchContainer = document.getElementById('preview-color-swatches');
+    if (showSwatches && colorSwatches.length) {
+      swatchContainer.classList.remove('hidden');
+      const isSquare = document.getElementById('swatch-style').value === 'square';
+      swatchContainer.innerHTML = colorSwatches.map(s => `<div class="w-6 h-6 ${isSquare ? 'swatch-square' : 'rounded-full'} border border-white shadow-sm" style="background:${s.type==='color'?s.color:'#ccc'}"></div>`).join('');
+    } else swatchContainer.classList.add('hidden');
+    const showSizes = document.getElementById('show-size-variants').checked;
+    const sizeContainer = document.getElementById('preview-size-variants');
+    if (showSizes && sizeVariants.length) {
+      sizeContainer.classList.remove('hidden');
+      sizeContainer.innerHTML = sizeVariants.map(sz => `<div class="px-2 py-0.5 bg-white border border-gray-800 rounded-full text-[10px] font-medium shadow-sm">${sz.source}</div>`).join('');
+    } else sizeContainer.classList.add('hidden');
+    
+    // Sync hex inputs
+    document.getElementById('title-color-hex').value = document.getElementById('title-color').value;
+    document.getElementById('vendor-color-hex').value = document.getElementById('vendor-color').value;
+    document.getElementById('fixed-price-color-hex').value = document.getElementById('fixed-price-color').value;
+    document.getElementById('old-price-color-hex').value = document.getElementById('old-price-color').value;
+    document.getElementById('sale-price-color-hex').value = document.getElementById('sale-price-color').value;
+    document.getElementById('atc-text-color-hex').value = document.getElementById('atc-text-color').value;
+    document.getElementById('atc-bg-color-hex').value = document.getElementById('atc-bg-color').value;
+    document.getElementById('sale-text-color-hex').value = document.getElementById('sale-text-color').value;
+    document.getElementById('sale-bg-color-hex').value = document.getElementById('sale-bg-color').value;
+    document.getElementById('soldout-text-color-hex').value = document.getElementById('soldout-text-color').value;
+    document.getElementById('soldout-bg-color-hex').value = document.getElementById('soldout-bg-color').value;
+  }
+  
+  // Swatch and size variant data
+  let colorSwatches = [{source:"Red", type:"color", color:"#ef4444"},{source:"Blue", type:"color", color:"#3b82f6"},{source:"Black", type:"color", color:"#000000"}];
+  let sizeVariants = [{source:"S", type:"text"},{source:"M", type:"text"},{source:"L", type:"text"},{source:"XL", type:"text"}];
+  function renderColorSwatches() {
+    const tbody = document.getElementById('color-swatch-body'); tbody.innerHTML = '';
+    colorSwatches.forEach((sw, idx) => { const row = document.createElement('tr'); row.className = 'border-b'; row.innerHTML = `<td class="py-1"><input type="text" value="${sw.source}" class="w-full text-xs border-gray-800" data-idx="${idx}" data-field="source"></td><td class="py-1"><select class="w-full text-xs border-gray-800" data-idx="${idx}" data-field="type"><option ${sw.type==='color'?'selected':''}>color</option><option ${sw.type==='image'?'selected':''}>image</option><option ${sw.type==='text'?'selected':''}>text</option></select></td><td class="py-1"><button onclick="removeColorSwatch(${idx})" class="text-red-500"><i class="fas fa-trash-alt text-xs"></i></button></td>`; tbody.appendChild(row); });
+    attachSwatchEvents();
+  }
+  function attachSwatchEvents() { document.querySelectorAll('#color-swatch-body input, #color-swatch-body select').forEach(el => el.addEventListener('change', updateProductPreview)); }
+  function addColorSwatchRow() { colorSwatches.push({source:"New", type:"color", color:"#cccccc"}); renderColorSwatches(); updateProductPreview(); }
+  function removeColorSwatch(idx) { colorSwatches.splice(idx,1); renderColorSwatches(); updateProductPreview(); }
+  function renderSizeVariants() {
+    const tbody = document.getElementById('size-variant-body'); tbody.innerHTML = '';
+    sizeVariants.forEach((sz, idx) => { const row = document.createElement('tr'); row.className = 'border-b'; row.innerHTML = `<td class="py-1"><input type="text" value="${sz.source}" class="w-full text-xs border-gray-800" data-size-idx="${idx}" data-field="source"></td><td class="py-1"><select class="w-full text-xs border-gray-800" data-size-idx="${idx}" data-field="type"><option ${sz.type==='text'?'selected':''}>text</option><option ${sz.type==='color'?'selected':''}>color</option><option ${sz.type==='image'?'selected':''}>image</option></select></td><td class="py-1"><button onclick="removeSizeVariant(${idx})" class="text-red-500"><i class="fas fa-trash-alt text-xs"></i></button></td>`; tbody.appendChild(row); });
+    attachSizeEvents();
+  }
+  function attachSizeEvents() { document.querySelectorAll('#size-variant-body input, #size-variant-body select').forEach(el => el.addEventListener('change', updateProductPreview)); }
+  function addSizeVariantRow() { sizeVariants.push({source:"New Size", type:"text"}); renderSizeVariants(); updateProductPreview(); }
+  function removeSizeVariant(idx) { sizeVariants.splice(idx,1); renderSizeVariants(); updateProductPreview(); }
+  
+  function saveSettings() { alert("Settings saved successfully."); }
+  
+  window.onload = () => {
+    document.querySelectorAll('#filter-tab input, #filter-tab select').forEach(el => el.addEventListener('input', updateFilterPreview));
+    document.querySelectorAll('#filter-tab input[type="radio"]').forEach(el => el.addEventListener('change', updateFilterPreview));
+    updateFilterPreview();
+    document.querySelectorAll('#grid-tab input, #grid-tab select').forEach(el => { el.addEventListener('input', updateProductPreview); el.addEventListener('change', updateProductPreview); });
+    ['fixed-price-font','old-price-font','sale-price-font','title-font-size','vendor-font-size','atc-font-size','image-radius','soldout-font-size','sale-font-size'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', function(){ const span = document.getElementById(id+'-val'); if(span) span.innerText = this.value+'px'; updateProductPreview(); }); });
+    // Custom field toggles
+    document.getElementById('sale-style').addEventListener('change', toggleSaleCustomField);
+    document.getElementById('sale-custom-text').addEventListener('input', updateProductPreview);
+    document.getElementById('soldout-style').addEventListener('change', toggleSoldoutCustomField);
+    document.getElementById('soldout-custom-text').addEventListener('input', updateProductPreview);
+    toggleSaleCustomField();
+    toggleSoldoutCustomField();
+    renderColorSwatches(); renderSizeVariants(); updateProductPreview();
+  };
+</script>
+</body>
+</html>
