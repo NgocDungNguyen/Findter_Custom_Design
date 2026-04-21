@@ -6,680 +6,1551 @@
   <title>Custom Design | Filter & Product Editor</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&family=Oswald:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Merriweather:wght@300;400;700&family=Ubuntu:wght@300;400;500;700&family=Rubik:wght@300;400;500;700&family=Work+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 36px;
-      height: 20px;
-    }
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+   
+    .toggle-switch { position: relative; display: inline-block; width: 34px; height: 18px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
     .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #cbd5e1;
-      transition: 0.2s;
-      border-radius: 9999px;
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #d1d5db; transition: 0.15s; border-radius: 9999px;
     }
     .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: 0.2s;
-      border-radius: 50%;
+      position: absolute; content: ""; height: 14px; width: 14px;
+      left: 2px; bottom: 2px; background-color: white; transition: 0.15s; border-radius: 50%;
     }
-    input:checked + .toggle-slider {
-      background-color: #2563eb;
+    input:checked + .toggle-slider { background-color: #2563eb; }
+    input:checked + .toggle-slider:before { transform: translateX(16px); }
+   
+    select, input[type="text"], input[type="color"], input[type="number"] {
+      border: 1px solid #d1d5db !important; border-radius: 5px;
+      font-size: 0.7rem !important; outline: none; background: white;
+      transition: border-color 0.15s;
     }
-    input:checked + .toggle-slider:before {
-      transform: translateX(16px);
-    }
-    select, input[type="text"], input[type="color"] {
-      border: 1px solid #1f2937 !important;
-      border-radius: 0.375rem;
-      padding: 0.2rem 0.4rem;
-      font-size: 0.75rem;
-      outline: none;
-    }
-    .option-card { transition: all 0.2s; }
-    .selected { border: 2px solid #2563eb; background-color: #eff6ff; }
+    select { padding: 0.2rem 0.4rem !important; }
+    input[type="text"], input[type="number"] { padding: 0.25rem 0.4rem !important; }
+    select:focus, input:focus { border-color: #2563eb !important; box-shadow: 0 0 0 1.5px rgba(37,99,235,0.15); }
+   
+    .option-card { transition: all 0.15s ease; cursor: pointer; border: 2px solid transparent; }
+    .option-card:hover { border-color: #93c5fd; }
+    .selected { border-color: #2563eb !important; background-color: #eff6ff; }
     .tab-active { background-color: #18181b; color: white; }
-    .swatch-square { border-radius: 0px !important; }
+   
     .color-picker-compact {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      border: 1px solid #1f2937;
-      border-radius: 0.375rem;
-      padding: 0.1rem 0.3rem;
-      background: white;
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      border: 1px solid #d1d5db; border-radius: 5px; padding: 0.1rem 0.35rem; background: white;
     }
     .color-picker-compact input[type="color"] {
-      width: 24px;
-      height: 24px;
-      border: none !important;
-      padding: 0;
-      margin: 0;
-      cursor: pointer;
+      width: 20px; height: 20px; border: none !important; padding: 0; margin: 0; cursor: pointer; border-radius: 3px;
     }
     .color-picker-compact input[type="text"] {
-      width: 65px;
-      border: none !important;
-      padding: 0.1rem 0;
-      font-size: 0.7rem;
-      font-family: monospace;
+      width: 52px; border: none !important; padding: 0; font-size: 0.65rem !important; font-family: ui-monospace, monospace;
     }
-    .setting-inline {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.5rem;
+   
+    /* Compact row layouts */
+    .ctrl-row {
+      display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; flex-wrap: wrap;
     }
-    .setting-inline .label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      min-width: 70px;
+    .ctrl-row > label:first-child {
+      font-size: 0.72rem; font-weight: 500; color: #374151; min-width: 85px; flex-shrink: 0;
     }
-    .slider-inline {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
+    .slider-row {
+      display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; flex-wrap: wrap;
     }
-    .slider-inline .label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      min-width: 70px;
+    .slider-row > label:first-child {
+      font-size: 0.72rem; font-weight: 500; color: #374151; min-width: 85px; flex-shrink: 0;
     }
-    .slider-inline .slider-value {
-      font-size: 0.7rem;
-      color: #2563eb;
-      font-family: monospace;
-      min-width: 35px;
+    .slider-val {
+      font-size: 0.68rem; color: #2563eb; font-family: ui-monospace, monospace; min-width: 32px; font-weight: 600;
     }
-    .section-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #1f2937;
+   
+    .section-title { font-size: 0.88rem; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
+   
+    .font-select-wrap {
+      display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem;
     }
-    select, input[type="text"] {
-      font-size: 0.7rem;
+    .font-select-wrap label {
+      font-size: 0.68rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .inline-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
+    .font-select {
+      min-width: 150px; max-width: 200px; font-size: 0.68rem !important;
+      padding: 0.22rem 0.45rem !important; border-width: 1.5px !important;
     }
-    .custom-field {
-      margin-top: 0.5rem;
-      padding-left: 0.5rem;
-      border-left: 2px solid #e5e7eb;
+   
+    .config-box {
+      background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;
+      margin-bottom: 1rem; /* increased spacing between sections */
     }
+    .preview-sticky { position: sticky; top: 16px; }
+   
+    .price-subsection {
+      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.7rem; margin-top: 0.55rem;
+    }
+    .price-subheader {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;
+    }
+    .price-subheader span { font-size: 0.73rem; font-weight: 600; color: #1f2937; }
+   
+    .badge-zone {
+      position: absolute; display: flex; flex-direction: column; gap: 3px; z-index: 20; pointer-events: none;
+    }
+    .badge-zone.tl { top: 6px; left: 6px; align-items: flex-start; }
+    .badge-zone.tr { top: 6px; right: 6px; align-items: flex-end; }
+    .badge-zone.bl { bottom: 6px; left: 6px; align-items: flex-start; }
+    .badge-zone.br { bottom: 6px; right: 6px; align-items: flex-end; }
+   
+    .preview-badge {
+      padding: 2px 7px; font-size: 9px; font-weight: 600; border-radius: 3px;
+      white-space: nowrap; line-height: 1.3;
+    }
+    input[type="range"] { accent-color: #2563eb; height: 3.5px; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #2563eb;
+      cursor: pointer; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+   
+    .micro-select { font-size: 0.68rem !important; padding: 0.18rem 0.35rem !important; border-width: 1.5px !important; min-width: auto; }
+   
+    .count-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #e5e7eb; color: #6b7280; font-size: 0.62rem; font-weight: 600;
+      padding: 0 5px; border-radius: 10px; margin-left: auto; min-width: 18px; text-align: center;
+    }
+
+    /* Extra spacing for all sections */
+    #grid-tab .config-box { margin-bottom: 1.25rem; }
+    #filter-tab .config-box { margin-bottom: 1.25rem; }
   </style>
 </head>
-<body class="bg-gray-100 font-sans">
-
-<div class="max-w-7xl mx-auto my-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
+<body class="bg-gray-100 antialiased">
+<div class="max-w-7xl mx-auto my-5 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
   <!-- Header -->
-  <div class="flex justify-between items-center px-8 py-4 border-b border-gray-200">
-    <h1 class="text-xl font-semibold text-gray-900">Custom design</h1>
-    <div class="flex gap-2 bg-gray-100 p-1 rounded-lg">
-      <button onclick="switchTab(0)" id="tab-filter" class="tab-button px-5 py-2 text-sm font-medium rounded-md tab-active">Filter design</button>
-      <button onclick="switchTab(1)" id="tab-grid" class="tab-button px-5 py-2 text-sm font-medium rounded-md">Product Grid & Card</button>
+  <div class="flex justify-between items-center px-8 py-3 border-b border-gray-200 bg-gray-50/60">
+    <h1 class="text-lg font-bold text-gray-900 tracking-tight">Custom Design</h1>
+    <div class="flex gap-1 bg-gray-200/80 p-1 rounded-md">
+      <button onclick="switchTab(0)" id="tab-filter" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all tab-active">Filter Design</button>
+      <button onclick="switchTab(1)" id="tab-grid" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all text-gray-600 hover:text-gray-900">Product Grid & Card</button>
     </div>
   </div>
-
   <!-- ==================== FILTER DESIGN TAB ==================== -->
   <div id="filter-tab" class="tab-content">
-    <div class="flex gap-6 p-6 bg-gray-50">
-      <div class="w-2/3 space-y-5">
-        <!-- Filter layout -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title mb-1">Filter layout</h2>
-          <p class="text-xs text-gray-500 mb-4">Choose one option</p>
-          <div class="grid grid-cols-3 gap-4">
-            <div onclick="selectLayout(this)" class="option-card cursor-pointer border-2 border-transparent rounded-lg p-3">
-              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" class="w-3 h-3"><span class="text-sm">Vertical</span></div>
-              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex"><div class="w-20 bg-blue-300 rounded-md"></div></div>
+    <div class="flex gap-5 p-5 bg-gray-50/50">
+      <div class="w-2/3 space-y-4"> <!-- increased spacing -->
+        <!-- Filter Layout -->
+        <div class="config-box">
+          <h2 class="section-title mb-1">Filter Layout</h2>
+          <p class="text-[11px] text-gray-500 mb-2">Choose your preferred filter layout style</p>
+          <div class="grid grid-cols-4 gap-2.5">
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Vertical</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-14 bg-blue-200/70 rounded"></div></div>
             </div>
-            <div onclick="selectLayout(this)" class="option-card cursor-pointer border-2 border-transparent rounded-lg p-3">
-              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" class="w-3 h-3"><span class="text-sm">Horizontal</span></div>
-              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex flex-col"><div class="flex gap-1 mb-2"><div class="flex-1 h-6 bg-blue-300 rounded-md"></div></div></div>
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Mobile)</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-4 bg-blue-200/70 rounded"></div></div>
             </div>
-            <div onclick="selectLayout(this)" class="option-card selected cursor-pointer border-2 border-blue-500 rounded-lg p-3">
-              <div class="flex items-center gap-2 mb-2"><input type="radio" name="desktop" checked class="w-3 h-3"><span class="text-sm">Off-canvas</span></div>
-              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-36 flex"><div class="w-8 bg-blue-300 rounded-md"></div></div>
+            <div onclick="selectLayout(this)" class="option-card selected rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" checked class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Desktop)</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-6 bg-blue-200/70 rounded"></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Horizontal</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex flex-col"><div class="flex gap-0.5"><div class="flex-1 h-4 bg-blue-200/70 rounded"></div></div></div>
             </div>
           </div>
         </div>
-
+        <!-- Filter Bar -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Filter Bar</h2>
+          <div class="space-y-1.5">
+            <div class="ctrl-row mb-0">
+              <label>Background</label>
+              <div class="color-picker-compact">
+                <input type="color" id="filter-bar-bg" value="#ffffff">
+                <input type="text" id="filter-bar-bg-hex" value="#ffffff" readonly>
+              </div>
+            </div>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer mt-0.5">
+              <input type="checkbox" id="sticky-filter" class="accent-blue-600 w-3.5 h-3.5"> Sticky Filter (scrolls with page)
+            </label>
+          </div>
+        </div>
         <!-- Filter Option Label -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title mb-4">Filter Option Label</h2>
-          <div class="space-y-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="opt-font-size" min="8" max="25" value="16" class="w-40 accent-blue-500"><span id="opt-font-val" class="slider-value">16px</span></div>
-            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="opt-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="opt-color" value="#111827"><input type="text" id="opt-color-hex" value="#111827"></div></div></div>
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Option Label</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="opt-font" class="font-select"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="opt-font-size" min="10" max="22" value="14" class="flex-1 max-w-[160px]">
+              <span id="opt-font-val" class="slider-val">14px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="opt-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="opt-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="opt-color" value="#111827">
+                <input type="text" id="opt-color-hex" value="#111827" readonly>
+              </div>
+            </div>
           </div>
         </div>
-
         <!-- Filter Value -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title mb-4">Filter Value</h2>
-          <div class="space-y-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="val-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="val-font-val" class="slider-value">14px</span></div>
-            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="val-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="val-color" value="#374151"><input type="text" id="val-color-hex" value="#374151"></div></div></div>
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Value</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="val-font" class="font-select"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="val-font-size" min="10" max="20" value="13" class="flex-1 max-w-[160px]">
+              <span id="val-font-val" class="slider-val">13px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="val-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="val-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="val-color" value="#4b5563">
+                <input type="text" id="val-color-hex" value="#4b5563" readonly>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Filter Button with interaction settings -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title mb-3">Filter Button</h2>
-          <div class="space-y-4">
-            <div class="setting-inline"><span class="label">Button text</span><div class="control"><input type="text" id="btn-text" value="Apply Filters" class="w-36"></div></div>
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="btn-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="btn-font-val" class="slider-value">14px</span></div>
-            <div class="slider-inline"><span class="label">Border radius</span><input type="range" id="btn-radius" min="0" max="50" value="12" class="w-40 accent-blue-500"><span id="btn-radius-val" class="slider-value">12px</span></div>
-            <div class="setting-inline"><span class="label">Text transform</span><div class="control"><select id="btn-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Upper Case</option><option value="lowercase">Lower Case</option></select></div></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="btn-text-color" value="#ffffff"><input type="text" id="btn-text-color-hex" value="#ffffff"></div></div></div>
-            <div class="setting-inline"><span class="label">Button background</span><div class="control"><div class="color-picker-compact"><input type="color" id="btn-bg-color" value="#f59e0b"><input type="text" id="btn-bg-color-hex" value="#f59e0b"></div></div></div>
-            
-            <!-- Filter interaction setting -->
-            <div class="border-t border-gray-200 pt-3 mt-2">
-              <h3 class="text-xs font-bold mb-2">Filter interaction setting</h3>
-              <div class="space-y-2">
-                <label class="inline-flex items-center gap-2 text-xs"><input type="radio" name="filterBehavior" value="auto" class="accent-blue-500"> Auto-filter (real-time)</label>
-                <label class="inline-flex items-center gap-2 text-xs"><input type="radio" name="filterBehavior" value="manual" checked class="accent-blue-500"> Manual filter (click button to apply)</label>
+        <!-- Filter Button -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Button</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font Family</label>
+            <select id="btn-font" class="font-select" style="min-width:165px; max-width:165px;"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="btn-font-size" min="10" max="20" value="13" class="flex-1 max-w-[160px]">
+              <span id="btn-font-val" class="slider-val">13px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="btn-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Radius</label>
+              <input type="range" id="btn-radius" min="0" max="50" value="8" class="flex-1 max-w-[120px]">
+              <span id="btn-radius-val" class="slider-val">8px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="btn-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Text Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="btn-text-color" value="#ffffff">
+                <input type="text" id="btn-text-color-hex" value="#ffffff" readonly>
+              </div>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Background</label>
+              <div class="color-picker-compact">
+                <input type="color" id="btn-bg-color" value="#2563eb">
+                <input type="text" id="btn-bg-color-hex" value="#2563eb" readonly>
+              </div>
+            </div>
+           
+            <div class="border-t border-gray-200 pt-2 mt-2">
+              <p class="text-[11px] font-semibold text-gray-700 mb-1.5">Interaction</p>
+              <div class="space-y-1 pl-0.5">
+                <label class="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer">
+                  <input type="radio" name="filterBehavior" value="auto" class="accent-blue-600 w-3 h-3"> Auto-filter (real-time)
+                </label>
+                <label class="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer">
+                  <input type="radio" name="filterBehavior" value="manual" checked class="accent-blue-600 w-3 h-3"> Manual filter (click apply)
+                </label>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Right Preview -->
       <div class="w-1/3">
-        <div class="sticky top-6 bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-          <h3 class="section-title mb-3">Preview</h3>
-          <div id="filter-preview-panel" class="bg-gray-50 border border-gray-200 rounded-md p-5 min-h-[500px] flex flex-col">
-            <div class="text-blue-600 text-xs font-bold mb-4">FILTERS</div>
-            <div class="mb-5"><div id="preview-opt-label-1" class="text-sm font-semibold mb-2">Category</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-1" class="text-sm">T-Shirts</span></label><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-2">Hoodies</span></label></div></div>
-            <div class="mb-5"><div id="preview-opt-label-2" class="text-sm font-semibold mb-2">Price Range</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-4">$0 — $50</span></label><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-5">$50 — $150</span></label></div></div>
-            <div class="mb-5"><div id="preview-opt-label-3" class="text-sm font-semibold mb-2">Color</div><div class="space-y-2"><label class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-6">Black</span></label><label class="flex items-center gap-2"><input type="checkbox" checked class="filter-checkbox accent-blue-500 w-3 h-3"><span id="preview-val-7">White</span></label></div></div>
-            <div class="flex-1"></div>
-            <button id="preview-btn" class="w-full py-2 text-sm font-medium text-white rounded-md bg-zinc-800">Apply Filters</button>
-            <div id="filter-status" class="text-xs text-gray-500 mt-2 text-center"></div>
+        <div class="preview-sticky config-box shadow-md">
+          <h3 class="section-title mb-2 pb-1.5 border-b border-gray-100">Live Preview</h3>
+          <div id="filter-preview-panel" class="border border-gray-200 rounded-lg p-3.5 min-h-[450px] flex flex-col overflow-auto" style="background:#ffffff;">
+            <div class="text-blue-600 text-[11px] font-bold mb-2.5 tracking-wide uppercase">Filters</div>
+           
+            <div class="mb-3.5">
+              <div id="preview-opt-label-1" class="text-[13px] font-semibold mb-1.5">Category</div>
+              <div class="space-y-1.2">
+                <label class="flex items-center gap-1.5 cursor-pointer group">
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-1" class="text-[13px] flex-1">T-Shirts</span>
+                  <span class="count-badge">24</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer group">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-2" class="text-[13px] flex-1">Hoodies</span>
+                  <span class="count-badge">12</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer group">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Jackets</span>
+                  <span class="count-badge">8</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer group">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Pants</span>
+                  <span class="count-badge">31</span>
+                </label>
+              </div>
+            </div>
+           
+            <div class="mb-3.5">
+              <div id="preview-opt-label-2" class="text-[13px] font-semibold mb-1.5">Price Range</div>
+              <div class="space-y-1.2">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-4" class="text-[13px] flex-1">$0 — $50</span>
+                  <span class="count-badge">45</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-5" class="text-[13px] flex-1">$50 — $150</span>
+                  <span class="count-badge">67</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">$150 — $300</span>
+                  <span class="count-badge">23</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">$300+</span>
+                  <span class="count-badge">11</span>
+                </label>
+              </div>
+            </div>
+           
+            <div class="mb-3.5">
+              <div id="preview-opt-label-3" class="text-[13px] font-semibold mb-1.5">Color</div>
+              <div class="space-y-1.2">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-6" class="text-[13px] flex-1">Black</span>
+                  <span class="count-badge">89</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-7" class="text-[13px] flex-1">White</span>
+                  <span class="count-badge">56</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Navy</span>
+                  <span class="count-badge">34</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Red</span>
+                  <span class="count-badge">19</span>
+                </label>
+              </div>
+            </div>
+            <div class="mb-3.5">
+              <div class="text-[13px] font-semibold mb-1.5">Brand</div>
+              <div class="space-y-1.2">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Nike</span>
+                  <span class="count-badge">42</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Adidas</span>
+                  <span class="count-badge">38</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Puma</span>
+                  <span class="count-badge">27</span>
+                </label>
+              </div>
+            </div>
+           
+            <div class="mt-auto pt-2">
+              <button id="preview-btn" class="w-full py-2 text-[13px] font-semibold rounded-lg transition-all">Apply Filters</button>
+              <div id="filter-status" class="text-[11px] text-gray-400 mt-1.5 text-center h-3"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- ==================== PRODUCT GRID & CARD DESIGN TAB ==================== -->
+  <!-- ==================== PRODUCT GRID & CARD TAB ==================== -->
   <div id="grid-tab" class="tab-content hidden">
-    <div class="flex gap-6 p-6 bg-gray-50">
-      <div class="w-2/3 space-y-5">
-        <!-- Product grid (Desktop) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title">Product grid (Desktop)</h2>
-          <div class="space-y-3 mt-3">
-            <div class="slider-inline"><span class="label">Products per page</span><input type="range" id="products-per-page" min="1" max="36" value="24" class="w-40 accent-blue-500"><span id="perpage-val" class="slider-value">24</span></div>
-            <div class="setting-inline"><span class="label">Items per row</span><div class="control"><select id="items-row" class="w-20"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div></div>
-            <div class="setting-inline"><span class="label">Pagination</span><div class="control"><select id="pagination" class="w-36"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div></div>
+    <div class="flex gap-5 p-5 bg-gray-50/50">
+      <div class="w-2/3 space-y-3.5"> <!-- increased spacing -->
+       
+        <!-- Desktop Grid -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Grid (Desktop)</h2>
+          <div class="grid grid-cols-3 gap-x-5 gap-y-1.5">
+            <div class="slider-row"><label class="min-w-[95px]">Products/Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
+            <div class="ctrl-row"><label class="min-w-[95px]">Items/Row</label><select id="items-row" class="micro-select w-20"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
+            <div class="ctrl-row"><label class="min-w-[95px]">Pagination</label><select id="pagination" class="micro-select w-36"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
           </div>
         </div>
-        
-        <!-- Product grid (Mobile) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title">Product grid (Mobile)</h2>
-          <p class="text-xs text-gray-500 mt-1">Pagination is not available.</p>
-          <p class="text-xs text-gray-500 mt-1">Number of items in a row is 2.</p>
-          <a href="#" class="text-blue-600 text-xs mt-2 inline-block">Contact us to customize on Mobile.</a>
+       
+        <!-- Mobile Grid -->
+        <div class="config-box opacity-80">
+          <h2 class="section-title mb-1">Product Grid (Mobile)</h2>
+          <p class="text-[11px] text-gray-500 leading-relaxed">Fixed at 2 items per row. Pagination not available. <a href="#" class="text-blue-600 hover:underline">Contact us</a> for mobile customization.</p>
         </div>
-        
-        <!-- General Settings (rating removed) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title">General Settings</h2>
-          <div class="space-y-2 mt-3">
-            <label class="flex items-center gap-2 text-xs"><input type="checkbox" id="hover-second" checked class="accent-blue-500"> Show second image</label>
-            <label class="flex items-center gap-2 text-xs"><input type="checkbox" id="hover-zoom" checked class="accent-blue-500"> Zoom in</label>
-            <div class="setting-inline"><span class="label">Content align</span><div class="control"><select id="content-align" class="w-28"><option value="left" selected>Left</option><option value="center">Center</option><option value="right">Right</option></select></div></div>
+       
+        <!-- General Settings -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">General Settings</h2>
+          <div class="flex flex-wrap gap-x-6 gap-y-1.5">
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-second" checked class="accent-blue-600 w-3.5 h-3.5"> Show second image on hover</label>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-zoom" checked class="accent-blue-600 w-3.5 h-3.5"> Zoom effect on hover</label>
+            <div class="ctrl-row mb-0"><label>Content Align</label><select id="content-align" class="micro-select w-26"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>
           </div>
         </div>
-        
+        <!-- Product Card -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Card</h2>
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
+            <div class="ctrl-row"><label>Background</label><div class="color-picker-compact"><input type="color" id="card-bg-color" value="#ffffff"><input type="text" id="card-bg-color-hex" value="#ffffff" readonly></div></div>
+            <div class="ctrl-row"><label>Border Color</label><div class="color-picker-compact"><input type="color" id="card-border-color" value="#e5e7eb"><input type="text" id="card-border-color-hex" value="#e5e7eb" readonly></div></div>
+            <div class="slider-row col-span-2"><label>Border Radius</label><input type="range" id="card-radius" min="0" max="30" value="12" class="flex-1 max-w-[280px]"><span id="card-radius-val" class="slider-val">12px</span></div>
+          </div>
+        </div>
+       
         <!-- Product Image -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title">Product Image</h2>
-          <div class="grid grid-cols-2 gap-4 mt-3">
-            <div><label class="text-xs block">Image Ratio</label><select id="image-ratio" class="w-full"><option value="square">Square</option><option value="portrait">Portrait</option><option value="adapt">Adapt to image</option></select></div>
-            <div><label class="text-xs block">Image shape</label><select id="image-shape" class="w-full"><option value="default">Default</option></select></div>
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Image</h2>
+          <div class="flex items-center gap-x-8">
+            <div class="ctrl-row mb-0">
+              <label>Image Ratio</label>
+              <select id="image-ratio" class="micro-select" style="width:165px;">
+                <option value="portrait">Portrait (3:4)</option>
+                <option value="square" selected>Square (1:1)</option>
+                <option value="adapt">Adapt to Image</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Image Shape</label>
+              <select id="image-shape" class="micro-select" style="width:165px;">
+                <option value="default">Default</option>
+                <option value="rounded">Rounded</option>
+              </select>
+            </div>
           </div>
-          <div class="slider-inline mt-3"><span class="label">Image radius</span><input type="range" id="image-radius" min="0" max="50" value="12" class="w-40 accent-blue-500"><span id="img-radius-val" class="slider-value">12px</span></div>
-        </div>
-        
-        <!-- Product title -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <h2 class="section-title">Product title</h2>
-          <div class="space-y-2 mt-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="title-font-size" min="8" max="25" value="16" class="w-40 accent-blue-500"><span id="title-font-val" class="slider-value">16px</span></div>
-            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="title-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
-            <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="title-color" value="#111827"><input type="text" id="title-color-hex" value="#111827"></div></div></div>
-          </div>
-        </div>
-        
-        <!-- Product vendor -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Product vendor</h2><label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label></div>
-          <div class="space-y-2 mt-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="vendor-font-size" min="8" max="25" value="13" class="w-40 accent-blue-500"><span id="vendor-font-val" class="slider-value">13px</span></div>
-            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="vendor-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
-            <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="vendor-color" value="#6b7280"><input type="text" id="vendor-color-hex" value="#6b7280"></div></div></div>
+          <div class="slider-row mb-0 w-full max-w-[300px]">
+            <label>Corner Radius</label>
+            <input type="range" id="image-radius" min="0" max="24" value="8" class="flex-1">
+            <span id="img-radius-val" class="slider-val">8px</span>
           </div>
         </div>
-
-        <!-- Rating Star (new box) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Rating Star</h2><label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label></div>
-          <div class="space-y-3 mt-3">
-            <div class="setting-inline"><span class="label">Rating Type</span><div class="control"><select id="rating-type" class="w-28"><option value="star">Star</option><option value="text">Text</option></select></div></div>
-            <div class="setting-inline"><span class="label">Review count</span><div class="control inline-toggle"><label class="toggle-switch"><input type="checkbox" id="show-review-count" checked><span class="toggle-slider"></span></label><span class="text-xs">Show count</span></div></div>
+        <!-- BADGES SECTION -->
+        <!-- Sale Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Sale Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="sale-badge-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="sale-text-color" value="#ffffff"><input type="text" id="sale-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="sale-bg-color" value="#16a34a"><input type="text" id="sale-bg-color-hex" value="#16a34a" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-3 gap-x-4 gap-y-1">
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-font-size" min="9" max="18" value="11" class="flex-1"><span id="sale-font-size-val" class="slider-val">11px</span></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="sale-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+            <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="sale-style" class="micro-select w-44">
+              <option value="percentage">Percentage (-30%)</option>
+              <option value="amount">Amount (-$20)</option>
+              <option value="text">Custom Text</option>
+              <option value="other">Other</option>
+            </select></div>
+          </div>
+          <div id="sale-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300"> <!-- expanded spacing -->
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="sale-custom-text" value="SALE" class="w-36 micro-select"></div>
           </div>
         </div>
-
-        <!-- Price settings with hide price option -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Price settings</h2><label class="toggle-switch"><input type="checkbox" id="show-price" checked><span class="toggle-slider"></span></label></div>
-          <div class="mt-2 setting-inline"><span class="label">Hide Price</span><div class="control"><select id="hide-price" class="w-40"><option value="none">None</option><option value="all">All</option><option value="non-login">For non-login customer</option></select></div></div>
-          <div class="mt-3 space-y-4">
-            <div class="border-b border-gray-300 pb-3">
-              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Fixed price</span><label class="toggle-switch"><input type="checkbox" id="show-fixed-price" checked><span class="toggle-slider"></span></label></div>
-              <div class="grid grid-cols-2 gap-3 mt-2">
-                <div class="slider-inline"><span class="label">Size</span><input type="range" id="fixed-price-font" min="8" max="28" value="16" class="w-32 accent-blue-500"><span id="fixed-font-val" class="slider-value">16px</span></div>
-                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="fixed-price-color" value="#1f2937"><input type="text" id="fixed-price-color-hex" value="#1f2937"></div></div></div>
+       
+        <!-- Sold Out Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Sold Out Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-soldout"><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="soldout-badge-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="soldout-text-color" value="#ffffff"><input type="text" id="soldout-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="soldout-bg-color" value="#374151"><input type="text" id="soldout-bg-color-hex" value="#374151" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-3 gap-x-4 gap-y-1">
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="soldout-font-size" min="9" max="18" value="11" class="flex-1"><span id="soldout-font-size-val" class="slider-val">11px</span></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="soldout-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="soldout-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+            <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="soldout-style" class="micro-select w-40">
+              <option value="soldout">Sold Out</option>
+              <option value="outofstock">Out Of Stock</option>
+              <option value="other">Custom</option>
+            </select></div>
+          </div>
+          <div id="soldout-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300"> <!-- expanded spacing -->
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="soldout-custom-text" value="Unavailable" class="w-36 micro-select"></div>
+          </div>
+        </div>
+        <!-- Low Stock Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Low Stock Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-lowstock" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="flex items-center gap-x-8 mb-3">
+            <div class="font-select-wrap" style="margin-bottom:0;">
+              <label>Font</label>
+              <select id="lowstock-badge-font" class="font-select" style="min-width:135px;"></select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label style="min-width:115px;">Show when stock ≤</label>
+              <input type="number" id="lowstock-threshold" value="10" min="1" max="999" class="w-14 micro-select text-center">
+            </div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="lowstock-text-color" value="#ffffff"><input type="text" id="lowstock-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="lowstock-bg-color" value="#ea580c"><input type="text" id="lowstock-bg-color-hex" value="#ea580c" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="lowstock-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="lowstock-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="lowstock-font-size" min="9" max="16" value="10" class="flex-1">
+            <span id="lowstock-font-size-val" class="slider-val">10px</span>
+          </div>
+        </div>
+        <!-- Product Title -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Product Title</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="title-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Color</label>
+            <div class="color-picker-compact"><input type="color" id="title-color" value="#111827"><input type="text" id="title-color-hex" value="#111827" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="title-transform" class="micro-select w-28">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="title-weight" class="micro-select w-28">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="title-font-size" min="11" max="24" value="15" class="flex-1">
+            <span id="title-font-val" class="slider-val">15px</span>
+          </div>
+        </div>
+       
+        <!-- Vendor -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Vendor</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="vendor-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Color</label>
+            <div class="color-picker-compact"><input type="color" id="vendor-color" value="#6b7280"><input type="text" id="vendor-color-hex" value="#6b7280" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="vendor-transform" class="micro-select w-28">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="vendor-weight" class="micro-select w-28">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="vendor-font-size" min="10" max="18" value="12" class="flex-1">
+            <span id="vendor-font-val" class="slider-val">12px</span>
+          </div>
+        </div>
+        <!-- Rating -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Rating Star</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="flex flex-wrap gap-x-6 gap-y-1.5">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="rating-type" class="micro-select w-30"><option value="star">Star Icon</option><option value="text">Text Score</option></select></div>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="show-review-count" checked class="accent-blue-600 w-3.5 h-3.5"> Show review count</label>
+          </div>
+        </div>
+        <!-- PRICE SETTINGS -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Price Settings</h2>
+         
+          <div class="space-y-1.5 mb-2">
+            <div class="ctrl-row mb-0">
+              <label>Hide Price When</label>
+              <select id="hide-price" class="micro-select w-46">
+                <option value="none">Never Hide</option>
+                <option value="all">Always Hide</option>
+                <option value="non-login">Guest Users Only</option>
+              </select>
+            </div>
+            <div class="flex gap-5 pl-[95px]">
+              <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="hide-decimal" class="accent-blue-600 w-3.5 h-3.5"> Hide Decimal (.00)
+              </label>
+              <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="round-up" class="accent-blue-600 w-3.5 h-3.5"> Round Up
+              </label>
+            </div>
+          </div>
+          <div class="space-y-2 mt-2">
+            <!-- Fixed Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Fixed / Regular Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-fixed-price" checked><span class="toggle-slider"></span></label>
+              </div>
+             
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
+                <label>Font</label>
+                <select id="fixed-price-font-family" class="font-select" style="min-width:130px;"></select>
+              </div>
+             
+              <div class="ctrl-row">
+                <label>Color</label>
+                <div class="color-picker-compact"><input type="color" id="fixed-price-color" value="#1f2937"><input type="text" id="fixed-price-color-hex" value="#1f2937" readonly></div>
+              </div>
+             
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="fixed-price-font" min="11" max="26" value="15" class="flex-1"><span id="fixed-font-val" class="slider-val">15px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="fixed-price-weight" class="micro-select w-full">
+                  <option value="300">Light</option>
+                  <option value="400" selected>Regular</option>
+                  <option value="700">Bold</option>
+                </select></div>
               </div>
             </div>
-            <div class="border-b border-gray-300 pb-3">
-              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Old price</span><label class="toggle-switch"><input type="checkbox" id="show-old-price" checked><span class="toggle-slider"></span></label></div>
-              <div class="grid grid-cols-2 gap-3 mt-2">
-                <div class="slider-inline"><span class="label">Size</span><input type="range" id="old-price-font" min="8" max="28" value="14" class="w-32 accent-blue-500"><span id="old-font-val" class="slider-value">14px</span></div>
-                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="old-price-color" value="#9ca3af"><input type="text" id="old-price-color-hex" value="#9ca3af"></div></div></div>
+            <!-- Old Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Old / Compare-at Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-old-price" checked><span class="toggle-slider"></span></label>
+              </div>
+             
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
+                <label>Font</label>
+                <select id="old-price-font-family" class="font-select" style="min-width:130px;"></select>
+              </div>
+             
+              <div class="ctrl-row">
+                <label>Color</label>
+                <div class="color-picker-compact"><input type="color" id="old-price-color" value="#9ca3af"><input type="text" id="old-price-color-hex" value="#9ca3af" readonly></div>
+              </div>
+             
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="old-price-font" min="10" max="22" value="13" class="flex-1"><span id="old-font-val" class="slider-val">13px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="old-price-weight" class="micro-select w-full">
+                  <option value="300">Light</option>
+                  <option value="400" selected>Regular</option>
+                  <option value="700">Bold</option>
+                </select></div>
               </div>
             </div>
-            <div>
-              <div class="flex justify-between items-center"><span class="text-xs font-semibold">Sale price</span><label class="toggle-switch"><input type="checkbox" id="show-sale-price" checked><span class="toggle-slider"></span></label></div>
-              <div class="grid grid-cols-2 gap-3 mt-2">
-                <div class="slider-inline"><span class="label">Size</span><input type="range" id="sale-price-font" min="8" max="32" value="20" class="w-32 accent-blue-500"><span id="sale-font-val" class="slider-value">20px</span></div>
-                <div class="setting-inline"><span class="label">Color</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-price-color" value="#f59e0b"><input type="text" id="sale-price-color-hex" value="#f59e0b"></div></div></div>
+            <!-- Sale Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Sale Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-sale-price" checked><span class="toggle-slider"></span></label>
+              </div>
+             
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
+                <label>Font</label>
+                <select id="sale-price-font-family" class="font-select" style="min-width:130px;"></select>
+              </div>
+             
+              <div class="ctrl-row">
+                <label>Color</label>
+                <div class="color-picker-compact"><input type="color" id="sale-price-color" value="#dc2626"><input type="text" id="sale-price-color-hex" value="#dc2626" readonly></div>
+              </div>
+             
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-price-font" min="12" max="30" value="18" class="flex-1"><span id="sale-font-val" class="slider-val">18px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-price-weight" class="micro-select w-full">
+                  <option value="300">Light</option>
+                  <option value="400" selected>Regular</option>
+                  <option value="700">Bold</option>
+                </select></div>
               </div>
             </div>
           </div>
+         
+          <p id="price-warning" class="text-[11px] text-amber-600 mt-1.5 hidden flex items-center gap-1"><i class="fas fa-exclamation-triangle text-[10px]"></i> Old price requires sale price enabled</p>
         </div>
-
-        <!-- Add to cart button -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Add to cart button</h2><label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label></div>
-          <div class="space-y-2 mt-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="atc-font-size" min="8" max="25" value="14" class="w-40 accent-blue-500"><span id="atc-font-val" class="slider-value">14px</span></div>
-            <div class="setting-inline"><span class="label">Transform</span><div class="control"><select id="atc-transform" class="w-32"><option value="none">None</option><option value="capitalize">Capitalize</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option></select></div></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff"></div></div></div>
-            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#f59e0b"><input type="text" id="atc-bg-color-hex" value="#f59e0b"></div></div></div>
+        <!-- Add to Cart Button -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Add to Cart Button</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="atc-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="atc-transform" class="micro-select w-full">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="atc-font-size" min="11" max="20" value="13" class="flex-1"><span id="atc-font-val" class="slider-val">13px</span></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="atc-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Radius</label><input type="range" id="atc-radius" min="0" max="50" value="6" class="flex-1"><span id="atc-radius-val" class="slider-val">6px</span></div>
+          </div>
+        </div>
+        <!-- Wishlist Settings -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Wishlist Settings</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-wishlist" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="wishlist-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="wishlist-text-color" value="#ef4444"><input type="text" id="wishlist-text-color-hex" value="#ef4444" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="wishlist-bg-color" value="#fef2f2"><input type="text" id="wishlist-bg-color-hex" value="#fef2f2" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="wishlist-type" class="micro-select w-full"><option value="heart">Heart Icon</option><option value="text">Text (Wishlist)</option><option value="custom">Custom</option></select></div>
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="wishlist-transform" class="micro-select w-36">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="wishlist-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="wishlist-font-size" min="10" max="24" value="14" class="flex-1"><span id="wishlist-font-size-val" class="slider-val">14px</span></div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Position</label>
+            <select id="wishlist-position" class="micro-select w-48">
+              <option value="in-card">In Card (next to ATC)</option>
+              <option value="image-top-right">Image Top Right</option>
+              <option value="image-top-left">Image Top Left</option>
+            </select>
+          </div>
+         
+          <div id="wishlist-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="wishlist-custom-text" value="Save" class="w-36 micro-select"></div>
           </div>
         </div>
 
-        <!-- Sale badge with Other style -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Sale badge</h2><label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label></div>
-          <div class="space-y-2 mt-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="sale-font-size" min="8" max="25" value="12" class="w-40 accent-blue-500"><span id="sale-font-size-val" class="slider-value">12px</span></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-text-color" value="#ffffff"><input type="text" id="sale-text-color-hex" value="#ffffff"></div></div></div>
-            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="sale-bg-color" value="#22c55e"><input type="text" id="sale-bg-color-hex" value="#22c55e"></div></div></div>
-            <div class="setting-inline"><span class="label">Style</span><div class="control"><select id="sale-style" class="w-32"><option value="percentage">Sale percentage</option><option value="amount">Sale Amount</option><option value="text">Sale Text</option><option value="other">Other</option></select></div></div>
-            <div id="sale-custom-field" class="custom-field hidden">
-              <div class="setting-inline"><span class="label">Custom text</span><div class="control"><input type="text" id="sale-custom-text" value="Special Offer" class="w-32"></div></div>
-            </div>
-            <div class="setting-inline"><span class="label">Position</span><div class="control"><select id="sale-position" class="w-24"><option value="left" selected>Left</option><option value="right">Right</option></select></div></div>
+        <!-- NEW: Quick View Settings -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Quick View Settings</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-quickview" checked><span class="toggle-slider"></span></label>
           </div>
-        </div>
-        
-        <!-- Sold out badge with Style dropdown (Sold Out / Out Of Stock / Other) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center"><h2 class="section-title">Sold out badge</h2><label class="toggle-switch"><input type="checkbox" id="show-soldout" checked><span class="toggle-slider"></span></label></div>
-          <div class="space-y-2 mt-3">
-            <div class="slider-inline"><span class="label">Font size</span><input type="range" id="soldout-font-size" min="8" max="25" value="12" class="w-40 accent-blue-500"><span id="soldout-font-size-val" class="slider-value">12px</span></div>
-            <div class="setting-inline"><span class="label">Text color</span><div class="control"><div class="color-picker-compact"><input type="color" id="soldout-text-color" value="#ffffff"><input type="text" id="soldout-text-color-hex" value="#ffffff"></div></div></div>
-            <div class="setting-inline"><span class="label">Background</span><div class="control"><div class="color-picker-compact"><input type="color" id="soldout-bg-color" value="#ef4444"><input type="text" id="soldout-bg-color-hex" value="#ef4444"></div></div></div>
-            <div class="setting-inline"><span class="label">Style</span><div class="control"><select id="soldout-style" class="w-32"><option value="soldout">Sold Out</option><option value="outofstock">Out Of Stock</option><option value="other">Other</option></select></div></div>
-            <div id="soldout-custom-field" class="custom-field hidden">
-              <div class="setting-inline"><span class="label">Custom text</span><div class="control"><input type="text" id="soldout-custom-text" value="Coming Soon" class="w-32"></div></div>
-            </div>
-            <div class="setting-inline"><span class="label">Position</span><div class="control"><select id="soldout-position" class="w-24"><option value="left">Left</option><option value="right" selected>Right</option></select></div></div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="quickview-font" class="font-select"></select>
           </div>
-        </div>
-
-        <!-- Swatches (combined, renamed) -->
-        <div class="bg-white border border-gray-200 rounded-lg p-5">
-          <div class="flex justify-between items-center mb-3"><h2 class="section-title">Swatches</h2><label class="toggle-switch"><input type="checkbox" id="show-swatches" checked><span class="toggle-slider"></span></label></div>
-          <div class="setting-inline mb-3"><span class="label">Style</span><div class="control"><select id="swatch-style" class="w-28"><option value="square">Square</option><option value="circle">Circle</option></select></div></div>
-          <table class="w-full mt-2 border-collapse text-xs">
-            <thead><tr class="border-b"><th class="text-left py-1">Source</th><th class="text-left py-1">Display Type</th><th class="w-8"></th>}</thead>
-            <tbody id="color-swatch-body"></tbody>
-          </table>
-          <button onclick="addColorSwatchRow()" class="mt-2 px-3 py-1 bg-white border border-gray-800 rounded-md text-xs font-medium"><i class="fas fa-plus mr-1"></i> Add swatch option</button>
-
-          <div class="mt-6 pt-3 border-t border-gray-200">
-            <div class="flex justify-between items-center mb-3"><h2 class="section-title">Size variants</h2><label class="toggle-switch"><input type="checkbox" id="show-size-variants" checked><span class="toggle-slider"></span></label></div>
-            <table class="w-full mt-2 border-collapse text-xs">
-              <thead><tr class="border-b"><th class="text-left py-1">Source</th><th class="text-left py-1">Display Type</th><th class="w-8"></th>}</thead>
-              <tbody id="size-variant-body"></tbody>
-            </table>
-            <button onclick="addSizeVariantRow()" class="mt-2 px-3 py-1 bg-white border border-gray-800 rounded-md text-xs font-medium"><i class="fas fa-plus mr-1"></i> Add size option</button>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="quickview-text-color" value="#ffffff"><input type="text" id="quickview-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="quickview-bg-color" value="#1f2937"><input type="text" id="quickview-bg-color-hex" value="#1f2937" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="quickview-type" class="micro-select w-full">
+              <option value="button">Button</option>
+              <option value="eye" selected>Eye Icon</option>
+              <option value="custom">Custom Text</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="quickview-transform" class="micro-select w-full">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="quickview-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="quickview-font-size" min="10" max="18" value="13" class="flex-1"><span id="quickview-font-size-val" class="slider-val">13px</span></div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Position</label>
+            <select id="quickview-position" class="micro-select w-48">
+              <option value="in-card">In Card (next to ATC)</option>
+              <option value="image-top-right">Image Top Right</option>
+              <option value="image-top-left">Image Top Left</option>
+            </select>
+          </div>
+         
+          <div id="quickview-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="quickview-custom-text" value="Quick View" class="w-36 micro-select"></div>
           </div>
         </div>
       </div>
-
       <!-- RIGHT PREVIEW -->
       <div class="w-1/3">
-        <div class="sticky top-6 bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-          <h3 class="section-title mb-3">Preview</h3>
-          <div id="product-preview" class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+        <div class="preview-sticky config-box shadow-md">
+          <h3 class="section-title mb-2 pb-1.5 border-b border-gray-100">Preview Card</h3>
+          <div id="product-preview" class="border border-gray-200 rounded-lg overflow-hidden group relative transition-all duration-300" style="background:#ffffff;">
+           
+            <div id="badge-zones-container" class="absolute inset-0 pointer-events-none z-20">
+              <div id="zone-tl" class="badge-zone tl"></div>
+              <div id="zone-tr" class="badge-zone tr"></div>
+              <div id="zone-bl" class="badge-zone bl"></div>
+              <div id="zone-br" class="badge-zone br"></div>
+            </div>
             <div class="relative">
-              <div id="badge-container" class="absolute top-3 left-0 right-0 flex flex-wrap gap-1 px-3 pointer-events-none">
-                <div id="sale-badge-preview" class="z-10 px-2 py-0.5 text-[10px] font-medium text-white bg-green-500 rounded-md">Sale 30%</div>
-                <div id="soldout-badge-preview" class="z-10 px-2 py-0.5 text-[10px] font-medium text-white bg-red-500 rounded-md">Sold Out</div>
-              </div>
               <div class="aspect-square bg-gray-100 relative overflow-hidden" id="preview-image-container">
-                <img src="https://picsum.photos/id/1015/600/600" id="preview-image" class="w-full h-full object-cover transition-transform duration-300">
-                <div id="preview-color-swatches" class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-20 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow"></div>
-                <div id="preview-size-variants" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow"></div>
+                <img src="https://picsum.photos/id/1015/600/600" id="preview-image" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div id="wishlist-image-overlay" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <div id="wishlist-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <!-- Quick View image overlays -->
+                <div id="quickview-image-overlay-tr" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
+                <div id="quickview-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
               </div>
             </div>
-            <div id="preview-content" class="p-4">
-              <div id="preview-title" class="font-semibold text-base">Essential Oversized T-Shirt</div>
-              <div id="preview-vendor" class="text-xs mb-1">Nike Sportswear</div>
-              <div id="preview-rating-container" class="mb-2">
-                <div id="preview-rating" class="flex text-amber-400 text-sm">★★★★☆</div>
-                <div id="preview-review-count" class="text-xs text-gray-500">(124 reviews)</div>
+           
+            <div id="preview-content" class="p-3">
+              <!-- Title first, then vendor -->
+              <div id="preview-title" class="font-semibold text-[13px] leading-snug mb-1 line-clamp-2">Essential Oversized T-Shirt</div>
+              <div id="preview-vendor" class="text-[11px] mb-0.5 truncate">Nike Sportswear</div>
+             
+              <div id="preview-rating-container" class="mb-1.5 flex flex-col">
+                <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆</div>
+                <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
               </div>
-              <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-3 mb-3">
-                <span id="preview-fixed-price" class="font-medium">$59.00</span>
-                <span id="preview-old-price" class="line-through text-xs">$89.00</span>
-                <span id="preview-sale-price" class="font-bold">$49.00</span>
+             
+              <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-2">
+                <span id="preview-fixed-price" class="font-medium text-[13px]">$59.00</span>
+                <span id="preview-old-price" class="line-through text-[11px] text-gray-400">$89.00</span>
+                <span id="preview-sale-price" class="font-bold text-[13px] text-red-600">$49.00</span>
               </div>
-              <button id="preview-atc-btn" class="w-full py-2 rounded-md text-sm font-medium bg-zinc-800 text-white">Add to Cart</button>
+             
+              <div class="flex gap-1.5">
+                <button id="preview-atc-btn" class="flex-1 py-1.8 rounded-md text-[11px] font-semibold uppercase tracking-wide transition-all">Add to Cart</button>
+                <div id="wishlist-in-card" class="flex items-center justify-center px-2.5 py-1.8 rounded-md border border-red-200 bg-red-50 text-red-500 cursor-pointer hover:bg-red-100 transition-colors"></div>
+                <div id="quickview-in-card" class="hidden flex items-center justify-center px-2.5 py-1.8 rounded-md border transition-all cursor-pointer"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="flex justify-end px-6 py-4 border-t border-gray-200 bg-white">
-    <button onclick="saveSettings()" class="px-6 py-2 bg-zinc-800 border border-zinc-800 text-white text-sm rounded-md hover:bg-zinc-700">Save Changes</button>
+  <!-- Quick View Modal -->
+  <div id="quickview-modal" onclick="if(event.target === this) closeQuickView()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+    <div onclick="event.stopImmediatePropagation()" class="bg-white rounded-3xl w-full max-w-5xl mx-4 shadow-2xl overflow-hidden relative flex flex-col md:flex-row">
+      <button onclick="closeQuickView()" class="absolute top-6 right-6 z-10 w-9 h-9 flex items-center justify-center text-4xl leading-none text-gray-300 hover:text-gray-600 transition-colors">×</button>
+      
+      <!-- Left: Image + Wishlist hover -->
+      <div class="md:w-1/2 relative bg-gray-100">
+        <div class="relative h-full min-h-[420px] group">
+          <img id="modal-preview-image" src="https://picsum.photos/id/1015/600/600" class="w-full h-full object-cover">
+          <div id="modal-wishlist-image-overlay" class="hidden"></div>
+        </div>
+      </div>
+      
+      <!-- Right: Product info -->
+      <div class="md:w-1/2 p-8 flex flex-col">
+        <div id="modal-vendor" class="text-sm text-gray-500 mb-1"></div>
+        <div id="modal-title" class="text-3xl font-semibold leading-none mb-6"></div>
+        
+        <div id="modal-rating-container" class="flex items-center gap-4 mb-8">
+          <div id="modal-rating" class="flex text-amber-400 text-3xl"></div>
+          <div id="modal-review-count" class="text-gray-400 text-sm"></div>
+        </div>
+        
+        <div id="modal-price-block" class="flex items-baseline gap-x-3 text-4xl mb-8"></div>
+        
+        <button id="modal-atc-btn" class="mt-auto py-4 px-8 text-lg font-semibold rounded-3xl transition-all">Add to Cart</button>
+        
+        <div class="text-center text-[10px] text-gray-400 mt-6">Quick view preview • Click outside to close</div>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-end px-6 py-3 border-t border-gray-200 bg-gray-50/60">
+    <button onclick="saveSettings()" class="px-7 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition-all shadow-sm">Save Changes</button>
   </div>
 </div>
-
 <script>
-  // Tab switching
-  function switchTab(n) {
-    document.getElementById('filter-tab').classList.toggle('hidden', n !== 0);
-    document.getElementById('grid-tab').classList.toggle('hidden', n !== 1);
-    document.getElementById('tab-filter').classList.toggle('tab-active', n === 0);
-    document.getElementById('tab-grid').classList.toggle('tab-active', n === 1);
+// ==================== FONT LIBRARY ====================
+const FONT_LIBRARY = [
+  { value: 'sans-serif', label: 'System Sans-Serif' },
+  { value: 'serif', label: 'System Serif' },
+  { value: "'Inter', sans-serif", label: 'Inter' },
+  { value: "'Roboto', sans-serif", label: 'Roboto' },
+  { value: "'Open Sans', sans-serif", label: 'Open Sans' },
+  { value: "'Lato', sans-serif", label: 'Lato' },
+  { value: "'Montserrat', sans-serif", label: 'Montserrat' },
+  { value: "'Poppins', sans-serif", label: 'Poppins' },
+  { value: "'Playfair Display', serif", label: 'Playfair Display' },
+  { value: "'Raleway', sans-serif", label: 'Raleway' },
+  { value: "'Oswald', sans-serif", label: 'Oswald' },
+  { value: "'Nunito', sans-serif", label: 'Nunito' },
+  { value: "'Merriweather', serif", label: 'Merriweather' },
+  { value: "'Ubuntu', sans-serif", label: 'Ubuntu' },
+  { value: "'Rubik', sans-serif", label: 'Rubik' },
+  { value: "'Work Sans', sans-serif", label: 'Work Sans' },
+  { value: "'DM Sans', sans-serif", label: 'DM Sans' },
+  { value: "'Plus Jakarta Sans', sans-serif", label: 'Plus Jakarta Sans' },
+  { value: "'Space Grotesk', sans-serif", label: 'Space Grotesk' },
+  { value: "'Outfit', sans-serif", label: 'Outfit' },
+  { value: "'IBM Plex Sans', sans-serif", label: 'IBM Plex Sans' },
+  { value: "'Fira Sans', sans-serif", label: 'Fira Sans' },
+  { value: "'Source Sans Pro', sans-serif", label: 'Source Sans Pro' },
+  { value: "'Noto Sans', sans-serif", label: 'Noto Sans' },
+  { value: "'Crimson Pro', serif", label: 'Crimson Pro' },
+  { value: "monospace", label: 'Monospace' }
+];
+function initFontSelects() {
+  document.querySelectorAll('.font-select').forEach(select => {
+    FONT_LIBRARY.forEach(font => {
+      const opt = document.createElement('option');
+      opt.value = font.value;
+      opt.textContent = font.label;
+      opt.style.fontFamily = font.value;
+      select.appendChild(opt);
+    });
+  });
+}
+// ==================== TAB & LAYOUT ====================
+function switchTab(n) {
+  document.getElementById('filter-tab').classList.toggle('hidden', n !== 0);
+  document.getElementById('grid-tab').classList.toggle('hidden', n !== 1);
+  document.getElementById('tab-filter').classList.toggle('tab-active', n === 0);
+  document.getElementById('tab-grid').classList.toggle('tab-active', n === 1);
+}
+function selectLayout(el) {
+  document.querySelectorAll('#filter-tab .option-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const radio = el.querySelector('input[type="radio"]');
+  if(radio) radio.checked = true;
+}
+// ==================== FILTER PREVIEW ====================
+function updateFilterPreview() {
+  const panel = document.getElementById('filter-preview-panel');
+  panel.style.backgroundColor = document.getElementById('filter-bar-bg').value;
+  document.querySelectorAll('[id^="preview-opt-label"]').forEach(el => {
+    el.style.fontSize = document.getElementById('opt-font-size').value+'px';
+    el.style.textTransform = document.getElementById('opt-transform').value;
+    el.style.color = document.getElementById('opt-color').value;
+    el.style.fontFamily = document.getElementById('opt-font').value;
+    el.style.fontWeight = document.getElementById('opt-weight').value;
+  });
+  document.querySelectorAll('[id^="preview-val-"]').forEach(el => {
+    el.style.fontSize = document.getElementById('val-font-size').value+'px';
+    el.style.textTransform = document.getElementById('val-transform').value;
+    el.style.color = document.getElementById('val-color').value;
+    el.style.fontFamily = document.getElementById('val-font').value;
+    el.style.fontWeight = document.getElementById('val-weight').value;
+  });
+  const btn = document.getElementById('preview-btn');
+  btn.textContent = document.getElementById('btn-text').value;
+  btn.style.fontSize = document.getElementById('btn-font-size').value+'px';
+  btn.style.borderRadius = document.getElementById('btn-radius').value+'px';
+  btn.style.textTransform = document.getElementById('btn-transform').value;
+  btn.style.color = document.getElementById('btn-text-color').value;
+  btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
+  btn.style.fontFamily = document.getElementById('btn-font').value;
+  btn.style.fontWeight = document.getElementById('btn-weight').value;
+  syncHex('opt-color'); syncHex('val-color'); syncHex('btn-text-color');
+  syncHex('btn-bg-color'); syncHex('filter-bar-bg');
+  const behavior = document.querySelector('input[name="filterBehavior"]:checked').value;
+  const applyBtn = document.getElementById('preview-btn');
+  if (behavior === 'auto') {
+    applyBtn.style.display = 'none';
+    document.getElementById('filter-status').textContent = 'Auto-updating...';
+  } else {
+    applyBtn.style.display = 'block';
+    document.getElementById('filter-status').textContent = 'Click to apply filters';
   }
-  function selectLayout(el) { document.querySelectorAll('#filter-tab .option-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
-
-  // Filter preview update (styles + behavior)
-  function updateFilterPreview() {
-    document.querySelectorAll('[id^="preview-opt-label"]').forEach(el => { el.style.fontSize = document.getElementById('opt-font-size').value+'px'; el.style.textTransform = document.getElementById('opt-transform').value; el.style.color = document.getElementById('opt-color').value; });
-    document.querySelectorAll('[id^="preview-val-"]').forEach(el => { el.style.fontSize = document.getElementById('val-font-size').value+'px'; el.style.textTransform = document.getElementById('val-transform').value; el.style.color = document.getElementById('val-color').value; });
-    const btn = document.getElementById('preview-btn'); 
-    btn.textContent = document.getElementById('btn-text').value; 
-    btn.style.fontSize = document.getElementById('btn-font-size').value+'px'; 
-    btn.style.borderRadius = document.getElementById('btn-radius').value+'px'; 
-    btn.style.textTransform = document.getElementById('btn-transform').value; 
-    btn.style.color = document.getElementById('btn-text-color').value; 
-    btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
-    document.getElementById('opt-color-hex').value = document.getElementById('opt-color').value;
-    document.getElementById('val-color-hex').value = document.getElementById('val-color').value;
-    document.getElementById('btn-text-color-hex').value = document.getElementById('btn-text-color').value;
-    document.getElementById('btn-bg-color-hex').value = document.getElementById('btn-bg-color').value;
-    
-    const behavior = document.querySelector('input[name="filterBehavior"]:checked').value;
-    const applyBtn = document.getElementById('preview-btn');
-    if (behavior === 'auto') {
-      applyBtn.style.display = 'none';
-      document.getElementById('filter-status').innerText = 'Auto-filter: results update instantly';
-      document.querySelectorAll('.filter-checkbox').forEach(cb => {
-        cb.removeEventListener('change', autoFilterHandler);
-        cb.addEventListener('change', autoFilterHandler);
-      });
-    } else {
-      applyBtn.style.display = 'block';
-      document.getElementById('filter-status').innerText = 'Manual: click "Apply Filters" to see results';
-      document.querySelectorAll('.filter-checkbox').forEach(cb => cb.removeEventListener('change', autoFilterHandler));
-      const newBtn = applyBtn.cloneNode(true);
-      applyBtn.parentNode.replaceChild(newBtn, applyBtn);
-      newBtn.addEventListener('click', () => { document.getElementById('filter-status').innerText = 'Filters applied! (demo)'; setTimeout(()=>{document.getElementById('filter-status').innerText = 'Manual: click "Apply Filters" to see results';},1500); });
-      document.getElementById('preview-btn').style.display = 'block';
-    }
+}
+function syncHex(id) {
+  const hexEl = document.getElementById(id+'-hex');
+  if(hexEl) hexEl.value = document.getElementById(id).value;
+}
+// ==================== PRICE LOGIC ====================
+function enforcePriceLogic() {
+  const fixed = document.getElementById('show-fixed-price');
+  const old = document.getElementById('show-old-price');
+  const sale = document.getElementById('show-sale-price');
+  const warning = document.getElementById('price-warning');
+  if(fixed.checked) {
+    old.checked = false;
+    sale.checked = false;
+    warning.classList.add('hidden');
+    return updateProductPreview();
   }
-  function autoFilterHandler() { document.getElementById('filter-status').innerText = 'Auto-updated! (demo)'; setTimeout(()=>{document.getElementById('filter-status').innerText = 'Auto-filter: results update instantly';},1000); }
-
-  // Sale badge Other field visibility and custom text
-  function toggleSaleCustomField() {
-    const style = document.getElementById('sale-style').value;
-    const customField = document.getElementById('sale-custom-field');
-    if (style === 'other') customField.classList.remove('hidden');
-    else customField.classList.add('hidden');
-    updateProductPreview();
+  if(old.checked && !sale.checked) {
+    sale.checked = true;
   }
-  function toggleSoldoutCustomField() {
-    const style = document.getElementById('soldout-style').value;
-    const customField = document.getElementById('soldout-custom-field');
-    if (style === 'other') customField.classList.remove('hidden');
-    else customField.classList.add('hidden');
-    updateProductPreview();
-  }
-
-  // Product preview update with rating, hide price, badge positioning and custom texts
-  function updateProductPreview() {
-    const align = document.getElementById('content-align').value;
-    const contentDiv = document.getElementById('preview-content');
-    contentDiv.className = `p-4 text-${align}`;
-    const priceBlock = document.getElementById('preview-price-block');
-    if (align === 'left') { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-start mb-3'; }
-    else if (align === 'center') { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-center mb-3'; }
-    else { priceBlock.className = 'flex flex-wrap items-baseline gap-x-3 justify-end mb-3'; }
-    
-    document.getElementById('preview-image-container').style.borderRadius = document.getElementById('image-radius').value+'px';
-    if (document.getElementById('hover-zoom').checked) document.getElementById('preview-image').classList.add('group-hover:scale-110'); else document.getElementById('preview-image').classList.remove('group-hover:scale-110');
-    
-    document.getElementById('preview-title').style.fontSize = document.getElementById('title-font-size').value+'px';
-    document.getElementById('preview-title').style.textTransform = document.getElementById('title-transform').value;
-    document.getElementById('preview-title').style.color = document.getElementById('title-color').value;
-    
-    const showVendor = document.getElementById('show-vendor').checked;
-    const vendorEl = document.getElementById('preview-vendor');
-    vendorEl.classList.toggle('hidden', !showVendor);
-    vendorEl.style.fontSize = document.getElementById('vendor-font-size').value+'px';
-    vendorEl.style.textTransform = document.getElementById('vendor-transform').value;
-    vendorEl.style.color = document.getElementById('vendor-color').value;
-    
-    const showRating = document.getElementById('show-rating').checked;
-    const ratingContainer = document.getElementById('preview-rating-container');
-    ratingContainer.classList.toggle('hidden', !showRating);
-    const ratingType = document.getElementById('rating-type').value;
-    const ratingEl = document.getElementById('preview-rating');
-    if (ratingType === 'star') ratingEl.innerHTML = '★★★★☆';
-    else ratingEl.innerHTML = '4.5 / 5';
-    const showReviewCount = document.getElementById('show-review-count').checked;
-    document.getElementById('preview-review-count').classList.toggle('hidden', !showReviewCount);
-    
-    const hidePriceOption = document.getElementById('hide-price').value;
-    const priceBlockVisible = document.getElementById('show-price').checked;
-    let finalHide = false;
-    if (hidePriceOption === 'all') finalHide = true;
-    if (hidePriceOption === 'non-login') finalHide = true;
-    if (!priceBlockVisible) finalHide = true;
-    document.getElementById('preview-price-block').classList.toggle('hidden', finalHide);
-    if (!finalHide) {
-      document.getElementById('preview-fixed-price').classList.toggle('hidden', !document.getElementById('show-fixed-price').checked);
-      document.getElementById('preview-fixed-price').style.fontSize = document.getElementById('fixed-price-font').value+'px';
-      document.getElementById('preview-fixed-price').style.color = document.getElementById('fixed-price-color').value;
-      document.getElementById('preview-old-price').classList.toggle('hidden', !document.getElementById('show-old-price').checked);
-      document.getElementById('preview-old-price').style.fontSize = document.getElementById('old-price-font').value+'px';
-      document.getElementById('preview-old-price').style.color = document.getElementById('old-price-color').value;
-      document.getElementById('preview-sale-price').classList.toggle('hidden', !document.getElementById('show-sale-price').checked);
-      document.getElementById('preview-sale-price').style.fontSize = document.getElementById('sale-price-font').value+'px';
-      document.getElementById('preview-sale-price').style.color = document.getElementById('sale-price-color').value;
-    }
-    
-    const showATC = document.getElementById('show-atc').checked;
-    const atcBtn = document.getElementById('preview-atc-btn');
-    atcBtn.classList.toggle('hidden', !showATC);
-    atcBtn.style.fontSize = document.getElementById('atc-font-size').value+'px';
-    atcBtn.style.textTransform = document.getElementById('atc-transform').value;
-    atcBtn.style.color = document.getElementById('atc-text-color').value;
-    atcBtn.style.backgroundColor = document.getElementById('atc-bg-color').value;
-    
-    // Sale badge custom text
-    const showSale = document.getElementById('show-sale').checked;
-    const saleStyle = document.getElementById('sale-style').value;
-    let saleText = '';
-    if (saleStyle === 'percentage') saleText = 'Sale 30%';
-    else if (saleStyle === 'amount') saleText = '- $20';
-    else if (saleStyle === 'text') saleText = 'SALE';
-    else if (saleStyle === 'other') saleText = document.getElementById('sale-custom-text').value || 'Special';
-    
-    // Sold out badge custom text
-    const showSold = document.getElementById('show-soldout').checked;
-    const soldStyle = document.getElementById('soldout-style').value;
-    let soldText = '';
-    if (soldStyle === 'soldout') soldText = 'Sold Out';
-    else if (soldStyle === 'outofstock') soldText = 'Out Of Stock';
-    else if (soldStyle === 'other') soldText = document.getElementById('soldout-custom-text').value || 'Unavailable';
-    
-    const salePos = document.getElementById('sale-position').value;
-    const soldPos = document.getElementById('soldout-position').value;
-    const saleBadge = document.getElementById('sale-badge-preview');
-    const soldBadge = document.getElementById('soldout-badge-preview');
-    const badgeContainer = document.getElementById('badge-container');
-    
-    if (showSale) {
-      saleBadge.classList.remove('hidden');
-      saleBadge.style.fontSize = document.getElementById('sale-font-size').value+'px';
-      saleBadge.style.color = document.getElementById('sale-text-color').value;
-      saleBadge.style.backgroundColor = document.getElementById('sale-bg-color').value;
-      saleBadge.textContent = saleText;
-    } else saleBadge.classList.add('hidden');
-    if (showSold) {
-      soldBadge.classList.remove('hidden');
-      soldBadge.style.fontSize = document.getElementById('soldout-font-size').value+'px';
-      soldBadge.style.color = document.getElementById('soldout-text-color').value;
-      soldBadge.style.backgroundColor = document.getElementById('soldout-bg-color').value;
-      soldBadge.textContent = soldText;
-    } else soldBadge.classList.add('hidden');
-    
-    // Positioning logic
-    if (salePos === soldPos) {
-      badgeContainer.className = 'absolute top-3 left-0 right-0 flex flex-col items-start gap-1 px-3 pointer-events-none';
-      if (salePos === 'right') badgeContainer.className = 'absolute top-3 left-0 right-0 flex flex-col items-end gap-1 px-3 pointer-events-none';
-      saleBadge.style.position = 'relative';
-      soldBadge.style.position = 'relative';
-      saleBadge.style.margin = '0';
-      soldBadge.style.margin = '0';
-    } else {
-      badgeContainer.className = 'absolute top-3 left-0 right-0 flex justify-between px-3 pointer-events-none';
-      saleBadge.style.position = 'relative';
-      soldBadge.style.position = 'relative';
-      if (salePos === 'left') {
-        saleBadge.style.order = '1';
-        soldBadge.style.order = '2';
-      } else {
-        saleBadge.style.order = '2';
-        soldBadge.style.order = '1';
-      }
-    }
-    
-    // Swatches and size variants
-    const showSwatches = document.getElementById('show-swatches').checked;
-    const swatchContainer = document.getElementById('preview-color-swatches');
-    if (showSwatches && colorSwatches.length) {
-      swatchContainer.classList.remove('hidden');
-      const isSquare = document.getElementById('swatch-style').value === 'square';
-      swatchContainer.innerHTML = colorSwatches.map(s => `<div class="w-6 h-6 ${isSquare ? 'swatch-square' : 'rounded-full'} border border-white shadow-sm" style="background:${s.type==='color'?s.color:'#ccc'}"></div>`).join('');
-    } else swatchContainer.classList.add('hidden');
-    const showSizes = document.getElementById('show-size-variants').checked;
-    const sizeContainer = document.getElementById('preview-size-variants');
-    if (showSizes && sizeVariants.length) {
-      sizeContainer.classList.remove('hidden');
-      sizeContainer.innerHTML = sizeVariants.map(sz => `<div class="px-2 py-0.5 bg-white border border-gray-800 rounded-full text-[10px] font-medium shadow-sm">${sz.source}</div>`).join('');
-    } else sizeContainer.classList.add('hidden');
-    
-    // Sync hex inputs
-    document.getElementById('title-color-hex').value = document.getElementById('title-color').value;
-    document.getElementById('vendor-color-hex').value = document.getElementById('vendor-color').value;
-    document.getElementById('fixed-price-color-hex').value = document.getElementById('fixed-price-color').value;
-    document.getElementById('old-price-color-hex').value = document.getElementById('old-price-color').value;
-    document.getElementById('sale-price-color-hex').value = document.getElementById('sale-price-color').value;
-    document.getElementById('atc-text-color-hex').value = document.getElementById('atc-text-color').value;
-    document.getElementById('atc-bg-color-hex').value = document.getElementById('atc-bg-color').value;
-    document.getElementById('sale-text-color-hex').value = document.getElementById('sale-text-color').value;
-    document.getElementById('sale-bg-color-hex').value = document.getElementById('sale-bg-color').value;
-    document.getElementById('soldout-text-color-hex').value = document.getElementById('soldout-text-color').value;
-    document.getElementById('soldout-bg-color-hex').value = document.getElementById('soldout-bg-color').value;
-  }
-  
-  // Swatch and size variant data
-  let colorSwatches = [{source:"Red", type:"color", color:"#ef4444"},{source:"Blue", type:"color", color:"#3b82f6"},{source:"Black", type:"color", color:"#000000"}];
-  let sizeVariants = [{source:"S", type:"text"},{source:"M", type:"text"},{source:"L", type:"text"},{source:"XL", type:"text"}];
-  function renderColorSwatches() {
-    const tbody = document.getElementById('color-swatch-body'); tbody.innerHTML = '';
-    colorSwatches.forEach((sw, idx) => { const row = document.createElement('tr'); row.className = 'border-b'; row.innerHTML = `<td class="py-1"><input type="text" value="${sw.source}" class="w-full text-xs border-gray-800" data-idx="${idx}" data-field="source"></td><td class="py-1"><select class="w-full text-xs border-gray-800" data-idx="${idx}" data-field="type"><option ${sw.type==='color'?'selected':''}>color</option><option ${sw.type==='image'?'selected':''}>image</option><option ${sw.type==='text'?'selected':''}>text</option></select></td><td class="py-1"><button onclick="removeColorSwatch(${idx})" class="text-red-500"><i class="fas fa-trash-alt text-xs"></i></button></td>`; tbody.appendChild(row); });
-    attachSwatchEvents();
-  }
-  function attachSwatchEvents() { document.querySelectorAll('#color-swatch-body input, #color-swatch-body select').forEach(el => el.addEventListener('change', updateProductPreview)); }
-  function addColorSwatchRow() { colorSwatches.push({source:"New", type:"color", color:"#cccccc"}); renderColorSwatches(); updateProductPreview(); }
-  function removeColorSwatch(idx) { colorSwatches.splice(idx,1); renderColorSwatches(); updateProductPreview(); }
-  function renderSizeVariants() {
-    const tbody = document.getElementById('size-variant-body'); tbody.innerHTML = '';
-    sizeVariants.forEach((sz, idx) => { const row = document.createElement('tr'); row.className = 'border-b'; row.innerHTML = `<td class="py-1"><input type="text" value="${sz.source}" class="w-full text-xs border-gray-800" data-size-idx="${idx}" data-field="source"></td><td class="py-1"><select class="w-full text-xs border-gray-800" data-size-idx="${idx}" data-field="type"><option ${sz.type==='text'?'selected':''}>text</option><option ${sz.type==='color'?'selected':''}>color</option><option ${sz.type==='image'?'selected':''}>image</option></select></td><td class="py-1"><button onclick="removeSizeVariant(${idx})" class="text-red-500"><i class="fas fa-trash-alt text-xs"></i></button></td>`; tbody.appendChild(row); });
-    attachSizeEvents();
-  }
-  function attachSizeEvents() { document.querySelectorAll('#size-variant-body input, #size-variant-body select').forEach(el => el.addEventListener('change', updateProductPreview)); }
-  function addSizeVariantRow() { sizeVariants.push({source:"New Size", type:"text"}); renderSizeVariants(); updateProductPreview(); }
-  function removeSizeVariant(idx) { sizeVariants.splice(idx,1); renderSizeVariants(); updateProductPreview(); }
-  
-  function saveSettings() { alert("Settings saved successfully."); }
-  
-  window.onload = () => {
-    document.querySelectorAll('#filter-tab input, #filter-tab select').forEach(el => el.addEventListener('input', updateFilterPreview));
-    document.querySelectorAll('#filter-tab input[type="radio"]').forEach(el => el.addEventListener('change', updateFilterPreview));
-    updateFilterPreview();
-    document.querySelectorAll('#grid-tab input, #grid-tab select').forEach(el => { el.addEventListener('input', updateProductPreview); el.addEventListener('change', updateProductPreview); });
-    ['fixed-price-font','old-price-font','sale-price-font','title-font-size','vendor-font-size','atc-font-size','image-radius','soldout-font-size','sale-font-size'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', function(){ const span = document.getElementById(id+'-val'); if(span) span.innerText = this.value+'px'; updateProductPreview(); }); });
-    // Custom field toggles
-    document.getElementById('sale-style').addEventListener('change', toggleSaleCustomField);
-    document.getElementById('sale-custom-text').addEventListener('input', updateProductPreview);
-    document.getElementById('soldout-style').addEventListener('change', toggleSoldoutCustomField);
-    document.getElementById('soldout-custom-text').addEventListener('input', updateProductPreview);
-    toggleSaleCustomField();
-    toggleSoldoutCustomField();
-    renderColorSwatches(); renderSizeVariants(); updateProductPreview();
+  warning.classList.add('hidden');
+  updateProductPreview();
+}
+// ==================== BADGE POSITIONING ====================
+function updateBadgePositions() {
+  const zones = {
+    'top-left': document.getElementById('zone-tl'),
+    'top-right': document.getElementById('zone-tr'),
+    'bottom-left': document.getElementById('zone-bl'),
+    'bottom-right': document.getElementById('zone-br')
   };
+ 
+  Object.values(zones).forEach(z => z.innerHTML = '');
+  const badges = [
+    { show: document.getElementById('show-sale').checked, pos: document.getElementById('sale-position').value, create: createSaleBadge },
+    { show: document.getElementById('show-soldout').checked, pos: document.getElementById('soldout-position').value, create: createSoldoutBadge },
+    { show: document.getElementById('show-lowstock').checked, pos: document.getElementById('lowstock-position').value, create: createLowStockBadge }
+  ];
+  const grouped = {};
+  badges.filter(b => b.show).forEach(b => {
+    if(!grouped[b.pos]) grouped[b.pos] = [];
+    grouped[b.pos].push(b.create());
+  });
+  Object.entries(grouped).forEach(([pos, els]) => {
+    if(zones[pos]) els.forEach(el => zones[pos].appendChild(el));
+  });
+}
+function createSaleBadge() {
+  const style = document.getElementById('sale-style').value;
+  let text = style === 'percentage' ? '-30%' : style === 'amount' ? '-$20' : style === 'text' ? (document.getElementById('sale-custom-text').value || 'SALE') : (document.getElementById('sale-custom-text').value || 'SALE');
+  const div = document.createElement('div');
+  div.className = 'preview-badge';
+  div.textContent = text;
+  div.style.backgroundColor = document.getElementById('sale-bg-color').value;
+  div.style.color = document.getElementById('sale-text-color').value;
+  div.style.fontSize = document.getElementById('sale-font-size').value+'px';
+  div.style.fontFamily = document.getElementById('sale-badge-font').value;
+  div.style.fontWeight = document.getElementById('sale-weight').value;
+  return div;
+}
+function createSoldoutBadge() {
+  const style = document.getElementById('soldout-style').value;
+  let text = style === 'soldout' ? 'Sold Out' : style === 'outofstock' ? 'Out of Stock' : (document.getElementById('soldout-custom-text').value || 'Unavailable');
+  const div = document.createElement('div');
+  div.className = 'preview-badge';
+  div.textContent = text;
+  div.style.backgroundColor = document.getElementById('soldout-bg-color').value;
+  div.style.color = document.getElementById('soldout-text-color').value;
+  div.style.fontSize = document.getElementById('soldout-font-size').value+'px';
+  div.style.fontFamily = document.getElementById('soldout-badge-font').value;
+  div.style.fontWeight = document.getElementById('soldout-weight').value;
+  return div;
+}
+function createLowStockBadge() {
+  const threshold = document.getElementById('lowstock-threshold').value;
+  const div = document.createElement('div');
+  div.className = 'preview-badge';
+  div.textContent = `Only ${Math.max(1, Math.floor(threshold/2))} left!`;
+  div.style.backgroundColor = document.getElementById('lowstock-bg-color').value;
+  div.style.color = document.getElementById('lowstock-text-color').value;
+  div.style.fontSize = document.getElementById('lowstock-font-size').value+'px';
+  div.style.fontFamily = document.getElementById('lowstock-badge-font').value;
+  div.style.fontWeight = document.getElementById('lowstock-weight').value;
+  return div;
+}
+// ==================== WISHLIST PREVIEW ====================
+function updateWishlistPreview() {
+  const show = document.getElementById('show-wishlist').checked;
+  const type = document.getElementById('wishlist-type').value;
+  const pos = document.getElementById('wishlist-position').value;
+ 
+  const inCard = document.getElementById('wishlist-in-card');
+  const imgTR = document.getElementById('wishlist-image-overlay');
+  const imgTL = document.getElementById('wishlist-image-overlay-tl');
+ 
+  inCard.classList.add('hidden');
+  imgTR.classList.add('hidden');
+  imgTL.classList.add('hidden');
+  if(!show) return;
+  const fontSize = document.getElementById('wishlist-font-size').value+'px';
+  const fontFamily = document.getElementById('wishlist-font').value;
+  const fontWeight = document.getElementById('wishlist-weight').value;
+  const textColor = document.getElementById('wishlist-text-color').value;
+  const bgColor = document.getElementById('wishlist-bg-color').value;
+  const transform = document.getElementById('wishlist-transform').value;
+  if(type === 'heart') {
+    const heartHTML = `<i class="fas fa-heart" style="font-size:${fontSize};color:${textColor}"></i>`;
+    if(pos === 'in-card') { inCard.innerHTML = heartHTML; inCard.classList.remove('hidden'); inCard.style.background = bgColor; }
+    else if(pos === 'image-top-right') { imgTR.innerHTML = heartHTML; imgTR.classList.remove('hidden'); imgTR.className = 'absolute top-1.5 right-1.5 z-25 w-7 h-7 flex items-center justify-center rounded-full shadow'; imgTR.style.background = bgColor; }
+    else { imgTL.innerHTML = heartHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 w-7 h-7 flex items-center justify-center rounded-full shadow'; imgTL.style.background = bgColor; }
+  } else {
+    const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
+    const textHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
+    if(pos === 'in-card') { inCard.innerHTML = textHTML; inCard.classList.remove('hidden'); inCard.style.background = bgColor; inCard.style.padding = '0.2rem 0.4rem'; }
+    else if(pos === 'image-top-right') { imgTR.innerHTML = textHTML; imgTR.classList.remove('hidden'); imgTR.className = 'absolute top-1.5 right-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTR.style.background = bgColor; }
+    else { imgTL.innerHTML = textHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTL.style.background = bgColor; }
+  }
+}
+// ==================== QUICK VIEW PREVIEW ====================
+function updateQuickViewPreview() {
+  const show = document.getElementById('show-quickview').checked;
+  const type = document.getElementById('quickview-type').value;
+  const pos = document.getElementById('quickview-position').value;
+ 
+  const inCard = document.getElementById('quickview-in-card');
+  const imgTR = document.getElementById('quickview-image-overlay-tr');
+  const imgTL = document.getElementById('quickview-image-overlay-tl');
+ 
+  [inCard, imgTR, imgTL].forEach(el => el.classList.add('hidden'));
+  if(!show) return;
+ 
+  const fontFamily = document.getElementById('quickview-font').value;
+  const fontSize = document.getElementById('quickview-font-size').value + 'px';
+  const fontWeight = document.getElementById('quickview-weight').value;
+  const textColor = document.getElementById('quickview-text-color').value;
+  const bgColor = document.getElementById('quickview-bg-color').value;
+  const transform = document.getElementById('quickview-transform').value;
+ 
+  let contentHTML = '';
+  if (type === 'eye') {
+    contentHTML = `<i class="fas fa-eye" style="font-size:${fontSize}; color:${textColor}"></i>`;
+  } else {
+    const displayText = type === 'custom' ? (document.getElementById('quickview-custom-text').value || 'Quick View') : 'Quick View';
+    contentHTML = `<span style="font-size:${fontSize}; font-family:${fontFamily}; font-weight:${fontWeight}; color:${textColor}; text-transform:${transform}">${displayText}</span>`;
+  }
+ 
+  if (pos === 'in-card') {
+    inCard.innerHTML = contentHTML;
+    inCard.classList.remove('hidden');
+    inCard.style.backgroundColor = bgColor;
+    inCard.style.padding = type === 'button' || type === 'custom' ? '0.3rem 1rem' : '0.35rem';
+    inCard.style.borderRadius = type === 'button' || type === 'custom' ? '9999px' : '9999px';
+  } else if (pos === 'image-top-right') {
+    imgTR.innerHTML = contentHTML;
+    imgTR.classList.remove('hidden');
+    imgTR.style.backgroundColor = bgColor;
+    imgTR.className = type === 'eye' 
+      ? 'absolute top-2 right-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' 
+      : 'absolute top-2 right-2 z-25 px-4 py-2 rounded-2xl shadow text-xs transition-all';
+  } else if (pos === 'image-top-left') {
+    imgTL.innerHTML = contentHTML;
+    imgTL.classList.remove('hidden');
+    imgTL.style.backgroundColor = bgColor;
+    imgTL.className = type === 'eye' 
+      ? 'absolute top-2 left-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' 
+      : 'absolute top-2 left-2 z-25 px-4 py-2 rounded-2xl shadow text-xs transition-all';
+  }
+}
+// ==================== PRODUCT PREVIEW ====================
+function formatPrice(basePrice) {
+  let price = parseFloat(basePrice);
+  if(document.getElementById('round-up').checked) price = Math.ceil(price);
+  if(document.getElementById('hide-decimal').checked) price = Math.round(price);
+  return '$' + price.toFixed(document.getElementById('hide-decimal').checked ? 0 : 2);
+}
+function updateProductPreview() {
+  const card = document.getElementById('product-preview');
+  const align = document.getElementById('content-align').value;
+  const content = document.getElementById('preview-content');
+  card.style.backgroundColor = document.getElementById('card-bg-color').value;
+  card.style.borderColor = document.getElementById('card-border-color').value;
+  card.style.borderRadius = document.getElementById('card-radius').value+'px';
+  content.style.textAlign = align;
+ 
+  const priceBlock = document.getElementById('preview-price-block');
+  priceBlock.style.justifyContent = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
+ 
+  const ratingContainer = document.getElementById('preview-rating-container');
+  ratingContainer.style.alignItems = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
+  document.getElementById('preview-image-container').style.borderRadius = document.getElementById('image-radius').value+'px';
+  const img = document.getElementById('preview-image');
+  img.classList.toggle('group-hover:scale-105', document.getElementById('hover-zoom').checked);
+  // Title
+  const title = document.getElementById('preview-title');
+  title.style.fontSize = document.getElementById('title-font-size').value+'px';
+  title.style.textTransform = document.getElementById('title-transform').value;
+  title.style.color = document.getElementById('title-color').value;
+  title.style.fontFamily = document.getElementById('title-font').value;
+  title.style.fontWeight = document.getElementById('title-weight').value;
+  // Vendor
+  const vendor = document.getElementById('preview-vendor');
+  vendor.classList.toggle('hidden', !document.getElementById('show-vendor').checked);
+  vendor.style.fontSize = document.getElementById('vendor-font-size').value+'px';
+  vendor.style.color = document.getElementById('vendor-color').value;
+  vendor.style.fontFamily = document.getElementById('vendor-font').value;
+  vendor.style.fontWeight = document.getElementById('vendor-weight').value;
+  vendor.style.textTransform = document.getElementById('vendor-transform').value;
+  // Rating
+  const showRating = document.getElementById('show-rating').checked;
+  ratingContainer.classList.toggle('hidden', !showRating);
+  if(showRating) {
+    document.getElementById('preview-rating').innerHTML = document.getElementById('rating-type').value === 'star' ? '★★★★☆' : '<span class="text-gray-700 font-semibold">4.5/5</span>';
+    document.getElementById('preview-review-count').classList.toggle('hidden', !document.getElementById('show-review-count').checked);
+  }
+  // Prices
+  const hideOpt = document.getElementById('hide-price').value;
+  let hidePrices = hideOpt !== 'none';
+  document.getElementById('preview-price-block').classList.toggle('hidden', hidePrices);
+ 
+  if(!hidePrices) {
+    const fp = document.getElementById('preview-fixed-price');
+    const op = document.getElementById('preview-old-price');
+    const sp = document.getElementById('preview-sale-price');
+    fp.classList.toggle('hidden', !document.getElementById('show-fixed-price').checked);
+    fp.textContent = formatPrice(59);
+    fp.style.fontSize = document.getElementById('fixed-price-font').value+'px';
+    fp.style.color = document.getElementById('fixed-price-color').value;
+    fp.style.fontFamily = document.getElementById('fixed-price-font-family').value;
+    fp.style.fontWeight = document.getElementById('fixed-price-weight').value;
+    op.classList.toggle('hidden', !document.getElementById('show-old-price').checked);
+    op.textContent = formatPrice(89);
+    op.style.fontSize = document.getElementById('old-price-font').value+'px';
+    op.style.color = document.getElementById('old-price-color').value;
+    op.style.fontFamily = document.getElementById('old-price-font-family').value;
+    op.style.fontWeight = document.getElementById('old-price-weight').value;
+    sp.classList.toggle('hidden', !document.getElementById('show-sale-price').checked);
+    sp.textContent = formatPrice(49);
+    sp.style.fontSize = document.getElementById('sale-price-font').value+'px';
+    sp.style.color = document.getElementById('sale-price-color').value;
+    sp.style.fontFamily = document.getElementById('sale-price-font-family').value;
+    sp.style.fontWeight = document.getElementById('sale-price-weight').value;
+  }
+  // ATC
+  const atc = document.getElementById('preview-atc-btn');
+  atc.classList.toggle('hidden', !document.getElementById('show-atc').checked);
+  atc.style.fontSize = document.getElementById('atc-font-size').value+'px';
+  atc.style.textTransform = document.getElementById('atc-transform').value;
+  atc.style.color = document.getElementById('atc-text-color').value;
+  atc.style.backgroundColor = document.getElementById('atc-bg-color').value;
+  atc.style.fontFamily = document.getElementById('atc-font').value;
+  atc.style.fontWeight = document.getElementById('atc-weight').value;
+  atc.style.borderRadius = document.getElementById('atc-radius').value+'px';
+ 
+  updateBadgePositions();
+  updateWishlistPreview();
+  updateQuickViewPreview();
+ 
+  ['title-color','vendor-color','fixed-price-color','old-price-color','sale-price-color',
+   'atc-text-color','atc-bg-color','sale-text-color','sale-bg-color',
+   'soldout-text-color','soldout-bg-color','lowstock-text-color','lowstock-bg-color',
+   'card-bg-color','card-border-color','wishlist-text-color','wishlist-bg-color',
+   'quickview-text-color','quickview-bg-color'].forEach(syncHex);
+}
+// ==================== MODAL WISHLIST (for Quick View) ====================
+function updateModalWishlist() {
+  const show = document.getElementById('show-wishlist').checked;
+  const modalOverlay = document.getElementById('modal-wishlist-image-overlay');
+  if (!show) {
+    modalOverlay.classList.add('hidden');
+    return;
+  }
+  const type = document.getElementById('wishlist-type').value;
+  const fontSize = document.getElementById('wishlist-font-size').value + 'px';
+  const fontFamily = document.getElementById('wishlist-font').value;
+  const fontWeight = document.getElementById('wishlist-weight').value;
+  const textColor = document.getElementById('wishlist-text-color').value;
+  const bgColor = document.getElementById('wishlist-bg-color').value;
+  const transform = document.getElementById('wishlist-transform').value;
+ 
+  let contentHTML = '';
+  if (type === 'heart') {
+    contentHTML = `<i class="fas fa-heart" style="font-size:${fontSize};color:${textColor}"></i>`;
+    modalOverlay.className = 'absolute top-6 right-6 z-30 w-10 h-10 flex items-center justify-center rounded-3xl shadow-md transition-all opacity-0 group-hover:opacity-100';
+  } else {
+    const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
+    contentHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
+    modalOverlay.className = 'absolute top-6 right-6 z-30 px-5 py-2 rounded-3xl shadow-md text-sm transition-all opacity-0 group-hover:opacity-100';
+  }
+  modalOverlay.innerHTML = contentHTML;
+  modalOverlay.style.backgroundColor = bgColor;
+  modalOverlay.classList.remove('hidden');
+}
+// ==================== QUICK VIEW MODAL ====================
+function showQuickViewModal() {
+  const modal = document.getElementById('quickview-modal');
+  modal.style.display = 'flex';
+ 
+  // Copy live preview data into modal
+  document.getElementById('modal-preview-image').src = document.getElementById('preview-image').src;
+  document.getElementById('modal-vendor').innerHTML = document.getElementById('preview-vendor').innerHTML;
+  document.getElementById('modal-title').innerHTML = document.getElementById('preview-title').innerHTML;
+  document.getElementById('modal-rating').innerHTML = document.getElementById('preview-rating').innerHTML;
+  document.getElementById('modal-review-count').innerHTML = document.getElementById('preview-review-count').innerHTML || '';
+  document.getElementById('modal-price-block').innerHTML = document.getElementById('preview-price-block').innerHTML;
+ 
+  const previewAtc = document.getElementById('preview-atc-btn');
+  const modalAtc = document.getElementById('modal-atc-btn');
+  modalAtc.textContent = previewAtc.textContent || 'Add to Cart';
+  modalAtc.style.fontSize = previewAtc.style.fontSize || '15px';
+  modalAtc.style.backgroundColor = previewAtc.style.backgroundColor || '#1f2937';
+  modalAtc.style.color = previewAtc.style.color || '#ffffff';
+  modalAtc.style.fontFamily = previewAtc.style.fontFamily || 'inherit';
+  modalAtc.style.fontWeight = previewAtc.style.fontWeight || '600';
+  modalAtc.style.borderRadius = previewAtc.style.borderRadius || '9999px';
+ 
+  updateModalWishlist();
+}
+function closeQuickView() {
+  document.getElementById('quickview-modal').style.display = 'none';
+}
+// ==================== TOGGLES ====================
+function toggleSaleCustomField() {
+  const isCustom = document.getElementById('sale-style').value === 'text' || document.getElementById('sale-style').value === 'other';
+  document.getElementById('sale-custom-field').classList.toggle('hidden', !isCustom);
+  updateProductPreview();
+}
+function toggleSoldoutCustomField() {
+  const isCustom = document.getElementById('soldout-style').value === 'other';
+  document.getElementById('soldout-custom-field').classList.toggle('hidden', !isCustom);
+  updateProductPreview();
+}
+function toggleWishlistCustomField() {
+  document.getElementById('wishlist-custom-field').classList.toggle('hidden', document.getElementById('wishlist-type').value !== 'custom');
+  updateProductPreview();
+}
+function toggleQuickViewCustomField() {
+  document.getElementById('quickview-custom-field').classList.toggle('hidden', document.getElementById('quickview-type').value !== 'custom');
+  updateProductPreview();
+}
+// ==================== SLIDERS ====================
+function setupSliders() {
+  const sliderMap = {
+    'opt-font-size': 'opt-font-val', 'val-font-size': 'val-font-val', 'btn-font-size': 'btn-font-val',
+    'btn-radius': 'btn-radius-val', 'products-per-page': 'perpage-val', 'title-font-size': 'title-font-val',
+    'vendor-font-size': 'vendor-font-val', 'fixed-price-font': 'fixed-font-val', 'old-price-font': 'old-font-val',
+    'sale-price-font': 'sale-font-val', 'atc-font-size': 'atc-font-val', 'image-radius': 'img-radius-val',
+    'soldout-font-size': 'soldout-font-size-val', 'sale-font-size': 'sale-font-size-val',
+    'lowstock-font-size': 'lowstock-font-size-val', 'card-radius': 'card-radius-val',
+    'wishlist-font-size': 'wishlist-font-size-val',
+    'quickview-font-size': 'quickview-font-size-val'
+  };
+  Object.entries(sliderMap).forEach(([id, valId]) => {
+    const el = document.getElementById(id);
+    if(el) {
+      el.addEventListener('input', () => {
+        const valEl = document.getElementById(valId);
+        if(valEl) valEl.textContent = el.value + 'px';
+        if(['opt','val','btn'].some(p => id.startsWith(p))) updateFilterPreview();
+        else updateProductPreview();
+      });
+    }
+  });
+}
+// ==================== INIT ====================
+function saveSettings() { alert('✓ All changes saved successfully!'); }
+window.onload = () => {
+  initFontSelects();
+  setupSliders();
+  document.querySelectorAll('#filter-tab input, #filter-tab select').forEach(el => {
+    el.addEventListener('input', updateFilterPreview);
+    el.addEventListener('change', updateFilterPreview);
+  });
+  document.querySelectorAll('#grid-tab input, #grid-tab select').forEach(el => {
+    el.addEventListener('input', updateProductPreview);
+    el.addEventListener('change', updateProductPreview);
+  });
+  ['show-fixed-price','show-old-price','show-sale-price'].forEach(id => {
+    document.getElementById(id).addEventListener('change', enforcePriceLogic);
+  });
+  document.getElementById('sale-style').addEventListener('change', toggleSaleCustomField);
+  document.getElementById('soldout-style').addEventListener('change', toggleSoldoutCustomField);
+  document.getElementById('wishlist-type').addEventListener('change', toggleWishlistCustomField);
+  document.getElementById('quickview-type').addEventListener('change', toggleQuickViewCustomField);
+  ['sale-custom-text','soldout-custom-text','wishlist-custom-text','quickview-custom-text'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateProductPreview);
+  });
+ 
+  // Make quick view elements clickable
+  const qvCard = document.getElementById('quickview-in-card');
+  const qvTR = document.getElementById('quickview-image-overlay-tr');
+  const qvTL = document.getElementById('quickview-image-overlay-tl');
+  [qvCard, qvTR, qvTL].forEach(el => {
+    if (el) el.addEventListener('click', showQuickViewModal);
+  });
+ 
+  toggleSaleCustomField(); 
+  toggleSoldoutCustomField(); 
+  toggleWishlistCustomField();
+  toggleQuickViewCustomField();
+  updateFilterPreview(); 
+  updateProductPreview();
+};
 </script>
 </body>
 </html>
