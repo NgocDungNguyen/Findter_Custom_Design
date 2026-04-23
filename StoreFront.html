@@ -58,7 +58,7 @@
       transform: scale(1.05);
     }
     
-    /* Badge base styles */
+    /* Badge base styles - FIXED: Better positioning system */
     .preview-badge {
       padding: 4px 8px;
       font-size: 11px;
@@ -68,11 +68,38 @@
       z-index: 10;
       white-space: nowrap;
       line-height: 1.3;
+      display: inline-block;
     }
-    .badge-zone-tl { top: 8px; left: 8px; }
-    .badge-zone-tr { top: 8px; right: 8px; }
-    .badge-zone-bl { bottom: 8px; left: 8px; }
-    .badge-zone-br { bottom: 8px; right: 8px; }
+    
+    /* Badge zones - ensure proper spacing */
+    .badge-zone-tl { 
+      top: 8px; left: 8px; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .badge-zone-tr { 
+      top: 8px; right: 8px; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .badge-zone-bl { 
+      bottom: 8px; left: 8px; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .badge-zone-br { 
+      bottom: 8px; right: 8px; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
     
     /* Quick view & Wishlist overlay */
     .card-overlay {
@@ -121,11 +148,16 @@
       border-radius: 20px;
       font-size: 13px;
       color: #374151;
+      transition: all 0.15s;
+    }
+    .active-filter-tag:hover {
+      background: #e5e7eb;
     }
     .active-filter-tag button {
       color: #6b7280;
       font-size: 14px;
       line-height: 1;
+      margin-left: 2px;
     }
     .active-filter-tag button:hover { color: #111827; }
     
@@ -157,23 +189,31 @@
       cursor: not-allowed;
     }
 
-    /* Grid wrapper - this gets its bg from settings */
-    #product-grid-wrapper {
+    /* Grid wrapper - NOW COVERS ENTIRE RIGHT SIDE */
+    #main-content-wrapper {
       transition: background-color 0.3s ease;
-      padding: 20px;
-      margin: -20px;
       border-radius: 12px;
+      margin: -24px -32px;
+      padding: 24px 32px;
+    }
+
+    /* Sticky filter support */
+    .sticky-filter-enabled {
+      position: sticky;
+      top: 80px;
     }
 
     /* Sold out overlay */
     .sold-out-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 15;
+      border-radius: inherit;
     }
   </style>
 </head>
@@ -205,7 +245,7 @@
           </button>
           <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all relative">
             <i class="fas fa-shopping-bag text-lg"></i>
-            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+            <span id="cart-count-badge" class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
         </div>
       </div>
@@ -226,7 +266,7 @@
       
       <!-- ============ LEFT SIDEBAR: FILTERS ============ -->
       <aside id="filter-sidebar" class="w-64 flex-shrink-0 hidden lg:block">
-        <div id="filter-panel" class="bg-white rounded-lg border border-gray-200 p-5 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto filter-scroll">
+        <div id="filter-panel" class="bg-white rounded-lg border border-gray-200 p-5 max-h-[calc(100vh-120px)] overflow-y-auto filter-scroll">
           <h2 id="filter-title" class="text-base font-bold text-gray-900 mb-4">Filter by</h2>
           
           <!-- Availability Filter -->
@@ -344,39 +384,41 @@
       <!-- ============ RIGHT SIDE: PRODUCT GRID ============ -->
       <div class="flex-1 min-w-0">
         
-        <!-- Toolbar: Active Filters + Sort -->
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <!-- Active Filters -->
-          <div class="flex flex-wrap items-center gap-2" id="active-filters-area">
-            <span class="text-sm text-gray-600 mr-1">Size:</span>
-            <span class="active-filter-tag">
-              10 <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-            </span>
-            <span class="text-sm text-gray-600 mr-1 ml-2">Tag:</span>
-            <span class="active-filter-tag">
-              adidas <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-            </span>
-            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium ml-2 underline">Clear all</button>
+        <!-- FIX #3: WRAPPER FOR BACKGROUND COLOR - Now covers toolbar + grid + pagination -->
+        <div id="main-content-wrapper" style="background-color: #f3f4f6;">
+          
+          <!-- Toolbar: Active Filters + Sort -->
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6" id="toolbar-area">
+            <!-- Active Filters -->
+            <div class="flex flex-wrap items-center gap-2" id="active-filters-area">
+              <span id="filter-label-size" class="text-sm text-gray-600 mr-1 font-medium">Size:</span>
+              <span class="active-filter-tag" id="active-filter-size-10">
+                10 <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+              </span>
+              <span id="filter-label-tag" class="text-sm text-gray-600 mr-1 ml-2 font-medium">Tag:</span>
+              <span class="active-filter-tag" id="active-filter-tag-adidas">
+                adidas <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+              </span>
+              <button id="clear-all-btn" class="text-sm text-blue-600 hover:text-blue-800 font-medium ml-2 underline">Clear all</button>
+            </div>
+
+            <!-- Sort Dropdown -->
+            <div class="flex items-center gap-3" id="sort-by-area">
+              <label id="sort-label" class="text-sm font-medium text-gray-700 whitespace-nowrap">Sort by</label>
+              <select id="sort-select" class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm bg-white focus:border-blue-500 focus:outline-none cursor-pointer">
+                <option>What's New?</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Best Selling</option>
+                <option>A-Z</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Sort Dropdown -->
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Sort by</label>
-            <select class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm bg-white focus:border-blue-500 focus:outline-none cursor-pointer">
-              <option>What's New?</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Best Selling</option>
-              <option>A-Z</option>
-            </select>
-          </div>
-        </div>
+          <!-- Product Count -->
+          <div id="product-count" class="text-sm text-gray-500 mb-4">9 products</div>
 
-        <!-- Product Count -->
-        <div id="product-count" class="text-sm text-gray-500 mb-4">9 products</div>
-
-        <!-- ==================== PRODUCT GRID WRAPPER (Background Color Applied Here) ==================== -->
-        <div id="product-grid-wrapper" style="background-color: #f3f4f6;">
+          <!-- ==================== PRODUCT GRID ==================== -->
           <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             
             <!-- PRODUCT CARD 1: Sale + Low Stock -->
@@ -757,23 +799,23 @@
             </article>
 
           </div>
-        </div>
 
-        <!-- ==================== PAGINATION ==================== -->
-        <div class="pagination-container flex items-center justify-center gap-2 mt-8 pb-4">
-          <button class="page-btn" disabled><i class="fas fa-chevron-left text-xs"></i></button>
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn"><i class="fas fa-chevron-right text-xs"></i></button>
-        </div>
+          <!-- ==================== PAGINATION ==================== -->
+          <div id="pagination-container" class="pagination-container flex items-center justify-center gap-2 mt-8 pb-2">
+            <button class="page-btn" disabled><i class="fas fa-chevron-left text-xs"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-chevron-right text-xs"></i></button>
+          </div>
 
+        </div><!-- End main-content-wrapper -->
       </div>
     </div>
   </main>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer class="bg-white border-t border-gray-200 mt-12">
+  <footer id="site-footer" class="bg-white border-t border-gray-200 mt-0">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
         <p class="text-sm text-gray-500">&copy; 2024 DUNGNN STORE. All rights reserved.</p>
@@ -970,7 +1012,10 @@
     btnBgColor: '#2563eb',
     btnWeight: '600',
     btnTransform: 'none',
-    btnRadius: '8'
+    btnRadius: '8',
+    
+    // Sticky filter
+    stickyFilter: false
   };
 
   /**
@@ -995,46 +1040,77 @@
 
   /**
    * Master function that applies ALL settings to the DOM
+   * FIX #1: Completely rewritten badge logic to prevent overlapping
+   * FIX #2: Added sticky filter support
+   * FIX #3: Background now covers entire area
+   * FIX #4: Added IDs to all interactive elements
    */
   function applyAllSettings() {
     const c = currentConfig;
     
-    // 1. GRID BACKGROUND COLOR
+    // FIX #3: Background color applies to ENTIRE main content area (toolbar + grid + pagination)
     applyGridBackground(c);
     
-    // 2. FILTER SIDEBAR STYLING
+    // FIX #2: Sticky filter logic
+    applyStickyFilter(c);
+    
+    // Filter Sidebar Styling
     applyFilterSidebar(c);
     
-    // 3. EACH PRODUCT CARD
+    // Each Product Card
     document.querySelectorAll('.product-card').forEach(card => {
       applyCardStyles(card, c);
-      applyBadges(card, c);
+      applyBadges(card, c); // FIX #1: Improved badge positioning
       applyWishlistButton(card, c);
       applyQuickViewButton(card, c);
     });
     
-    // 4. MODAL BUTTONS (inherit from last card's config)
+    // Modal Buttons
     applyModalButtons(c);
+    
+    // Toolbar elements styling (FIX #4)
+    applyToolbarStyles(c);
     
     console.log('✅ All settings applied successfully');
   }
 
   /**
-   * 1. Grid Background
+   * FIX #3: Grid Background - Now covers the whole right side including toolbar
    */
   function applyGridBackground(c) {
-    const wrapper = document.getElementById('product-grid-wrapper');
+    const wrapper = document.getElementById('main-content-wrapper');
     if (wrapper && c.gridBgColor) {
       wrapper.style.backgroundColor = c.gridBgColor;
     }
   }
 
   /**
-   * 2. Filter Sidebar Styling
+   * FIX #2: Sticky Filter - When enabled in index.html, filter sticks on scroll
+   */
+  function applyStickyFilter(c) {
+    const panel = document.getElementById('filter-panel');
+    const sidebar = document.getElementById('filter-sidebar');
+    
+    if (panel) {
+      // Remove existing sticky class first
+      panel.classList.remove('sticky-filter-enabled');
+      
+      // If sticky is enabled in config AND not explicitly set to non-sticky
+      if (c.stickyFilter === true || c.stickyFilter === 'true') {
+        panel.classList.add('sticky-filter-enabled');
+        console.log('📌 Sticky filter enabled');
+      } else {
+        // If not sticky, ensure it doesn't have the class
+        panel.style.position = '';
+      }
+    }
+  }
+
+  /**
+   * Filter Sidebar Styling
    */
   function applyFilterSidebar(c) {
     const panel = document.getElementById('filter-panel');
-    const sidebar = document.getElementById('filter-sidebar');
     
     if (panel && c.filterBarBg) {
       panel.style.backgroundColor = c.filterBarBg;
@@ -1077,7 +1153,57 @@
   }
 
   /**
-   * 3. Individual Card Styles
+   * FIX #4: Toolbar Styles - Labels, sort dropdown, etc.
+   */
+  function applyToolbarStyles(c) {
+    // Filter labels in toolbar
+    const sizeLabel = document.getElementById('filter-label-size');
+    if (sizeLabel && c.valFont) sizeLabel.style.fontFamily = c.valFont;
+    if (sizeLabel && c.valSize) sizeLabel.style.fontSize = c.valSize + 'px';
+    if (sizeLabel && c.valColor) sizeLabel.style.color = c.valColor;
+    
+    const tagLabel = document.getElementById('filter-label-tag');
+    if (tagLabel && c.valFont) tagLabel.style.fontFamily = c.valFont;
+    if (tagLabel && c.valSize) tagLabel.style.fontSize = c.valSize + 'px';
+    if (tagLabel && c.valColor) tagLabel.style.color = c.valColor;
+    
+    // Clear all button
+    const clearBtn = document.getElementById('clear-all-btn');
+    if (clearBtn) {
+      if (c.valFont) clearBtn.style.fontFamily = c.valFont;
+      if (c.valSize) clearBtn.style.fontSize = c.valSize + 'px';
+      if (c.valColor) clearBtn.style.color = c.valColor;
+    }
+    
+    // Sort label
+    const sortLabel = document.getElementById('sort-label');
+    if (sortLabel && c.valFont) sortLabel.style.fontFamily = c.valFont;
+    if (sortLabel && c.valSize) sortLabel.style.fontSize = c.valSize + 'px';
+    if (sortLabel && c.valColor) sortLabel.style.color = c.valColor;
+    
+    // Sort select
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+      if (c.valFont) sortSelect.style.fontFamily = c.valFont;
+      if (c.valSize) sortSelect.style.fontSize = c.valSize + 'px';
+      if (c.valColor) sortSelect.style.color = c.valColor;
+    }
+    
+    // Product count
+    const prodCount = document.getElementById('product-count');
+    if (prodCount && c.valFont) prodCount.style.fontFamily = c.valFont;
+    if (prodCount && c.valSize) prodCount.style.fontSize = c.valSize + 'px';
+    if (prodCount && c.valColor) prodCount.style.color = c.valColor;
+    
+    // Active filter tags
+    document.querySelectorAll('.active-filter-tag').forEach(tag => {
+      if (c.valFont) tag.style.fontFamily = c.valFont;
+      if (c.valSize) tag.style.fontSize = c.valSize + 'px';
+    });
+  }
+
+  /**
+   * Individual Card Styles
    */
   function applyCardStyles(card, c) {
     // Card container
@@ -1125,9 +1251,6 @@
     const ratingContainer = card.querySelector('.rating-container');
     if (ratingContainer) {
       ratingContainer.style.display = c.showRating ? '' : 'none';
-      if (c.contentAlign === 'center') ratingContainer.style.justifyContent = 'center';
-      else if (c.contentAlign === 'right') ratingContainer.style.justifyContent = 'flex-end';
-      else ratingContainer.style.justifyContent = 'flex-start';
       
       // Review count
       const reviewCount = card.querySelector('.review-count');
@@ -1147,10 +1270,6 @@
       priceBlock.style.display = shouldHide ? 'none' : '';
       
       if (!shouldHide) {
-        if (c.contentAlign === 'center') priceBlock.style.justifyContent = 'center';
-        else if (c.contentAlign === 'right') priceBlock.style.justifyContent = 'flex-end';
-        else priceBlock.style.justifyContent = 'flex-start';
-        
         // Fixed / Regular price
         const regularPrice = card.querySelector('.regular-price');
         if (regularPrice) {
@@ -1186,7 +1305,6 @@
     // ADD TO CART BUTTON
     const atcBtn = card.querySelector('.atc-btn');
     if (atcBtn) {
-      // Hide if sold out? No, keep but disable
       atcBtn.style.display = c.showAtc ? '' : 'none';
       if (c.atcFont) atcBtn.style.fontFamily = c.atcFont;
       if (c.atcFontSize) atcBtn.style.fontSize = c.atcFontSize + 'px';
@@ -1213,29 +1331,37 @@
   }
 
   /**
-   * 4. Badge System
+   * FIX #1: Badge System - Improved to handle multiple badges without overlapping
+   * Uses flexbox columns in each zone for proper stacking
    */
   function applyBadges(card, c) {
-    const containerId = 'badges-container-' + card.querySelector('[id^="badges-container"]')?.id?.split('-').pop() || Math.random().toString(36).substr(2, 9);
     let container = card.querySelector('[id^="badges-container"]');
     if (!container) return;
     
     // Clear existing dynamic badges
     container.innerHTML = '';
+    container.className = 'absolute inset-0 pointer-events-none z-20';
     
     const hasSale = card.dataset.sale || card.dataset.oldPrice;
     const isLowStock = card.dataset.stock === 'low';
     const isSoldOut = card.dataset.soldout === 'true';
+    
+    // Create zone containers for proper stacking
+    const zones = {};
+    ['tl', 'tr', 'bl', 'br'].forEach(pos => {
+      zones[pos] = document.createElement('div');
+      zones[pos].className = `badge-zone-${pos}`;
+      container.appendChild(zones[pos]);
+    });
     
     // SALE BADGE
     if (c.showSaleBadge && hasSale) {
       const badge = document.createElement('span');
       badge.className = 'preview-badge';
       
-      // Determine text
       let text = c.saleBadgeText || 'SALE';
       if (card.dataset.sale && !card.dataset.sale.includes('%') && !card.dataset.sale.includes('$')) {
-        text = card.dataset.sale; // Use custom like "HOT", "NEW"
+        text = card.dataset.sale;
       } else if (card.dataset.sale && card.dataset.sale.includes('%')) {
         text = card.dataset.sale;
       }
@@ -1247,15 +1373,10 @@
       badge.style.fontWeight = c.saleBadgeWeight || '400';
       if (c.saleBadgeFont) badge.style.fontFamily = c.saleBadgeFont;
       
-      // Position
-      const pos = c.saleBadgePos || 'top-left';
-      badge.classList.add('badge-zone-' + pos.replace('-', '').replace(' ', ''));
-      if (pos === 'top-right') badge.classList.add('badge-zone-tr');
-      else if (pos === 'bottom-left') badge.classList.add('badge-zone-bl');
-      else if (pos === 'bottom-right') badge.classList.add('badge-zone-br');
-      else badge.classList.add('badge-zone-tl');
-      
-      container.appendChild(badge);
+      const pos = (c.saleBadgePos || 'top-left').replace('-', '');
+      const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
+      const targetZone = zones[zoneMap[pos]] || zones['tl'];
+      targetZone.appendChild(badge);
     }
     
     // SOLD OUT BADGE
@@ -1268,13 +1389,10 @@
       badge.style.fontSize = (c.soldOutFontSize || '11') + 'px';
       badge.style.fontWeight = c.soldOutWeight || '400';
       
-      const pos = c.soldOutPos || 'top-left';
-      if (pos === 'top-right') badge.className += ' badge-zone-tr';
-      else if (pos === 'bottom-left') badge.className += ' badge-zone-bl';
-      else if (pos === 'bottom-right') badge.className += ' badge-zone-br';
-      else badge.className += ' badge-zone-tl';
-      
-      container.appendChild(badge);
+      const pos = (c.soldOutPos || 'top-left').replace('-', '');
+      const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
+      const targetZone = zones[zoneMap[pos]] || zones['tl'];
+      targetZone.appendChild(badge);
     }
     
     // LOW STOCK BADGE
@@ -1288,22 +1406,19 @@
       badge.style.fontSize = (c.lowStockFontSize || '10') + 'px';
       badge.style.fontWeight = c.lowStockWeight || '400';
       
-      const pos = c.lowStockPos || 'top-right';
-      if (pos === 'top-left') badge.className += ' badge-zone-tl';
-      else if (pos === 'bottom-left') badge.className += ' badge-zone-bl';
-      else if (pos === 'bottom-right') badge.className += ' badge-zone-br';
-      else badge.className += ' badge-zone-tr';
-      
-      container.appendChild(badge);
+      const pos = (c.lowStockPos || 'top-right').replace('-', '');
+      const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
+      const targetZone = zones[zoneMap[pos]] || zones['tr'];
+      targetZone.appendChild(badge);
     }
   }
 
   /**
-   * 5. Wishlist Button Positioning & Style
+   * Wishlist Button Positioning & Style
    */
   function applyWishlistButton(card, c) {
-    const wishBtn = card.querySelector('.wish-btn'); // Image overlay button
-    const wishInline = card.querySelector('.wish-inline'); // In-card button
+    const wishBtn = card.querySelector('.wish-btn');
+    const wishInline = card.querySelector('.wish-inline');
     
     if (!c.showWishlist) {
       if (wishBtn) wishBtn.style.display = 'none';
@@ -1313,17 +1428,15 @@
     
     const pos = c.wishlistPosition || 'in-card';
     
-    // Image overlay wishlist (for image-top positions)
     if (wishBtn) {
       if (pos === 'in-card') {
-        wishBtn.style.display = 'none'; // Hidden, inline shows instead
+        wishBtn.style.display = 'none';
       } else {
         wishBtn.style.display = '';
         wishBtn.style.backgroundColor = c.wishlistBg || '#fef2f2';
         wishBtn.style.color = c.wishlistColor || '#ef4444';
         
-        // Reset position classes
-        wishBtn.className = wishBtn.className.replace(/absolute.*?z-\d+/g, '');
+        wishBtn.className = wishBtn.className.replace(/absolute.*?z-\d+/g, '').trim();
         wishBtn.classList.add('card-overlay', 'absolute', 'z-30', 'pointer-events-auto', 
           'w-9', 'h-9', 'rounded-full', 'flex', 'items-center', 'justify-content', 
           'shadow', 'transition-colors');
@@ -1334,7 +1447,6 @@
           wishBtn.classList.add('top-3', 'left-3');
         }
         
-        // Heart icon vs text
         if (c.wishlistType !== 'heart') {
           const customText = c.wishlistType === 'custom' ? 'Save' : 'Wishlist';
           wishBtn.innerHTML = `<span style="font-size:${c.wishlistFontSize||'14'}px;font-family:${c.wishlistFont||'inherit'};font-weight:${c.wishlistWeight||'400'}">${customText}</span>`;
@@ -1348,10 +1460,10 @@
   }
 
   /**
-   * 6. Quick View Button Positioning & Style
+   * Quick View Button Positioning & Style
    */
   function applyQuickViewButton(card, c) {
-    const qvBtn = card.querySelector('.qv-btn'); // Image overlay
+    const qvBtn = card.querySelector('.qv-btn');
     
     if (!c.showQuickView) {
       if (qvBtn) qvBtn.style.display = 'none';
@@ -1365,21 +1477,19 @@
       qvBtn.style.backgroundColor = c.quickViewBg || '#1f2937';
       qvBtn.style.color = c.quickViewColor || '#ffffff';
       
-      // Reset classes
-      qvBtn.className = qvBtn.className.replace(/absolute.*?z-\d+/g, '');
+      qvBtn.className = qvBtn.className.replace(/absolute.*?z-\d+/g, '').trim();
       qvBtn.classList.add('card-overlay', 'absolute', 'z-30', 'pointer-events-auto', 
         'rounded-full', 'flex', 'items-center', 'justify-content', 
         'shadow-lg', 'hover:opacity-90', 'transition-colors');
       
       if (pos === 'in-card') {
-        qvBtn.style.display = 'none'; // Hidden, inline shows instead
+        qvBtn.style.display = 'none';
       } else if (pos === 'image-top-right') {
         qvBtn.classList.add('top-3', 'right-3', 'w-9', 'h-9');
       } else if (pos === 'image-top-left') {
         qvBtn.classList.add('top-3', 'left-3', 'w-9', 'h-9');
       }
       
-      // Eye icon vs custom text
       if (c.quickViewType !== 'eye') {
         const displayText = c.quickViewType === 'custom' ? 'Quick View' : 'Quick View';
         qvBtn.innerHTML = `<span style="font-size:${c.quickViewFontSize||'13'}px;font-family:${c.quickViewFont||'inherit'};font-weight:${c.quickViewWeight||'400'};text-transform:${c.quickViewTransform||'none'}">${displayText}</span>`;
@@ -1393,7 +1503,7 @@
   }
 
   /**
-   * 7. Modal Buttons (use same config as cards)
+   * Modal Buttons
    */
   function applyModalButtons(c) {
     const modalAtc = document.getElementById('modal-atc-btn');
@@ -1416,7 +1526,6 @@
   // EVENT LISTENERS FOR REAL-TIME SYNC
   // ====================================================================
   
-  // Listen for localStorage changes from other tabs/windows (index.html)
   window.addEventListener('storage', (event) => {
     if (event.key === CONFIG_KEY) {
       console.log('🔄 Detected external config change, reloading...');
@@ -1424,7 +1533,6 @@
     }
   });
   
-  // Also listen for same-window custom event (backup method)
   window.addEventListener('configSaved', () => {
     console.log('📡 Received configSaved event');
     loadConfig();
@@ -1482,11 +1590,17 @@
     if (e.key === 'Escape') closeQuickView();
   });
 
+  // Clear all functionality
+  document.getElementById('clear-all-btn')?.addEventListener('click', function() {
+    document.getElementById('active-filters-area').querySelectorAll('.active-filter-tag').forEach(tag => {
+      tag.remove();
+    });
+  });
+
   // ====================================================================
   // INITIALIZATION
   // ====================================================================
   
-  // Load when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadConfig);
   } else {
@@ -1494,7 +1608,6 @@
   }
   
   console.log('🏪 StoreFront.html loaded and connected to index.html');
-  console.log('💡 Tip: Open DevTools Console (F12) to see sync logs');
 
   </script>
 </body>
