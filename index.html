@@ -122,6 +122,13 @@
     /* Extra spacing for all sections */
     #grid-tab .config-box { margin-bottom: 1.25rem; }
     #filter-tab .config-box { margin-bottom: 1.25rem; }
+
+    /* Preview container wrapper for grid background */
+    .preview-grid-wrapper {
+      padding: 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
   </style>
 </head>
 <body class="bg-gray-100 antialiased">
@@ -447,10 +454,15 @@
         <!-- Desktop Grid -->
         <div class="config-box">
           <h2 class="section-title mb-2">Product Grid (Desktop)</h2>
-          <div class="grid grid-cols-3 gap-x-5 gap-y-1.5">
-            <div class="slider-row"><label class="min-w-[95px]">Products/Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
-            <div class="ctrl-row"><label class="min-w-[95px]">Items/Row</label><select id="items-row" class="micro-select w-20"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
-            <div class="ctrl-row"><label class="min-w-[95px]">Pagination</label><select id="pagination" class="micro-select w-36"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
+          <!-- Row 1: Products/Page + Items/Row -->
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5 mb-3">
+            <div class="slider-row"><label class="min-w-[110px]">Products/Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
+            <div class="ctrl-row"><label class="min-w-[110px]">Items/Row</label><select id="items-row" class="micro-select w-24"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
+          </div>
+          <!-- Row 2: Background Color + Pagination -->
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
+            <div class="ctrl-row"><label class="min-w-[110px]">Background</label><div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div></div>
+            <div class="ctrl-row"><label class="min-w-[110px]">Pagination</label><select id="pagination" class="micro-select w-40"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
           </div>
         </div>
        
@@ -975,45 +987,48 @@
       <div class="w-1/3">
         <div class="preview-sticky config-box shadow-md">
           <h3 class="section-title mb-2 pb-1.5 border-b border-gray-100">Preview Card</h3>
-          <div id="product-preview" class="border border-gray-200 rounded-lg overflow-hidden group relative transition-all duration-300" style="background:#ffffff;">
-           
-            <div id="badge-zones-container" class="absolute inset-0 pointer-events-none z-20">
-              <div id="zone-tl" class="badge-zone tl"></div>
-              <div id="zone-tr" class="badge-zone tr"></div>
-              <div id="zone-bl" class="badge-zone bl"></div>
-              <div id="zone-br" class="badge-zone br"></div>
-            </div>
-            <div class="relative">
-              <div class="aspect-square bg-gray-100 relative overflow-hidden" id="preview-image-container">
-                <img src="https://picsum.photos/id/1015/600/600" id="preview-image" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                <div id="wishlist-image-overlay" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                <div id="wishlist-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                <!-- Quick View image overlays -->
-                <div id="quickview-image-overlay-tr" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
-                <div id="quickview-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
-              </div>
-            </div>
-           
-            <div id="preview-content" class="p-3">
-              <!-- Title first, then vendor -->
-              <div id="preview-title" class="font-semibold text-[13px] leading-snug mb-1 line-clamp-2">Essential Oversized T-Shirt</div>
-              <div id="preview-vendor" class="text-[11px] mb-0.5 truncate">Nike Sportswear</div>
+          <!-- Grid Background Wrapper -->
+          <div id="preview-grid-wrapper" class="preview-grid-wrapper" style="background-color: #f3f4f6;">
+            <div id="product-preview" class="border border-gray-200 rounded-lg overflow-hidden group relative transition-all duration-300" style="background:#ffffff;">
              
-              <div id="preview-rating-container" class="mb-1.5 flex flex-col">
-                <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆</div>
-                <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
+              <div id="badge-zones-container" class="absolute inset-0 pointer-events-none z-20">
+                <div id="zone-tl" class="badge-zone tl"></div>
+                <div id="zone-tr" class="badge-zone tr"></div>
+                <div id="zone-bl" class="badge-zone bl"></div>
+                <div id="zone-br" class="badge-zone br"></div>
+              </div>
+              <div class="relative">
+                <div class="aspect-square bg-gray-100 relative overflow-hidden" id="preview-image-container">
+                  <img src="https://picsum.photos/id/1015/600/600" id="preview-image" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                  <div id="wishlist-image-overlay" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                  <div id="wishlist-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                  <!-- Quick View image overlays -->
+                  <div id="quickview-image-overlay-tr" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
+                  <div id="quickview-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
+                </div>
               </div>
              
-              <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-2">
-                <span id="preview-fixed-price" class="font-medium text-[13px]">$59.00</span>
-                <span id="preview-old-price" class="line-through text-[11px] text-gray-400">$89.00</span>
-                <span id="preview-sale-price" class="font-bold text-[13px] text-red-600">$49.00</span>
-              </div>
-             
-              <div class="flex gap-1.5">
-                <button id="preview-atc-btn" class="flex-1 py-1.8 rounded-md text-[11px] font-semibold uppercase tracking-wide transition-all">Add to Cart</button>
-                <div id="wishlist-in-card" class="flex items-center justify-center px-2.5 py-1.8 rounded-md border border-red-200 bg-red-50 text-red-500 cursor-pointer hover:bg-red-100 transition-colors"></div>
-                <div id="quickview-in-card" class="hidden flex items-center justify-center px-2.5 py-1.8 rounded-md border transition-all cursor-pointer"></div>
+              <div id="preview-content" class="p-3">
+                <!-- Title first, then vendor -->
+                <div id="preview-title" class="font-semibold text-[13px] leading-snug mb-1 line-clamp-2">Essential Oversized T-Shirt</div>
+                <div id="preview-vendor" class="text-[11px] mb-0.5 truncate">Nike Sportswear</div>
+               
+                <div id="preview-rating-container" class="mb-1.5 flex flex-col">
+                  <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆</div>
+                  <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
+                </div>
+               
+                <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-2">
+                  <span id="preview-fixed-price" class="font-medium text-[13px]">$59.00</span>
+                  <span id="preview-old-price" class="line-through text-[11px] text-gray-400">$89.00</span>
+                  <span id="preview-sale-price" class="font-bold text-[13px] text-red-600">$49.00</span>
+                </div>
+               
+                <div class="flex gap-1.5">
+                  <button id="preview-atc-btn" class="flex-1 py-1.8 rounded-md text-[11px] font-semibold uppercase tracking-wide transition-all">Add to Cart</button>
+                  <div id="wishlist-in-card" class="flex items-center justify-center px-2.5 py-1.8 rounded-md border border-red-200 bg-red-50 text-red-500 cursor-pointer hover:bg-red-100 transition-colors"></div>
+                  <div id="quickview-in-card" class="hidden flex items-center justify-center px-2.5 py-1.8 rounded-md border transition-all cursor-pointer"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1129,7 +1144,7 @@ function updateFilterPreview() {
     el.style.fontWeight = document.getElementById('val-weight').value;
   });
   const btn = document.getElementById('preview-btn');
-  btn.textContent = document.getElementById('btn-text').value;
+  btn.textContent = document.getElementById('btn-text').value || 'Apply Filters';
   btn.style.fontSize = document.getElementById('btn-font-size').value+'px';
   btn.style.borderRadius = document.getElementById('btn-radius').value+'px';
   btn.style.textTransform = document.getElementById('btn-transform').value;
@@ -1327,6 +1342,11 @@ function updateProductPreview() {
   const card = document.getElementById('product-preview');
   const align = document.getElementById('content-align').value;
   const content = document.getElementById('preview-content');
+  
+  // Update Grid Background Color (surrounding the card)
+  const gridWrapper = document.getElementById('preview-grid-wrapper');
+  gridWrapper.style.backgroundColor = document.getElementById('grid-bg-color').value;
+  
   card.style.backgroundColor = document.getElementById('card-bg-color').value;
   card.style.borderColor = document.getElementById('card-border-color').value;
   card.style.borderRadius = document.getElementById('card-radius').value+'px';
@@ -1409,7 +1429,7 @@ function updateProductPreview() {
    'atc-text-color','atc-bg-color','sale-text-color','sale-bg-color',
    'soldout-text-color','soldout-bg-color','lowstock-text-color','lowstock-bg-color',
    'card-bg-color','card-border-color','wishlist-text-color','wishlist-bg-color',
-   'quickview-text-color','quickview-bg-color'].forEach(syncHex);
+   'quickview-text-color','quickview-bg-color','grid-bg-color'].forEach(syncHex);
 }
 // ==================== MODAL WISHLIST (for Quick View) ====================
 function updateModalWishlist() {
