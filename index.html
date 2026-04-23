@@ -67,7 +67,7 @@
     }
    
     .section-title { font-size: 0.88rem; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
-    
+   
     .font-select-wrap {
       display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem;
     }
@@ -83,78 +83,7 @@
       background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;
       margin-bottom: 1rem;
     }
-    
-    /* Collapsible Section Styles */
-    .collapsible-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.75rem 0; margin: -0.75rem 0 1rem 0;
-      cursor: pointer; user-select: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s;
-    }
-    .collapsible-header:hover { border-bottom-color: #e5e7eb; }
-    .collapsible-icon {
-      transition: transform 0.3s ease;
-      font-size: 12px; color: #9ca3af;
-    }
-    .collapsible-content {
-      max-height: 2000px; overflow: hidden;
-      transition: max-height 0.4s ease-out, opacity 0.2s ease;
-      opacity: 1;
-    }
-    .collapsed .collapsible-content {
-      max-height: 0; overflow: hidden;
-      opacity: 0;
-      margin-top: 0 !important; padding-top: 0 !important;
-    }
-    .collapsed .collapsible-icon { transform: rotate(-90deg); }
-    
-    /* Group container for visual separation */
-    .settings-group {
-      background: linear-gradient(to bottom, #f9fafb, #ffffff);
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
-    .group-title-bar {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.5rem 0.75rem;
-      background: #f3f4f6;
-      border-radius: 6px;
-      margin: -1.25rem -1.25rem 1rem -1.25rem;
-      margin-bottom: 1rem;
-    }
-    .group-title-text {
-      font-size: 0.78rem; font-weight: 700; color: #374151;
-      letter-spacing: 0.02em; text-transform: uppercase;
-    }
-    .group-divider {
-      height: 1px; background: #e5e7eb; margin: 1rem 0;
-    }
-   
-    .preview-sticky { 
-      position: fixed; 
-      top: 80px; 
-      right: 24px; 
-      width: 320px; 
-      z-index: 100;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-      border-radius: 12px;
-      overflow-y: auto;
-      max-height: calc(100vh - 100px);
-    }
-    .preview-left-sticky {
-      position: fixed;
-      top: 80px;
-      left: 24px;
-      width: 340px;
-      z-index: 100;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-      border-radius: 12px;
-      overflow-y: auto;
-      max-height: calc(100vh - 100px);
-    }
+    .preview-sticky { position: sticky; top: 16px; }
    
     .price-subsection {
       background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.7rem; margin-top: 0.55rem;
@@ -190,63 +119,238 @@
       padding: 0 5px; border-radius: 10px; margin-left: auto; min-width: 18px; text-align: center;
     }
 
-    /* Extra spacing */
+    /* Extra spacing for all sections */
     #grid-tab .config-box { margin-bottom: 1.25rem; }
     #filter-tab .config-box { margin-bottom: 1.25rem; }
+
+    /* Preview container wrapper for grid background */
+    .preview-grid-wrapper {
+      padding: 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Sync status indicator */
+    .sync-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body class="bg-gray-100 antialiased">
 <div class="max-w-7xl mx-auto my-5 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-  
   <!-- Header -->
   <div class="flex justify-between items-center px-8 py-3 border-b border-gray-200 bg-gray-50/60">
-    <h1 class="text-lg font-bold text-gray-900 tracking-tight">Custom Design</h1>
+    <div class="flex items-center gap-3">
+      <h1 class="text-lg font-bold text-gray-900 tracking-tight">Custom Design</h1>
+      <div class="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+        <div class="sync-dot"></div>
+        <span>Live Sync Active</span>
+      </div>
+    </div>
     <div class="flex gap-1 bg-gray-200/80 p-1 rounded-md">
       <button onclick="switchTab(0)" id="tab-filter" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all tab-active">Filter Design</button>
       <button onclick="switchTab(1)" id="tab-grid" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all text-gray-600 hover:text-gray-900">Product Grid & Card</button>
     </div>
   </div>
-
   <!-- ==================== FILTER DESIGN TAB ==================== -->
   <div id="filter-tab" class="tab-content">
     <div class="flex gap-5 p-5 bg-gray-50/50">
-      
-      <!-- LEFT: Settings Panel -->
-      <div class="w-[65%] space-y-4 overflow-y-auto" style="max-height: calc(100vh - 120px);">
-        
-        <!-- GROUP 1: Filter Layout -->
-        <div class="settings-group">
-          <div class="group-title-bar">
-            <span class="group-title-text"><i class="fas fa-th-large mr-2 text-blue-600"></i>Filter Layout</span>
+      <div class="w-2/3 space-y-4">
+        <!-- Filter Layout -->
+        <div class="config-box">
+          <h2 class="section-title mb-1">Filter Layout</h2>
+          <p class="text-[11px] text-gray-500 mb-2">Choose your preferred filter layout style</p>
+          <div class="grid grid-cols-4 gap-2.5">
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Vertical</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-14 bg-blue-200/70 rounded"></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Mobile)</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-4 bg-blue-200/70 rounded"></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card selected rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" checked class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Desktop)</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-6 bg-blue-200/70 rounded"></div></div>
+            </div>
+            <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
+              <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Horizontal</span></div>
+              <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex flex-col"><div class="flex gap-0.5"><div class="flex-1 h-4 bg-blue-200/70 rounded"></div></div></div>
+            </div>
           </div>
-          <div class="config-box">
-            <h2 class="section-title mb-2">Layout Style</h2>
-            <p class="text-[11px] text-gray-500 mb-3">Choose your preferred filter layout style</p>
-            <div class="grid grid-cols-4 gap-2.5">
-              <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
-                <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Vertical</span></div>
-                <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-14 bg-blue-200/70 rounded"></div></div>
+        </div>
+        <!-- Filter Bar -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Filter Bar</h2>
+          <div class="space-y-1.5">
+            <div class="ctrl-row mb-0">
+              <label>Background</label>
+              <div class="color-picker-compact">
+                <input type="color" id="filter-bar-bg" value="#ffffff">
+                <input type="text" id="filter-bar-bg-hex" value="#ffffff" readonly>
               </div>
-              <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
-                <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Mobile)</span></div>
-                <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-4 bg-blue-200/70 rounded"></div></div>
+            </div>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer mt-0.5">
+              <input type="checkbox" id="sticky-filter" class="accent-blue-600 w-3.5 h-3.5"> Sticky Filter (scrolls with page)
+            </label>
+          </div>
+        </div>
+        <!-- Filter Option Label -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Option Label</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="opt-font" class="font-select"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="opt-font-size" min="10" max="22" value="14" class="flex-1 max-w-[160px]">
+              <span id="opt-font-val" class="slider-val">14px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="opt-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="opt-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="opt-color" value="#111827">
+                <input type="text" id="opt-color-hex" value="#111827" readonly>
               </div>
-              <div onclick="selectLayout(this)" class="option-card selected rounded-lg p-2.5 bg-white border border-gray-200">
-                <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" checked class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium leading-tight">Off-Canvas<br>(Desktop)</span></div>
-                <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex"><div class="w-6 bg-blue-200/70 rounded"></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Filter Value -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Value</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="val-font" class="font-select"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="val-font-size" min="10" max="20" value="13" class="flex-1 max-w-[160px]">
+              <span id="val-font-val" class="slider-val">13px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="val-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="val-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="val-color" value="#4b5563">
+                <input type="text" id="val-color-hex" value="#4b5563" readonly>
               </div>
-              <div onclick="selectLayout(this)" class="option-card rounded-lg p-2.5 bg-white border border-gray-200">
-                <div class="flex items-center gap-1.5 mb-1.5"><input type="radio" name="desktop" class="w-3 h-3 accent-blue-600"><span class="text-[11px] font-medium">Horizontal</span></div>
-                <div class="bg-blue-50 border border-blue-100 rounded-md p-2 h-24 flex flex-col"><div class="flex gap-0.5"><div class="flex-1 h-4 bg-blue-200/70 rounded"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Filter Button -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Button</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font Family</label>
+            <select id="btn-font" class="font-select" style="min-width:165px; max-width:165px;"></select>
+          </div>
+         
+          <div class="space-y-0">
+            <div class="slider-row">
+              <label>Size</label>
+              <input type="range" id="btn-font-size" min="10" max="20" value="13" class="flex-1 max-w-[160px]">
+              <span id="btn-font-val" class="slider-val">13px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Weight</label>
+              <select id="btn-weight" class="micro-select w-28">
+                <option value="300">Light</option>
+                <option value="400" selected>Regular</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Radius</label>
+              <input type="range" id="btn-radius" min="0" max="50" value="8" class="flex-1 max-w-[120px]">
+              <span id="btn-radius-val" class="slider-val">8px</span>
+            </div>
+            <div class="ctrl-row">
+              <label>Transform</label>
+              <select id="btn-transform" class="micro-select w-32">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+              </select>
+            </div>
+            <div class="ctrl-row">
+              <label>Text Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="btn-text-color" value="#ffffff">
+                <input type="text" id="btn-text-color-hex" value="#ffffff" readonly>
+              </div>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Background</label>
+              <div class="color-picker-compact">
+                <input type="color" id="btn-bg-color" value="#2563eb">
+                <input type="text" id="btn-bg-color-hex" value="#2563eb" readonly>
+              </div>
+            </div>
+           
+            <div class="border-t border-gray-200 pt-2 mt-2">
+              <p class="text-[11px] font-semibold text-gray-700 mb-1.5">Interaction</p>
+              <div class="space-y-1 pl-0.5">
+                <label class="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer">
+                  <input type="radio" name="filterBehavior" value="auto" class="accent-blue-600 w-3 h-3"> Auto-filter (real-time)
+                </label>
+                <label class="flex items-center gap-1.5 text-[12px] text-gray-600 cursor-pointer">
+                  <input type="radio" name="filterBehavior" value="manual" checked class="accent-blue-600 w-3 h-3"> Manual filter (click apply)
+                </label>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- RIGHT: Sticky Preview -->
-      <div class="preview-left-sticky">
-        <div class="config-box shadow-md">
+      <!-- Right Preview -->
+      <div class="w-1/3">
+        <div class="preview-sticky config-box shadow-md">
           <h3 class="section-title mb-2 pb-1.5 border-b border-gray-100">Live Preview</h3>
           <div id="filter-preview-panel" class="border border-gray-200 rounded-lg p-3.5 min-h-[450px] flex flex-col overflow-auto" style="background:#ffffff;">
             <div class="text-blue-600 text-[11px] font-bold mb-2.5 tracking-wide uppercase">Filters</div>
@@ -266,12 +370,12 @@
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer group">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-3" class="text-[13px] flex-1">Jackets</span>
+                  <span class="text-[13px] flex-1">Jackets</span>
                   <span class="count-badge">8</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer group">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-4" class="text-[13px] flex-1">Pants</span>
+                  <span class="text-[13px] flex-1">Pants</span>
                   <span class="count-badge">31</span>
                 </label>
               </div>
@@ -282,22 +386,22 @@
               <div class="space-y-1.2">
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-5" class="text-[13px] flex-1">$0 — $50</span>
+                  <span id="preview-val-4" class="text-[13px] flex-1">$0 — $50</span>
                   <span class="count-badge">45</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-6" class="text-[13px] flex-1">$50 — $150</span>
+                  <span id="preview-val-5" class="text-[13px] flex-1">$50 — $150</span>
                   <span class="count-badge">67</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-7" class="text-[13px] flex-1">$150 — $300</span>
+                  <span class="text-[13px] flex-1">$150 — $300</span>
                   <span class="count-badge">23</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-8" class="text-[13px] flex-1">$300+</span>
+                  <span class="text-[13px] flex-1">$300+</span>
                   <span class="count-badge">11</span>
                 </label>
               </div>
@@ -307,24 +411,44 @@
               <div id="preview-opt-label-3" class="text-[13px] font-semibold mb-1.5">Color</div>
               <div class="space-y-1.2">
                 <label class="flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-9" class="text-[13px] flex-1">Black</span>
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-6" class="text-[13px] flex-1">Black</span>
                   <span class="count-badge">89</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-10" class="text-[13px] flex-1">White</span>
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span id="preview-val-7" class="text-[13px] flex-1">White</span>
                   <span class="count-badge">56</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-11" class="text-[13px] flex-1">Navy</span>
+                  <span class="text-[13px] flex-1">Navy</span>
                   <span class="count-badge">34</span>
                 </label>
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                  <span id="preview-val-12" class="text-[13px] flex-1">Red</span>
+                  <span class="text-[13px] flex-1">Red</span>
                   <span class="count-badge">19</span>
+                </label>
+              </div>
+            </div>
+            <div class="mb-3.5">
+              <div class="text-[13px] font-semibold mb-1.5">Brand</div>
+              <div class="space-y-1.2">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Nike</span>
+                  <span class="count-badge">42</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Adidas</span>
+                  <span class="count-badge">38</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                  <span class="text-[13px] flex-1">Puma</span>
+                  <span class="count-badge">27</span>
                 </label>
               </div>
             </div>
@@ -338,667 +462,551 @@
       </div>
     </div>
   </div>
-
   <!-- ==================== PRODUCT GRID & CARD TAB ==================== -->
   <div id="grid-tab" class="tab-content hidden">
     <div class="flex gap-5 p-5 bg-gray-50/50">
-      
-      <!-- LEFT: Settings Panel (Scrollable) -->
-      <div class="w-[65%] space-y-3 overflow-y-auto pr-2" style="max-height: calc(100vh - 100px);">
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: PRODUCT GRID (Collapsible) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="collapsible-header" onclick="toggleCollapse(this)">
-            <span class="group-title-text"><i class="fas fa-th mr-2 text-indigo-500"></i>Product Grid</span>
-            <i class="fas fa-chevron-down collapsible-icon"></i>
+      <div class="w-2/3 space-y-3.5">
+       
+        <!-- Desktop Grid -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Grid (Desktop)</h2>
+          <!-- Row 1: Products/Page + Items/Row -->
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5 mb-3">
+            <div class="slider-row"><label class="min-w-[110px]">Products/Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
+            <div class="ctrl-row"><label class="min-w-[110px]">Items/Row</label><select id="items-row" class="micro-select w-24"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
           </div>
-          
-          <div class="collapsible-content">
-            <div class="grid grid-cols-2 gap-x-5 gap-y-1.5 mb-3">
-              <div class="slider-row"><label class="min-w-[110px]">Products/Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
-              <div class="ctrl-row"><label class="min-w-[110px]">Items/Row</label><select id="items-row" class="micro-select w-24"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
-              <div class="ctrl-row"><label class="min-w-[110px]">Background</label><div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div></div>
-              <div class="ctrl-row"><label class="min-w-[110px]">Pagination</label><select id="pagination" class="micro-select w-40"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
-            </div>
-            
-            <!-- Mobile Grid Sub-section -->
-            <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <p class="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wider">Mobile Grid</p>
-              <p class="text-[11px] text-gray-400 leading-relaxed">Fixed at 2 items per row. Pagination not available on mobile.</p>
-            </div>
+          <!-- Row 2: Background Color + Pagination -->
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
+            <div class="ctrl-row"><label class="min-w-[110px]">Background</label><div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div></div>
+            <div class="ctrl-row"><label class="min-w-[110px]">Pagination</label><select id="pagination" class="micro-select w-40"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
           </div>
         </div>
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: GENERAL SETTINGS (Always Visible) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="group-title-bar">
-            <span class="group-title-text"><i class="fas fa-sliders-h mr-2 text-purple-500"></i>General Settings</span>
-          </div>
-          
-          <div class="config-box">
-            <h2 class="section-title mb-3">Display Options</h2>
-            <div class="flex flex-wrap gap-x-6 gap-y-1.5">
-              <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-second" checked class="accent-blue-600 w-3.5 h-3.5"> Show second image on hover</label>
-              <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-zoom" checked class="accent-blue-600 w-3.5 h-3.5"> Zoom effect on hover</label>
-              <div class="ctrl-row mb-0"><label>Content Align</label><select id="content-align" class="micro-select w-26"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>
-            </div>
-            
-            <!-- NEW: Selected Value / Active Filter Tags Styling -->
-            <div class="group-divider"></div>
-            <h3 class="text-sm font-semibold text-gray-800 mb-3 mt-4"><i class="fas fa-tag mr-2 text-green-600"></i>Active Filters & Sort Bar</h3>
-            
-            <div class="bg-green-50/30 border border-green-200 rounded-lg p-3 space-y-3">
-              
-              <!-- Selected Value Tags (Capsules) -->
-              <div class="mb-2">
-                <label class="text-xs font-semibold text-gray-600 block mb-1.5">Tag Capsule Style</label>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="ctrl-row mb-0"><label>Text Color</label><div class="color-picker-compact"><input type="color" id="tag-text-color" value="#374151"><input type="text" id="tag-text-color-hex" value="#374151" readonly></div></div>
-                  <div class="ctrl-row mb-0"><label>BG Color</label><div class="color-picker-compact"><input type="color" id="tag-bg-color" value="#f3f4f6"><input type="text" id="tag-bg-color-hex" value="#f3f4f6" readonly></div></div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="slider-row mb-0"><label>Font Size</label><input type="range" id="tag-font-size" min="10" max="16" value="13" class="flex-1"><span id="tag-font-size-val" class="slider-val">13px</span></div>
-                  <div class="ctrl-row mb-0"><label>Font Weight</label><select id="tag-font-weight" class="micro-select w-full"><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semi-Bold</option><option value="700">Bold</option></select></div>
-                </div>
-              </div>
-              
-              <!-- Clear All Button -->
-              <div class="mt-3 pt-2 border-t border-gray-200">
-                <label class="text-xs font-semibold text-gray-600 block mb-2">Clear All Button</label>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="ctrl-row mb-0"><label>Button Text</label><input type="text" id="clear-all-text" value="Clear all" class="w-full micro-select"></div>
-                  <div class="ctrl-row mb-0"><label>Text Color</label><div class="color-picker-compact"><input type="color" id="clear-text-color" value="#6b7280"><input type="text" id="clear-text-color-hex" value="#6b7280" readonly></div></div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="slider-row mb-0"><label>Font Size</label><input type="range" id="clear-font-size" min="10" max="16" value="13" class="flex-1"><span id="clear-font-size-val" class="slider-val">13px</span></div>
-                  <div class="ctrl-row mb-0"><label>Font Weight</label><select id="clear-font-weight" class="micro-select w-full"><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semi-Bold</option><option value="700">Bold</option></select></div>
-                </div>
-              </div>
-              
-              <!-- Sort By Dropdown -->
-              <div class="mt-3 pt-2 border-t border-gray-200">
-                <label class="text-xs font-semibold text-gray-600 block mb-2">Sort By Label & Dropdown</label>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="ctrl-row mb-0"><label>Label Text</label><input type="text" id="sort-label-text" value="Sort by" class="w-full micro-select"></div>
-                  <div class="ctrl-row mb-0"><label>Text Color</label><div class="color-picker-compact"><input type="color" id="sort-label-color" value="#374151"><input type="text" id="sort-label-color-hex" value="#374151" readonly></div></div>
-                    </div>
-                  <div class="grid grid-cols-2 gap-3">
-                    <div class="slider-row mb-0"><label>Dropdown BG</label><div class="color-picker-compact"><input type="color" id="sort-dropdown-bg" value="#ffffff"><input type="text" id="sort-dropdown-bg-hex" value="#ffffff" readonly></div></div>
-                      <div class="ctrl-row mb-0"><label>Border</label><div class="color-picker-compact"><input type="color" id="sort-border-color" value="#d1d5db"><input type="text" id="sort-border-color-hex" value="#d1d5db" readonly></div></div>
-                        </div>
-                      </div>
-                      <div class="grid grid-cols-2 gap-3">
-                        <div class="slider-row mb-0"><label>Option Size</label><input type="range" id="sort-option-size" min="12" max="16" value="14" class="flex-1"><span id="sort-option-size-val" class="slider-val">14px</span></div>
-                        <div class="ctrl-row mb-0"><label>Option Weight</label><select id="sort-option-weight" class="micro-select w-full"><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semi-Bold</option></select></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+       
+        <!-- Mobile Grid -->
+        <div class="config-box opacity-80">
+          <h2 class="section-title mb-1">Product Grid (Mobile)</h2>
+          <p class="text-[11px] text-gray-500 leading-relaxed">Fixed at 2 items per row. Pagination not available. <a href="#" class="text-blue-600 hover:underline">Contact us</a> for mobile customization.</p>
+        </div>
+       
+        <!-- General Settings -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">General Settings</h2>
+          <div class="flex flex-wrap gap-x-6 gap-y-1.5">
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-second" checked class="accent-blue-600 w-3.5 h-3.5"> Show second image on hover</label>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-zoom" checked class="accent-blue-600 w-3.5 h-3.5"> Zoom effect on hover</label>
+            <div class="ctrl-row mb-0"><label>Content Align</label><select id="content-align" class="micro-select w-26"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>
           </div>
         </div>
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: PRODUCT CARD + IMAGE (Collapsible) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="collapsible-header" onclick="toggleCollapse(this)">
-            <span class="group-title-text"><i class="fas fa-square mr-2 text-orange-500"></i>Card Appearance</span>
-            <i class="fas fa-chevron-down collapsible-icon"></i>
-          </div>
-          
-          <div class="collapsible-content">
-            <!-- Product Card -->
-            <div class="config-box">
-              <h2 class="section-title mb-2">Product Card Container</h2>
-              <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
-                <div class="ctrl-row"><label>Background</label><div class="color-picker-compact"><input type="color" id="card-bg-color" value="#ffffff"><input type="text" id="card-bg-color-hex" value="#ffffff" readonly></div></div>
-                <div class="ctrl-row"><label>Border Color</label><div class="color-picker-compact"><input type="color" id="card-border-color" value="#e5e7eb"><input type="text" id="card-border-color-hex" value="#e5e7eb" readonly></div></div>
-                <div class="slider-row col-span-2"><label>Border Radius</label><input type="range" id="card-radius" min="0" max="30" value="12" class="flex-1 max-w-[280px]"><span id="card-radius-val" class="slider-val">12px</span></div>
-              </div>
-            </div>
-            
-            <!-- Product Image -->
-            <div class="config-box">
-              <h2 class="section-title mb-2">Product Image</h2>
-              <div class="flex items-center gap-x-8">
-                <div class="ctrl-row mb-0">
-                  <label>Image Ratio</label>
-                  <select id="image-ratio" class="micro-select" style="width:165px;">
-                    <option value="portrait">Portrait (3:4)</option>
-                    <option value="square" selected>Square (1:1)</option>
-                    <option value="adapt">Adapt to Image</option>
-                  </select>
-                </div>
-                <div class="ctrl-row mb-0">
-                  <label>Image Shape</label>
-                  <select id="image-shape" class="micro-select" style="width:165px;">
-                    <option value="default">Default</option>
-                    <option value="rounded">Rounded</option>
-                  </select>
-                </div>
-              </div>
-              <div class="slider-row mb-0 w-full max-w-[300px]">
-                <label>Corner Radius</label>
-                <input type="range" id="image-radius" min="0" max="24" value="8" class="flex-1">
-                <span id="img-radius-val" class="slider-val">8px</span>
-              </div>
-            </div>
+        <!-- Product Card -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Card</h2>
+          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
+            <div class="ctrl-row"><label>Background</label><div class="color-picker-compact"><input type="color" id="card-bg-color" value="#ffffff"><input type="text" id="card-bg-color-hex" value="#ffffff" readonly></div></div>
+            <div class="ctrl-row"><label>Border Color</label><div class="color-picker-compact"><input type="color" id="card-border-color" value="#e5e7eb"><input type="text" id="card-border-color-hex" value="#e5e7eb" readonly></div></div>
+            <div class="slider-row col-span-2"><label>Border Radius</label><input type="range" id="card-radius" min="0" max="30" value="12" class="flex-1 max-w-[280px]"><span id="card-radius-val" class="slider-val">12px</span></div>
           </div>
         </div>
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: BADGES SETTINGS (All 3 Badges Together) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="collapsible-header" onclick="toggleCollapse(this)">
-            <span class="group-title-text"><i class="fas fa-tags mr-2 text-red-500"></i>Badges Settings</span>
-            <i class="fas fa-chevron-down collapsible-icon"></i>
-          </div>
-          
-          <div class="collapsible-content">
-            <div class="grid grid-cols-1 gap-4">
-              
-              <!-- Sale Badge -->
-              <div class="config-box">
-                <div class="flex items-center justify-between mb-2">
-                  <h2 class="section-title mb-0"><i class="fas fa-percent mr-2 text-green-600"></i>Sale Badge</h2>
-                  <label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label>
-                </div>
-                
-                <div class="font-select-wrap">
-                  <label>Font</label>
-                  <select id="sale-badge-font" class="font-select"></select>
-                </div>
-                
-                <div class="ctrl-row">
-                  <label>Text Color</label>
-                  <div class="color-picker-compact"><input type="color" id="sale-text-color" value="#ffffff"><input type="text" id="sale-text-color-hex" value="#ffffff" readonly></div>
-                  <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                  <div class="color-picker-compact"><input type="color" id="sale-bg-color" value="#16a34a"><input type="text" id="sale-bg-color-hex" value="#16a34a" readonly></div>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-x-4 gap-y-1">
-                  <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-font-size" min="9" max="18" value="11" class="flex-1"><span id="sale-font-size-val" class="slider-val">11px</span></div>
-                  <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-weight" class="micro-select w-24">
-                    <option value="300">Light</option><option value="400" selected>Regular</option><option value="700">Bold</option>
-                  </select></div>
-                  <div class="ctrl-row mb-0"><label>Position</label><select id="sale-position" class="micro-select w-24">
-                    <option value="top-left">Top Left</option>
-                    <option value="top-right">Top Right</option>
-                    <option value="bottom-left">Bottom Left</option>
-                    <option value="bottom-right">Bottom Right</option>
-                  </select></div>
-                  <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="sale-style" class="micro-select w-44">
-                    <option value="percentage">Percentage (-30%)</option>
-                    <option value="amount">Amount (-$20)</option>
-                    <option value="text">Custom Text</option>
-                    <option value="other">Other</option>
-                  </select></div>
-                </div>
-                <div id="sale-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
-                  <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="sale-custom-text" value="SALE" class="w-36 micro-select"></div>
-                </div>
-              </div>
-              
-              <!-- Sold Out Badge -->
-              <div class="config-box">
-                <div class="flex items-center justify-between mb-2">
-                  <h2 class="section-title mb-0"><i class="fas fa-ban mr-2 text-gray-600"></i>Sold Out Badge</h2>
-                  <label class="toggle-switch"><input type="checkbox" id="show-soldout"><span class="toggle-slider"></span></label>
-                </div>
-                
-                <div class="font-select-wrap">
-                  <label>Font</label>
-                  <select id="soldout-badge-font" class="font-select"></select>
-                </div>
-                
-                <div class="ctrl-row">
-                  <label>Text Color</label>
-                  <div class="color-picker-compact"><input type="color" id="soldout-text-color" value="#ffffff"><input type="text" id="soldout-text-color-hex" value="#ffffff" readonly></div>
-                  <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                  <div class="color-picker-compact"><input type="color" id="soldout-bg-color" value="#374151"><input type="text" id="soldout-bg-color-hex" value="#374151" readonly></div>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-x-4 gap-y-1">
-                  <div class="slider-row mb-0"><label>Size</label><input type="range" id="soldout-font-size" min="9" max="18" value="11" class="flex-1"><span id="soldout-font-size-val" class="slider-val">11px</span></div>
-                  <div class="ctrl-row mb-0"><label>Weight</label><select id="soldout-weight" class="micro-select w-24">
-                    <option value="300">Light</option><option value="400" selected>Regular</option><option value="700">Bold</option>
-                  </select></div>
-                  <div class="ctrl-row mb-0"><label>Position</label><select id="soldout-position" class="micro-select w-24">
-                    <option value="top-left">Top Left</option>
-                    <option value="top-right">Top Right</option>
-                    <option value="bottom-left">Bottom Left</option>
-                    <option value="bottom-right">Bottom Right</option>
-                  </select></div>
-                  <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="soldout-style" class="micro-select w-40">
-                    <option value="soldout">Sold Out</option>
-                    <option value="outofstock">Out Of Stock</option>
-                    <option value="other">Custom</option>
-                  </select></div>
-                </div>
-                <div id="soldout-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
-                  <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="soldout-custom-text" value="Unavailable" class="w-36 micro-select"></div>
-                </div>
-              </div>
-              
-              <!-- Low Stock Badge -->
-              <div class="config-box">
-                <div class="flex items-center justify-between mb-2">
-                  <h2 class="section-title mb-0"><i class="fas fa-exclamation-triangle mr-2 text-orange-500"></i>Low Stock Badge</h2>
-                  <label class="toggle-switch"><input type="checkbox" id="show-lowstock" checked><span class="toggle-slider"></span></label>
-                </div>
-                
-                <div class="flex items-center gap-x-8 mb-3">
-                  <div class="font-select-wrap" style="margin-bottom:0;">
-                    <label>Font</label>
-                    <select id="lowstock-badge-font" class="font-select" style="min-width:135px;"></select>
-                  </div>
-                  <div class="ctrl-row mb-0">
-                    <label style="min-width:115px;">Show when stock ≤</label>
-                    <input type="number" id="lowstock-threshold" value="10" min="1" max="999" class="w-14 micro-select text-center">
-                  </div>
-                </div>
-                
-                <div class="ctrl-row">
-                  <label>Text Color</label>
-                  <div class="color-picker-compact"><input type="color" id="lowstock-text-color" value="#ffffff"><input type="text" id="lowstock-text-color-hex" value="#ffffff" readonly></div>
-                  <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                  <div class="color-picker-compact"><input type="color" id="lowstock-bg-color" value="#ea580c"><input type="text" id="lowstock-bg-color-hex" value="#ea580c" readonly></div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                  <div class="ctrl-row mb-0"><label>Weight</label><select id="lowstock-weight" class="micro-select w-24">
-                    <option value="300">Light</option><option value="400" selected>Regular</option><option value="700">Bold</option>
-                  </select></div>
-                  <div class="ctrl-row mb-0"><label>Position</label><select id="lowstock-position" class="micro-select w-24">
-                    <option value="top-left">Top Left</option>
-                    <option value="top-right">Top Right</option>
-                    <option value="bottom-left">Bottom Left</option>
-                    <option value="bottom-right">Bottom Right</option>
-                  </select></div>
-                </div>
-                
-                <div class="slider-row mb-0">
-                  <label>Size</label>
-                  <input type="range" id="lowstock-font-size" min="9" max="16" value="10" class="flex-1">
-                  <span id="lowstock-font-size-val" class="slider-val">10px</span>
-                </div>
-              </div>
+       
+        <!-- Product Image -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Product Image</h2>
+          <div class="flex items-center gap-x-8">
+            <div class="ctrl-row mb-0">
+              <label>Image Ratio</label>
+              <select id="image-ratio" class="micro-select" style="width:165px;">
+                <option value="portrait">Portrait (3:4)</option>
+                <option value="square" selected>Square (1:1)</option>
+                <option value="adapt">Adapt to Image</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Image Shape</label>
+              <select id="image-shape" class="micro-select" style="width:165px;">
+                <option value="default">Default</option>
+                <option value="rounded">Rounded</option>
+              </select>
             </div>
           </div>
-        </div>
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: DETAIL PRODUCT INFO (Title/Vendor/Rating/Price/ATC) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="collapsible-header" onclick="toggleCollapse(this)">
-            <span class="group-title-text"><i class="fas fa-info-circle mr-2 text-blue-500"></i>Detail Product Info</span>
-            <i class="fas fa-chevron-down collapsible-icon"></i>
+          <div class="slider-row mb-0 w-full max-w-[300px]">
+            <label>Corner Radius</label>
+            <input type="range" id="image-radius" min="0" max="24" value="8" class="flex-1">
+            <span id="img-radius-val" class="slider-val">8px</span>
           </div>
-          
-          <div class="collapsible-content">
-            
-            <!-- Product Title -->
-            <div class="config-box">
-              <h2 class="section-title mb-1.5"><i class="fas fa-heading mr-2 text-blue-600"></i>Product Title</h2>
+        </div>
+        <!-- BADGES SECTION -->
+        <!-- Sale Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Sale Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="sale-badge-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="sale-text-color" value="#ffffff"><input type="text" id="sale-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="sale-bg-color" value="#16a34a"><input type="text" id="sale-bg-color-hex" value="#16a34a" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-3 gap-x-4 gap-y-1">
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-font-size" min="9" max="18" value="11" class="flex-1"><span id="sale-font-size-val" class="slider-val">11px</span></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="sale-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+            <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="sale-style" class="micro-select w-44">
+              <option value="percentage">Percentage (-30%)</option>
+              <option value="amount">Amount (-$20)</option>
+              <option value="text">Custom Text</option>
+              <option value="other">Other</option>
+            </select></div>
+          </div>
+          <div id="sale-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="sale-custom-text" value="SALE" class="w-36 micro-select"></div>
+          </div>
+        </div>
+       
+        <!-- Sold Out Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Sold Out Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-soldout"><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="soldout-badge-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="soldout-text-color" value="#ffffff"><input type="text" id="soldout-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="soldout-bg-color" value="#374151"><input type="text" id="soldout-bg-color-hex" value="#374151" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-3 gap-x-4 gap-y-1">
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="soldout-font-size" min="9" max="18" value="11" class="flex-1"><span id="soldout-font-size-val" class="slider-val">11px</span></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="soldout-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="soldout-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+            <div class="ctrl-row mb-0 col-span-3"><label>Style</label><select id="soldout-style" class="micro-select w-40">
+              <option value="soldout">Sold Out</option>
+              <option value="outofstock">Out Of Stock</option>
+              <option value="other">Custom</option>
+            </select></div>
+          </div>
+          <div id="soldout-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="soldout-custom-text" value="Unavailable" class="w-36 micro-select"></div>
+          </div>
+        </div>
+        <!-- Low Stock Badge -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Low Stock Badge</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-lowstock" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="flex items-center gap-x-8 mb-3">
+            <div class="font-select-wrap" style="margin-bottom:0;">
+              <label>Font</label>
+              <select id="lowstock-badge-font" class="font-select" style="min-width:135px;"></select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label style="min-width:115px;">Show when stock ≤</label>
+              <input type="number" id="lowstock-threshold" value="10" min="1" max="999" class="w-14 micro-select text-center">
+            </div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="lowstock-text-color" value="#ffffff"><input type="text" id="lowstock-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="lowstock-bg-color" value="#ea580c"><input type="text" id="lowstock-bg-color-hex" value="#ea580c" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="lowstock-weight" class="micro-select w-24">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Position</label><select id="lowstock-position" class="micro-select w-24">
+              <option value="top-left">Top Left</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="lowstock-font-size" min="9" max="16" value="10" class="flex-1">
+            <span id="lowstock-font-size-val" class="slider-val">10px</span>
+          </div>
+        </div>
+        <!-- Product Title -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Product Title</h2>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="title-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Color</label>
+            <div class="color-picker-compact"><input type="color" id="title-color" value="#111827"><input type="text" id="title-color-hex" value="#111827" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="title-transform" class="micro-select w-28">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="title-weight" class="micro-select w-28">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="title-font-size" min="11" max="24" value="15" class="flex-1">
+            <span id="title-font-val" class="slider-val">15px</span>
+          </div>
+        </div>
+       
+        <!-- Vendor -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Vendor</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="vendor-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Color</label>
+            <div class="color-picker-compact"><input type="color" id="vendor-color" value="#6b7280"><input type="text" id="vendor-color-hex" value="#6b7280" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="vendor-transform" class="micro-select w-28">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="vendor-weight" class="micro-select w-28">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+          </div>
+         
+          <div class="slider-row mb-0">
+            <label>Size</label>
+            <input type="range" id="vendor-font-size" min="10" max="18" value="12" class="flex-1">
+            <span id="vendor-font-val" class="slider-val">12px</span>
+          </div>
+        </div>
+        <!-- Rating -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Rating Star</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="flex flex-wrap gap-x-6 gap-y-1.5">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="rating-type" class="micro-select w-30"><option value="star">Star Icon</option><option value="text">Text Score</option></select></div>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="show-review-count" checked class="accent-blue-600 w-3.5 h-3.5"> Show review count</label>
+          </div>
+        </div>
+        <!-- PRICE SETTINGS -->
+        <div class="config-box">
+          <h2 class="section-title mb-2">Price Settings</h2>
+         
+          <div class="space-y-1.5 mb-2">
+            <div class="ctrl-row mb-0">
+              <label>Hide Price When</label>
+              <select id="hide-price" class="micro-select w-46">
+                <option value="none">Never Hide</option>
+                <option value="all">Always Hide</option>
+                <option value="non-login">Guest Users Only</option>
+              </select>
+            </div>
+            <div class="flex gap-5 pl-[95px]">
+              <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="hide-decimal" class="accent-blue-600 w-3.5 h-3.5"> Hide Decimal (.00)
+              </label>
+              <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="round-up" class="accent-blue-600 w-3.5 h-3.5"> Round Up
+              </label>
+            </div>
+          </div>
+          <div class="space-y-2 mt-2">
+            <!-- Fixed Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Fixed / Regular Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-fixed-price" checked><span class="toggle-slider"></span></label>
+              </div>
              
-              <div class="font-select-wrap">
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
                 <label>Font</label>
-                <select id="title-font" class="font-select"></select>
+                <select id="fixed-price-font-family" class="font-select" style="min-width:130px;"></select>
               </div>
              
               <div class="ctrl-row">
                 <label>Color</label>
-                <div class="color-picker-compact"><input type="color" id="title-color" value="#111827"><input type="text" id="title-color-hex" value="#111827" readonly></div>
+                <div class="color-picker-compact"><input type="color" id="fixed-price-color" value="#1f2937"><input type="text" id="fixed-price-color-hex" value="#1f2937" readonly></div>
               </div>
              
               <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Transform</label><select id="title-transform" class="micro-select w-28">
-                  <option value="none">None</option>
-                  <option value="capitalize">Capitalize</option>
-                  <option value="uppercase">Uppercase</option>
-                  <option value="lowercase">Lowercase</option>
-                </select></div>
-                <div class="ctrl-row mb-0"><label>Weight</label><select id="title-weight" class="micro-select w-28">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="fixed-price-font" min="11" max="26" value="15" class="flex-1"><span id="fixed-font-val" class="slider-val">15px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="fixed-price-weight" class="micro-select w-full">
                   <option value="300">Light</option>
                   <option value="400" selected>Regular</option>
                   <option value="700">Bold</option>
                 </select></div>
               </div>
-             
-              <div class="slider-row mb-0">
-                <label>Size</label>
-                <input type="range" id="title-font-size" min="11" max="24" value="15" class="flex-1">
-                <span id="title-font-val" class="slider-val">15px</span>
-              </div>
             </div>
-            
-            <!-- Vendor -->
-            <div class="config-box">
-              <div class="flex items-center justify-between mb-2">
-                <h2 class="section-title mb-0"><i class="fas fa-building mr-2 text-teal-600"></i>Vendor</h2>
-                <label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label>
+            <!-- Old Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Old / Compare-at Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-old-price" checked><span class="toggle-slider"></span></label>
               </div>
              
-              <div class="font-select-wrap">
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
                 <label>Font</label>
-                <select id="vendor-font" class="font-select"></select>
+                <select id="old-price-font-family" class="font-select" style="min-width:130px;"></select>
               </div>
              
               <div class="ctrl-row">
                 <label>Color</label>
-                <div class="color-picker-compact"><input type="color" id="vendor-color" value="#6b7280"><input type="text" id="vendor-color-hex" value="#6b7280" readonly></div>
+                <div class="color-picker-compact"><input type="color" id="old-price-color" value="#9ca3af"><input type="text" id="old-price-color-hex" value="#9ca3af" readonly></div>
               </div>
              
               <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Transform</label><select id="vendor-transform" class="micro-select w-28">
-                  <option value="none">None</option>
-                  <option value="capitalize">Capitalize</option>
-                  <option value="uppercase">Uppercase</option>
-                  <option value="lowercase">Lowercase</option>
-                </select></div>
-                <div class="ctrl-row mb-0"><label>Weight</label><select id="vendor-weight" class="micro-select w-28">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="old-price-font" min="10" max="22" value="13" class="flex-1"><span id="old-font-val" class="slider-val">13px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="old-price-weight" class="micro-select w-full">
                   <option value="300">Light</option>
                   <option value="400" selected>Regular</option>
                   <option value="700">Bold</option>
                 </select></div>
               </div>
-             
-              <div class="slider-row mb-0">
-                <label>Size</label>
-                <input type="range" id="vendor-font-size" min="10" max="18" value="12" class="flex-1">
-                <span id="vendor-font-val" class="slider-val">12px</span>
-              </div>
             </div>
-            
-            <!-- Rating Star -->
-            <div class="config-box">
-              <div class="flex items-center justify-between mb-2">
-                <h2 class="section-title mb-0"><i class="fas fa-star mr-2 text-yellow-500"></i>Rating Star</h2>
-                <label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label>
-              </div>
-              <div class="flex flex-wrap gap-x-6 gap-y-1.5">
-                <div class="ctrl-row mb-0"><label>Type</label><select id="rating-type" class="micro-select w-30"><option value="star">Star Icon</option><option value="text">Text Score</option></select></div>
-                <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="show-review-count" checked class="accent-blue-600 w-3.5 h-3.5"> Show review count</label>
-              </div>
-            </div>
-            
-            <!-- Price Settings -->
-            <div class="config-box">
-              <h2 class="section-title mb-2"><i class="fas fa-dollar-sign mr-2 text-emerald-600"></i>Price Settings</h2>
-             
-              <div class="space-y-1.5 mb-2">
-                <div class="ctrl-row mb-0">
-                  <label>Hide Price When</label>
-                  <select id="hide-price" class="micro-select w-46">
-                    <option value="none">Never Hide</option>
-                    <option value="all">Always Hide</option>
-                    <option value="non-login">Guest Users Only</option>
-                  </select>
-                </div>
-                <div class="flex gap-5 pl-[95px]">
-                  <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
-                    <input type="checkbox" id="hide-decimal" class="accent-blue-600 w-3.5 h-3.5"> Hide Decimal (.00)
-                  </label>
-                  <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer">
-                    <input type="checkbox" id="round-up" class="accent-blue-600 w-3.5 h-3.5"> Round Up
-                  </label>
-                </div>
-              </div>
-              <div class="space-y-2 mt-2">
-                <!-- Fixed Price -->
-                <div class="price-subsection">
-                  <div class="price-subheader">
-                    <span>Fixed / Regular Price</span>
-                    <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-fixed-price" checked><span class="toggle-slider"></span></label>
-                  </div>
-                 
-                  <div class="font-select-wrap" style="margin-bottom:0.4rem;">
-                    <label>Font</label>
-                    <select id="fixed-price-font-family" class="font-select" style="min-width:130px;"></select>
-                  </div>
-                 
-                  <div class="ctrl-row">
-                    <label>Color</label>
-                    <div class="color-picker-compact"><input type="color" id="fixed-price-color" value="#1f2937"><input type="text" id="fixed-price-color-hex" value="#1f2937" readonly></div>
-                  </div>
-                 
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                    <div class="slider-row mb-0"><label>Size</label><input type="range" id="fixed-price-font" min="11" max="26" value="15" class="flex-1"><span id="fixed-font-val" class="slider-val">15px</span></div>
-                    <div class="ctrl-row mb-0"><label>Weight</label><select id="fixed-price-weight" class="micro-select w-full">
-                      <option value="300">Light</option>
-                      <option value="400" selected>Regular</option>
-                      <option value="700">Bold</option>
-                    </select></div>
-                  </div>
-                </div>
-                <!-- Old Price -->
-                <div class="price-subsection">
-                  <div class="price-subheader">
-                    <span>Old / Compare-at Price</span>
-                    <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-old-price" checked><span class="toggle-slider"></span></label>
-                  </div>
-                 
-                  <div class="font-select-wrap" style="margin-bottom:0.4rem;">
-                    <label>Font</label>
-                    <select id="old-price-font-family" class="font-select" style="min-width:130px;"></select>
-                  </div>
-                 
-                  <div class="ctrl-row">
-                    <label>Color</label>
-                    <div class="color-picker-compact"><input type="color" id="old-price-color" value="#9ca3af"><input type="text" id="old-price-color-hex" value="#9ca3af" readonly></div>
-                  </div>
-                 
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                    <div class="slider-row mb-0"><label>Size</label><input type="range" id="old-price-font" min="10" max="22" value="13" class="flex-1"><span id="old-font-val" class="slider-val">13px</span></div>
-                    <div class="ctrl-row mb-0"><label>Weight</label><select id="old-price-weight" class="micro-select w-full">
-                      <option value="300">Light</option>
-                      <option value="400" selected>Regular</option>
-                      <option value="700">Bold</option>
-                    </select></div>
-                  </div>
-                </div>
-                <!-- Sale Price -->
-                <div class="price-subsection">
-                  <div class="price-subheader">
-                    <span>Sale Price</span>
-                    <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-sale-price" checked><span class="toggle-slider"></span></label>
-                  </div>
-                 
-                  <div class="font-select-wrap" style="margin-bottom:0.4rem;">
-                    <label>Font</label>
-                    <select id="sale-price-font-family" class="font-select" style="min-width:130px;"></select>
-                  </div>
-                 
-                  <div class="ctrl-row">
-                    <label>Color</label>
-                    <div class="color-picker-compact"><input type="color" id="sale-price-color" value="#dc2626"><input type="text" id="sale-price-color-hex" value="#dc2626" readonly></div>
-                  </div>
-                 
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                    <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-price-font" min="12" max="30" value="18" class="flex-1"><span id="sale-font-val" class="slider-val">18px</span></div>
-                    <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-price-weight" class="micro-select w-full">
-                      <option value="300">Light</option>
-                      <option value="400" selected>Regular</option>
-                      <option value="700">Bold</option>
-                    </select></div>
-                  </div>
-                </div>
+            <!-- Sale Price -->
+            <div class="price-subsection">
+              <div class="price-subheader">
+                <span>Sale Price</span>
+                <label class="toggle-switch" style="transform:scale(0.9)"><input type="checkbox" id="show-sale-price" checked><span class="toggle-slider"></span></label>
               </div>
              
-              <p id="price-warning" class="text-[11px] text-amber-600 mt-1.5 hidden flex items-center gap-1"><i class="fas fa-exclamation-triangle text-[10px]"></i> Old price requires sale price enabled</p>
-            </div>
-            
-            <!-- Add to Cart Button -->
-            <div class="config-box">
-              <div class="flex items-center justify-between mb-2">
-                <h2 class="section-title mb-0"><i class="fas fa-cart-plus mr-2 text-pink-600"></i>Add to Cart Button</h2>
-                <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
-              </div>
-             
-              <div class="font-select-wrap">
+              <div class="font-select-wrap" style="margin-bottom:0.4rem;">
                 <label>Font</label>
-                <select id="atc-font" class="font-select"></select>
+                <select id="sale-price-font-family" class="font-select" style="min-width:130px;"></select>
               </div>
              
               <div class="ctrl-row">
-                <label>Text Color</label>
-                <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
-                <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
+                <label>Color</label>
+                <div class="color-picker-compact"><input type="color" id="sale-price-color" value="#dc2626"><input type="text" id="sale-price-color-hex" value="#dc2626" readonly></div>
               </div>
              
               <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Transform</label><select id="atc-transform" class="micro-select w-full">
-                  <option value="none">None</option>
-                  <option value="capitalize">Capitalize</option>
-                  <option value="uppercase">Uppercase</option>
-                  <option value="lowercase">Lowercase</option>
-                </select></div>
-                <div class="slider-row mb-0"><label>Size</label><input type="range" id="atc-font-size" min="11" max="20" value="13" class="flex-1"><span id="atc-font-val" class="slider-val">13px</span></div>
-              </div>
-             
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Weight</label><select id="atc-weight" class="micro-select w-full">
+                <div class="slider-row mb-0"><label>Size</label><input type="range" id="sale-price-font" min="12" max="30" value="18" class="flex-1"><span id="sale-font-val" class="slider-val">18px</span></div>
+                <div class="ctrl-row mb-0"><label>Weight</label><select id="sale-price-weight" class="micro-select w-full">
                   <option value="300">Light</option>
                   <option value="400" selected>Regular</option>
                   <option value="700">Bold</option>
                 </select></div>
-                <div class="slider-row mb-0"><label>Radius</label><input type="range" id="atc-radius" min="0" max="50" value="6" class="flex-1"><span id="atc-radius-val" class="slider-val">6px</span></div>
               </div>
             </div>
+          </div>
+         
+          <p id="price-warning" class="text-[11px] text-amber-600 mt-1.5 hidden flex items-center gap-1"><i class="fas fa-exclamation-triangle text-[10px]"></i> Old price requires sale price enabled</p>
+        </div>
+        <!-- Add to Cart Button -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Add to Cart Button</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="atc-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="atc-transform" class="micro-select w-full">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="atc-font-size" min="11" max="20" value="13" class="flex-1"><span id="atc-font-val" class="slider-val">13px</span></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="atc-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Radius</label><input type="range" id="atc-radius" min="0" max="50" value="6" class="flex-1"><span id="atc-radius-val" class="slider-val">6px</span></div>
           </div>
         </div>
-        
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- SECTION: WISHLIST + QUICKVIEW (Combined) -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <div class="settings-group">
-          <div class="collapsible-header" onclick="toggleCollapse(this)">
-            <span class="group-title-text"><i class="fas fa-heart mr-2 text-pink-500"></i>Action Buttons</span>
-            <i class="fas fa-chevron-down collapsible-icon"></i>
+        <!-- Wishlist Settings -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Wishlist Settings</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-wishlist" checked><span class="toggle-slider"></span></label>
           </div>
-          
-          <div class="collapsible-content">
-            
-            <!-- Wishlist Settings -->
-            <div class="config-box">
-              <div class="flex items-center justify-between mb-2">
-                <h2 class="section-title mb-0"><i class="fas fa-heart text-red-500 mr-2"></i>Wishlist</h2>
-                <label class="toggle-switch"><input type="checkbox" id="show-wishlist" checked><span class="toggle-slider"></span></label>
-              </div>
-             
-              <div class="font-select-wrap">
-                <label>Font</label>
-                <select id="wishlist-font" class="font-select"></select>
-              </div>
-             
-              <div class="ctrl-row">
-                <label>Icon Color</label>
-                <div class="color-picker-compact"><input type="color" id="wishlist-text-color" value="#ef4444"><input type="text" id="wishlist-text-color-hex" value="#ef4444" readonly></div>
-                <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                <div class="color-picker-compact"><input type="color" id="wishlist-bg-color" value="#fef2f2"><input type="text" id="wishlist-bg-color-hex" value="#fef2f2" readonly></div>
-              </div>
-             
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Type</label><select id="wishlist-type" class="micro-select w-full"><option value="heart">Heart Icon</option><option value="text">Text (Wishlist)</option><option value="custom">Custom</option></select></div>
-                <div class="ctrl-row mb-0"><label>Position</label><select id="wishlist-position" class="micro-select w-48">
-                  <option value="in-card">In Card (next to ATC)</option>
-                  <option value="image-top-right">Image Top Right</option>
-                  <option value="image-top-left">Image Top Left</option>
-                </select></div>
-              </div>
-             
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Weight</label><select id="wishlist-weight" class="micro-select w-full"><option value="300">Light</option><option value="400" selected>Regular</option><option value="700">Bold</option></select></div>
-                <div class="slider-row mb-0"><label>Size</label><input type="range" id="wishlist-font-size" min="10" max="24" value="14" class="flex-1"><span id="wishlist-font-size-val" class="slider-val">14px</span></div>
-              </div>
-             
-              <div id="wishlist-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
-                <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="wishlist-custom-text" value="Save" class="w-36 micro-select"></div>
-              </div>
-            </div>
-            
-            <!-- Quick View Settings -->
-            <div class="config-box">
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <h2 class="section-title mb-0"><i class="fas fa-eye text-indigo-500 mr-2"></i>Quick View</h2>
-                  <label class="toggle-switch"><input type="checkbox" id="show-quickview" checked><span class="toggle-slider"></span></label>
-                </div>
-              </div>
-             
-              <div class="font-select-wrap">
-                <label>Font</label>
-                <select id="quickview-font" class="font-select"></select>
-              </div>
-             
-              <div class="ctrl-row">
-                <label>Button Text Color</label>
-                <div class="color-picker-compact"><input type="color" id="quickview-text-color" value="#ffffff"><input type="text" id="quickview-text-color-hex" value="#ffffff" readonly></div>
-                <label style="min-width:auto;margin-left:0.3rem;">BG</label>
-                <div class="color-picker-compact"><input type="color" id="quickview-bg-color" value="#1f2937"><input type="text" id="quickview-bg-color-hex" value="#1f2937" readonly></div>
-              </div>
-             
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Type</label><select id="quickview-type" class="micro-select w-full">
-                  <option value="button">Button</option>
-                  <option value="eye" selected>Eye Icon</option>
-                  <option value="custom">Custom Text</option>
-                </select></div>
-                <div class="ctrl-row mb-0"><label>Transform</label><select id="quickview-transform" class="micro-select w-full">
-                  <option value="none">None</option>
-                  <option value="capitalize">Capitalize</option>
-                  <option value="uppercase">Uppercase</option>
-                  <option value="lowercase">Lowercase</option>
-                </select></div>
-              </div>
-             
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="ctrl-row mb-0"><label>Weight</label><select id="quickview-weight" class="micro-select w-full">
-                  <option value="300">Light</option>
-                  <option value="400" selected>Regular</option>
-                  <option value="700">Bold</option>
-                </select></div>
-                <div class="slider-row mb-0"><label>Size</label><input type="range" id="quickview-font-size" min="10" max="18" value="13" class="flex-1"><span id="quickview-font-size-val" class="slider-val">13px</span></div>
-              </div>
-             
-              <div class="ctrl-row">
-                <label>Position</label>
-                <select id="quickview-position" class="micro-select w-48">
-                  <option value="in-card">In Card (next to ATC)</option>
-                  <option value="image-top-right">Image Top Right</option>
-                  <option value="image-top-left">Image Top Left</option>
-                </select>
-              </div>
-             
-              <div id="quickview-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
-                <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="quickview-custom-text" value="Quick View" class="w-36 micro-select"></div>
-              </div>
-            </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="wishlist-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="wishlist-text-color" value="#ef4444"><input type="text" id="wishlist-text-color-hex" value="#ef4444" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="wishlist-bg-color" value="#fef2f2"><input type="text" id="wishlist-bg-color-hex" value="#fef2f2" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="wishlist-type" class="micro-select w-full"><option value="heart">Heart Icon</option><option value="text">Text (Wishlist)</option><option value="custom">Custom</option></select></div>
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="wishlist-transform" class="micro-select w-36">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="wishlist-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="wishlist-font-size" min="10" max="24" value="14" class="flex-1"><span id="wishlist-font-size-val" class="slider-val">14px</span></div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Position</label>
+            <select id="wishlist-position" class="micro-select w-48">
+              <option value="in-card">In Card (next to ATC)</option>
+              <option value="image-top-right">Image Top Right</option>
+              <option value="image-top-left">Image Top Left</option>
+            </select>
+          </div>
+         
+          <div id="wishlist-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="wishlist-custom-text" value="Save" class="w-36 micro-select"></div>
           </div>
         </div>
-        
-      </div>
 
-      <!-- RIGHT: Sticky Preview Card -->
-      <div class="preview-sticky">
-        <div class="config-box shadow-md">
+        <!-- NEW: Quick View Settings -->
+        <div class="config-box">
+          <div class="flex items-center justify-between mb-1.5">
+            <h2 class="section-title">Quick View Settings</h2>
+            <label class="toggle-switch"><input type="checkbox" id="show-quickview" checked><span class="toggle-slider"></span></label>
+          </div>
+         
+          <div class="font-select-wrap">
+            <label>Font</label>
+            <select id="quickview-font" class="font-select"></select>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Text Color</label>
+            <div class="color-picker-compact"><input type="color" id="quickview-text-color" value="#ffffff"><input type="text" id="quickview-text-color-hex" value="#ffffff" readonly></div>
+            <label style="min-width:auto;margin-left:0.3rem;">BG</label>
+            <div class="color-picker-compact"><input type="color" id="quickview-bg-color" value="#1f2937"><input type="text" id="quickview-bg-color-hex" value="#1f2937" readonly></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Type</label><select id="quickview-type" class="micro-select w-full">
+              <option value="button">Button</option>
+              <option value="eye" selected>Eye Icon</option>
+              <option value="custom">Custom Text</option>
+            </select></div>
+            <div class="ctrl-row mb-0"><label>Transform</label><select id="quickview-transform" class="micro-select w-full">
+              <option value="none">None</option>
+              <option value="capitalize">Capitalize</option>
+              <option value="uppercase">Uppercase</option>
+              <option value="lowercase">Lowercase</option>
+            </select></div>
+          </div>
+         
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div class="ctrl-row mb-0"><label>Weight</label><select id="quickview-weight" class="micro-select w-full">
+              <option value="300">Light</option>
+              <option value="400" selected>Regular</option>
+              <option value="700">Bold</option>
+            </select></div>
+            <div class="slider-row mb-0"><label>Size</label><input type="range" id="quickview-font-size" min="10" max="18" value="13" class="flex-1"><span id="quickview-font-size-val" class="slider-val">13px</span></div>
+          </div>
+         
+          <div class="ctrl-row">
+            <label>Position</label>
+            <select id="quickview-position" class="micro-select w-48">
+              <option value="in-card">In Card (next to ATC)</option>
+              <option value="image-top-right">Image Top Right</option>
+              <option value="image-top-left">Image Top Left</option>
+            </select>
+          </div>
+         
+          <div id="quickview-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
+            <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="quickview-custom-text" value="Quick View" class="w-36 micro-select"></div>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT PREVIEW -->
+      <div class="w-1/3">
+        <div class="preview-sticky config-box shadow-md">
           <h3 class="section-title mb-2 pb-1.5 border-b border-gray-100">Preview Card</h3>
-          <div id="product-grid-wrapper" class="preview-grid-wrapper" style="background:#ffffff;">
+          <!-- Grid Background Wrapper -->
+          <div id="preview-grid-wrapper" class="preview-grid-wrapper" style="background-color: #f3f4f6;">
             <div id="product-preview" class="border border-gray-200 rounded-lg overflow-hidden group relative transition-all duration-300" style="background:#ffffff;">
-              
+             
               <div id="badge-zones-container" class="absolute inset-0 pointer-events-none z-20">
                 <div id="zone-tl" class="badge-zone tl"></div>
                 <div id="zone-tr" class="badge-zone tr"></div>
@@ -1014,28 +1022,28 @@
                   <div id="quickview-image-overlay-tr" class="absolute top-2 right-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
                   <div id="quickview-image-overlay-tl" class="absolute top-2 left-2 z-25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden"></div>
                 </div>
+              </div>
+             
+              <div id="preview-content" class="p-3">
+                <!-- Title first, then vendor -->
+                <div id="preview-title" class="font-semibold text-[13px] leading-snug mb-1 line-clamp-2">Essential Oversized T-Shirt</div>
+                <div id="preview-vendor" class="text-[11px] mb-0.5 truncate">Nike Sportswear</div>
                
-                <div id="preview-content" class="p-3">
-                  <!-- Title first, then vendor -->
-                  <div id="preview-title" class="font-semibold text-[13px] leading-snug mb-1 line-clamp-2">Essential Oversized T-Shirt</div>
-                  <div id="preview-vendor" class="text-[11px] mb-0.5 truncate">Nike Sportswear</div>
-                 
-                  <div id="preview-rating-container" class="mb-1.5 flex flex-col">
-                    <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆☆</div>
-                    <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
-                  </div>
-                 
-                  <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-2">
-                    <span id="preview-fixed-price" class="font-medium text-[13px]">$59.00</span>
-                    <span id="preview-old-price" class="line-through text-[11px] text-gray-400">$89.00</span>
-                    <span id="preview-sale-price" class="font-bold text-[13px] text-red-600">$49.00</span>
-                  </div>
-                 
-                  <div class="flex gap-1.5">
-                    <button id="preview-atc-btn" class="flex-1 py-2 text-[13px] font-semibold rounded-lg transition-all">Add to Cart</button>
-                    <div id="wishlist-in-card" class="flex items-center justify-center px-2.5 py-1.8 rounded-md border border-red-200 bg-red-50 text-red-500 cursor-pointer hover:bg-red-100 transition-colors"></div>
-                    <div id="quickview-in-card" class="hidden flex items-center justify-center px-2.5 py-1.8 rounded-md border transition-all cursor-pointer"></div>
-                  </div>
+                <div id="preview-rating-container" class="mb-1.5 flex flex-col">
+                  <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆</div>
+                  <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
+                </div>
+               
+                <div id="preview-price-block" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-2">
+                  <span id="preview-fixed-price" class="font-medium text-[13px]">$59.00</span>
+                  <span id="preview-old-price" class="line-through text-[11px] text-gray-400">$89.00</span>
+                  <span id="preview-sale-price" class="font-bold text-[13px] text-red-600">$49.00</span>
+                </div>
+               
+                <div class="flex gap-1.5">
+                  <button id="preview-atc-btn" class="flex-1 py-1.8 rounded-md text-[11px] font-semibold uppercase tracking-wide transition-all">Add to Cart</button>
+                  <div id="wishlist-in-card" class="flex items-center justify-center px-2.5 py-1.8 rounded-md border border-red-200 bg-red-50 text-red-500 cursor-pointer hover:bg-red-100 transition-colors"></div>
+                  <div id="quickview-in-card" class="hidden flex items-center justify-center px-2.5 py-1.8 rounded-md border transition-all cursor-pointer"></div>
                 </div>
               </div>
             </div>
@@ -1044,11 +1052,10 @@
       </div>
     </div>
   </div>
-
   <!-- Quick View Modal -->
   <div id="quickview-modal" onclick="if(event.target === this) closeQuickView()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
     <div onclick="event.stopImmediatePropagation()" class="bg-white rounded-3xl w-full max-w-5xl mx-4 shadow-2xl overflow-hidden relative flex flex-col md:flex-row">
-      <button onclick="closeQuickView()" class="absolute top-6 right-6 z-10 w-9 h-9 flex items-center justify-center text-gray-300 hover:text-gray-600 text-2xl leading-none transition-colors">&times;</button>
+      <button onclick="closeQuickView()" class="absolute top-6 right-6 z-10 w-9 h-9 flex items-center justify-center text-4xl leading-none text-gray-300 hover:text-gray-600 transition-colors">×</button>
       
       <!-- Left: Image + Wishlist hover -->
       <div class="md:w-1/2 relative bg-gray-100">
@@ -1059,7 +1066,7 @@
       </div>
       
       <!-- Right: Product info -->
-      <div class="md:w-1/2 p-8 flex flex-col overflow-y-auto">
+      <div class="md:w-1/2 p-8 flex flex-col">
         <div id="modal-vendor" class="text-sm text-gray-500 mb-1"></div>
         <div id="modal-title" class="text-3xl font-semibold leading-none mb-6"></div>
         
@@ -1070,11 +1077,14 @@
         
         <div id="modal-price-block" class="flex items-baseline gap-x-3 text-4xl mb-8"></div>
         
-        <button id="modal-atc-btn" class="mt-auto py-4 px-8 text-lg font-semibold rounded-2xl transition-all">Add to Cart</button>
+        <button id="modal-atc-btn" class="mt-auto py-4 px-8 text-lg font-semibold rounded-3xl transition-all">Add to Cart</button>
         
         <div class="text-center text-[10px] text-gray-400 mt-6">Quick view preview • Click outside to close</div>
       </div>
     </div>
+  </div>
+  
+  <!-- UPDATED FOOTER WITH PREVIEW BUTTON -->
   <div class="flex justify-end px-6 py-3 border-t border-gray-200 bg-gray-50/60 gap-3">
     <button onclick="openStoreFront()" class="px-6 py-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-lg transition-all shadow-sm flex items-center gap-2">
       <i class="fas fa-external-link-alt text-xs"></i> Preview Storefront
@@ -1083,19 +1093,39 @@
   </div>
 </div>
 
+<!-- ==================================================================== -->
+<!-- CONNECTION SCRIPT: Saves ALL settings to localStorage for StoreFront   -->
+<!-- ==================================================================== -->
 <script>
-// ==================== FONT LIBRARY ====
+// ==================== FONT LIBRARY ====================
 const FONT_LIBRARY = [
   { value: 'sans-serif', label: 'System Sans-Serif' },
   { value: 'serif', label: 'System Serif' },
   { value: "'Inter', sans-serif", label: 'Inter' },
   { value: "'Roboto', sans-serif", label: 'Roboto' },
   { value: "'Open Sans', sans-serif", label: 'Open Sans' },
-  // ... (keep all fonts from original)
+  { value: "'Lato', sans-serif", label: 'Lato' },
+  { value: "'Montserrat', sans-serif", label: 'Montserrat' },
+  { value: "'Poppins', sans-serif", label: 'Poppins' },
+  { value: "'Playfair Display', serif", label: 'Playfair Display' },
+  { value: "'Raleway', sans-serif", label: 'Raleway' },
+  { value: "'Oswald', sans-serif", label: 'Oswald' },
+  { value: "'Nunito', sans-serif", label: 'Nunito' },
+  { value: "'Merriweather', serif", label: 'Merriweather' },
+  { value: "'Ubuntu', sans-serif", label: 'Ubuntu' },
+  { value: "'Rubik', sans-serif", label: 'Rubik' },
+  { value: "'Work Sans', sans-serif", label: 'Work Sans' },
+  { value: "'DM Sans', sans-serif", label: 'DM Sans' },
+  { value: "'Plus Jakarta Sans', sans-serif", label: 'Plus Jakarta Sans' },
   { value: "'Space Grotesk', sans-serif", label: 'Space Grotesk' },
-  { value: "'Outfit', sans-serif", label: 'Outfit' }
+  { value: "'Outfit', sans-serif", label: 'Outfit' },
+  { value: "'IBM Plex Sans', sans-serif", label: 'IBM Plex Sans' },
+  { value: "'Fira Sans', sans-serif", label: 'Fira Sans' },
+  { value: "'Source Sans Pro', sans-serif", label: 'Source Sans Pro' },
+  { value: "'Noto Sans', sans-serif", label: 'Noto Sans' },
+  { value: "'Crimson Pro', serif", label: 'Crimson Pro' },
+  { value: "monospace", label: 'Monospace' }
 ];
-
 function initFontSelects() {
   document.querySelectorAll('.font-select').forEach(select => {
     FONT_LIBRARY.forEach(font => {
@@ -1107,8 +1137,7 @@ function initFontSelects() {
     });
   });
 }
-
-// === TAB SWITCHING ===
+// ==================== TAB & LAYOUT ====================
 function switchTab(n) {
   document.getElementById('filter-tab').classList.toggle('hidden', n !== 0);
   document.getElementById('grid-tab').classList.toggle('hidden', n !== 1);
@@ -1121,64 +1150,10 @@ function selectLayout(el) {
   const radio = el.querySelector('input[type="radio"]');
   if(radio) radio.checked = true;
 }
-
-// === COLLAPSE TOGGLE ===
-function toggleCollapse(headerEl) {
-  const content = headerEl.nextElementSibling;
-  const icon = headerEl.querySelector('.collapsible-icon');
-  
-  if (content.classList.contains('collapsed')) {
-    content.classList.remove('collapsed');
-    content.style.maxHeight = content.dataset.maxHeight || '2000px';
-    if (icon) icon.style.transform = '';
-  } else {
-    content.dataset.maxHeight = content.scrollHeight + 'px';
-    content.classList.add('collapsed');
-    if (icon) icon.style.transform = 'rotate(-90deg)';
-  }
-}
-
-// === FILTER PREVIEW ===
+// ==================== FILTER PREVIEW ====================
 function updateFilterPreview() {
   const panel = document.getElementById('filter-preview-panel');
   panel.style.backgroundColor = document.getElementById('filter-bar-bg').value;
-  
-  // Apply tag/clear button styles from new general settings
-  const tags = document.querySelectorAll('.active-filter-tag');
-  tags.forEach(tag => {
-    if(document.getElementById('tag-text-color')) tag.style.color = document.getElementById('tag-text-color').value;
-    if(document.getElementById('tag-bg-color')) tag.style.backgroundColor = document.getElementById('tag-bg-color').value;
-    if(document.getElementById('tag-font-size')) tag.style.fontSize = document.getElementById('tag-font-size').value + 'px';
-    if(document.getElementById('tag-font-weight')) tag.style.fontWeight = document.getElementById('tag-font-weight').value;
-    if(document.getElementById('tag-font') && document.getElementById('tag-font').value) tag.style.fontFamily = document.getElementById('tag-font').value;
-  });
-  
-  const clearBtn = document.getElementById('clear-all-btn');
-  if(clearBtn) {
-    clearBtn.textContent = document.getElementById('clear-all-text').value || 'Clear all';
-    if(document.getElementById('clear-text-color')) clearBtn.style.color = document.getElementById('clear-text-color').value;
-    if(document.getElementById('clear-font-size')) clearBtn.style.fontSize = document.getElementById('clear-font-size').value + 'px';
-    if(document.getElementById('clear-font-weight')) clearBtn.style.fontWeight = document.getElementById('clear-font-weight').value;
-    if(document.getElementById('clear-font') && document.getElementById('clear-font').value) clearBtn.style.fontFamily = document.getElementById('clear-font').value;
-  }
-  
-  // Sort by styling
-  const sortLabel = document.getElementById('sort-label-text');
-  if(sortLabel) sortLabel.textContent = document.getElementById('sort-label-text').value || 'Sort by';
-  if(sortLabel && document.getElementById('sort-label-color')) sortLabel.style.color = document.getElementById('sort-label-color').value;
-  if(sortLabel && document.getElementById('sort-label-color')) sortLabel.style.fontFamily = document.getElementById('sort-label-color').value;
-  if(sortLabel && document.getElementById('sort-label-size')) sortLabel.style.fontSize = document.getElementById('sort-label-size').value + 'px';
-  
-  const sortSelect = document.getElementById('sort-select');
-  if(sortSelect) {
-    if(document.getElementById('sort-option-size')) sortSelect.style.fontSize = document.getElementById('sort-option-size').value + 'px';
-    if(document.getElementById('sort-option-weight')) sortSelect.style.fontWeight = document.getElementById('sort-option-weight').value;
-    if(document.getElementById('sort-option-weight') && document.getElementById('sort-option-weight').value) sortSelect.style.fontFamily = document.getElementById('sort-option-weight').value;
-    if(document.getElementById('sort-dropdown-bg')) sortSelect.style.backgroundColor = document.getElementById('sort-dropdown-bg').value;
-    if(document.getElementById('sort-border-color')) sortSelect.style.borderColor = document.getElementById('sort-border-color').value;
-  }
-
-  // Original filter preview logic...
   document.querySelectorAll('[id^="preview-opt-label"]').forEach(el => {
     el.style.fontSize = document.getElementById('opt-font-size').value+'px';
     el.style.textTransform = document.getElementById('opt-transform').value;
@@ -1193,7 +1168,6 @@ function updateFilterPreview() {
     el.style.fontFamily = document.getElementById('val-font').value;
     el.style.fontWeight = document.getElementById('val-weight').value;
   });
-
   const btn = document.getElementById('preview-btn');
   btn.textContent = 'Apply Filters';
   btn.style.fontSize = document.getElementById('btn-font-size').value+'px';
@@ -1203,10 +1177,8 @@ function updateFilterPreview() {
   btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
   btn.style.fontFamily = document.getElementById('btn-font').value;
   btn.style.fontWeight = document.getElementById('btn-weight').value;
-
   syncHex('opt-color'); syncHex('val-color'); syncHex('btn-text-color');
   syncHex('btn-bg-color'); syncHex('filter-bar-bg');
-
   const behavior = document.querySelector('input[name="filterBehavior"]:checked').value;
   const applyBtn = document.getElementById('preview-btn');
   if (behavior === 'auto') {
@@ -1217,36 +1189,43 @@ function updateFilterPreview() {
     document.getElementById('filter-status').textContent = 'Click to apply filters';
   }
 }
-
-// === HEX SYNC ===
 function syncHex(id) {
   const hexEl = document.getElementById(id+'-hex');
   if(hexEl) hexEl.value = document.getElementById(id).value;
 }
-
-// === PRICE LOGIC ===
+// ==================== PRICE LOGIC ====================
 function enforcePriceLogic() {
   const fixed = document.getElementById('show-fixed-price');
   const old = document.getElementById('show-old-price');
   const sale = document.getElementById('show-sale-price');
   const warning = document.getElementById('price-warning');
-  if(fixed.checked) { old.checked = false; sale.checked = false; warning.classList.add('hidden'); return updateProductPreview(); }
-  if(old.checked && !sale.checked) { sale.checked = true; }
+  if(fixed.checked) {
+    old.checked = false;
+    sale.checked = false;
+    warning.classList.add('hidden');
+    return updateProductPreview();
+  }
+  if(old.checked && !sale.checked) {
+    sale.checked = true;
+  }
   warning.classList.add('hidden');
   updateProductPreview();
 }
-
-// === BADGE POSITIONING ===
+// ==================== BADGE POSITIONING ====================
 function updateBadgePositions() {
-  const zones = { 'top-left': document.getElementById('zone-tl'), 'top-right': document.getElementById('zone-tr'), 'bottom-left': document.getElementById('zone-bl'), 'bottom-right': document.getElementById('zone-br') };
+  const zones = {
+    'top-left': document.getElementById('zone-tl'),
+    'top-right': document.getElementById('zone-tr'),
+    'bottom-left': document.getElementById('zone-bl'),
+    'bottom-right': document.getElementById('zone-br')
+  };
+ 
   Object.values(zones).forEach(z => z.innerHTML = '');
-  
   const badges = [
     { show: document.getElementById('show-sale').checked, pos: document.getElementById('sale-position').value, create: createSaleBadge },
     { show: document.getElementById('show-soldout').checked, pos: document.getElementById('soldout-position').value, create: createSoldoutBadge },
     { show: document.getElementById('show-lowstock').checked, pos: document.getElementById('lowstock-position').value, create: createLowStockBadge }
   ];
-  
   const grouped = {};
   badges.filter(b => b.show).forEach(b => {
     if(!grouped[b.pos]) grouped[b.pos] = [];
@@ -1256,12 +1235,12 @@ function updateBadgePositions() {
     if(zones[pos]) els.forEach(el => zones[pos].appendChild(el));
   });
 }
-
 function createSaleBadge() {
   const style = document.getElementById('sale-style').value;
   let text = style === 'percentage' ? '-30%' : style === 'amount' ? '-$20' : style === 'text' ? (document.getElementById('sale-custom-text').value || 'SALE') : (document.getElementById('sale-custom-text').value || 'SALE');
   const div = document.createElement('div');
-  div.className = 'preview-badge'; div.textContent = text;
+  div.className = 'preview-badge';
+  div.textContent = text;
   div.style.backgroundColor = document.getElementById('sale-bg-color').value;
   div.style.color = document.getElementById('sale-text-color').value;
   div.style.fontSize = document.getElementById('sale-font-size').value+'px';
@@ -1273,7 +1252,8 @@ function createSoldoutBadge() {
   const style = document.getElementById('soldout-style').value;
   let text = style === 'soldout' ? 'Sold Out' : style === 'outofstock' ? 'Out of Stock' : (document.getElementById('soldout-custom-text').value || 'Unavailable');
   const div = document.createElement('div');
-  div.className = 'preview-badge'; div.textContent = text;
+  div.className = 'preview-badge';
+  div.textContent = text;
   div.style.backgroundColor = document.getElementById('soldout-bg-color').value;
   div.style.color = document.getElementById('soldout-text-color').value;
   div.style.fontSize = document.getElementById('soldout-font-size').value+'px';
@@ -1284,7 +1264,8 @@ function createSoldoutBadge() {
 function createLowStockBadge() {
   const threshold = document.getElementById('lowstock-threshold').value;
   const div = document.createElement('div');
-  div.className = 'preview-badge'; div.textContent = `Only ${Math.max(1, Math.floor(threshold/2))} left!`;
+  div.className = 'preview-badge';
+  div.textContent = `Only ${Math.max(1, Math.floor(threshold/2))} left!`;
   div.style.backgroundColor = document.getElementById('lowstock-bg-color').value;
   div.style.color = document.getElementById('lowstock-text-color').value;
   div.style.fontSize = document.getElementById('lowstock-font-size').value+'px';
@@ -1292,16 +1273,19 @@ function createLowStockBadge() {
   div.style.fontWeight = document.getElementById('lowstock-weight').value;
   return div;
 }
-
-// === WISHLIST PREVIEW ===
+// ==================== WISHLIST PREVIEW ====================
 function updateWishlistPreview() {
   const show = document.getElementById('show-wishlist').checked;
   const type = document.getElementById('wishlist-type').value;
   const pos = document.getElementById('wishlist-position').value;
+ 
   const inCard = document.getElementById('wishlist-in-card');
   const imgTR = document.getElementById('wishlist-image-overlay');
   const imgTL = document.getElementById('wishlist-image-overlay-tl');
-  inCard.classList.add('hidden'); imgTR.classList.add('hidden'); imgTL.classList.add('hidden');
+ 
+  inCard.classList.add('hidden');
+  imgTR.classList.add('hidden');
+  imgTL.classList.add('hidden');
   if(!show) return;
   const fontSize = document.getElementById('wishlist-font-size').value+'px';
   const fontFamily = document.getElementById('wishlist-font').value;
@@ -1318,85 +1302,89 @@ function updateWishlistPreview() {
     const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
     const textHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
     if(pos === 'in-card') { inCard.innerHTML = textHTML; inCard.classList.remove('hidden'); inCard.style.background = bgColor; inCard.style.padding = '0.2rem 0.4rem'; }
-    else if(pos === 'image-top-right') { imgTR.innerHTML = textHTML; imgTR.classList.remove('hidden'); imgTR.className = 'absolute top-1.5 right-1.5 z-25 px-1.5 py-1.5 rounded shadow text-[10px]'; imgTR.style.background = bgColor; }
-    else { imgTL.innerHTML = textHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 px-1.5 py-1.5 rounded shadow text-[10px]'; imgTL.style.background = bgColor; }
+    else if(pos === 'image-top-right') { imgTR.innerHTML = textHTML; imgTR.classList.remove('hidden'); imgTR.className = 'absolute top-1.5 right-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTR.style.background = bgColor; }
+    else { imgTL.innerHTML = textHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTL.style.background = bgColor; }
   }
 }
-
-// === QUICK VIEW PREVIEW ===
+// ==================== QUICK VIEW PREVIEW ====================
 function updateQuickViewPreview() {
   const show = document.getElementById('show-quickview').checked;
   const type = document.getElementById('quickview-type').value;
   const pos = document.getElementById('quickview-position').value;
+ 
   const inCard = document.getElementById('quickview-in-card');
   const imgTR = document.getElementById('quickview-image-overlay-tr');
   const imgTL = document.getElementById('quickview-image-overlay-tl');
+ 
   [inCard, imgTR, imgTL].forEach(el => el.classList.add('hidden'));
   if(!show) return;
-
+ 
   const fontFamily = document.getElementById('quickview-font').value;
   const fontSize = document.getElementById('quickview-font-size').value + 'px';
   const fontWeight = document.getElementById('quickview-weight').value;
   const textColor = document.getElementById('quickview-text-color').value;
   const bgColor = document.getElementById('quickview-bg-color').value;
   const transform = document.getElementById('quickview-transform').value;
-
+ 
   let contentHTML = '';
   if (type === 'eye') {
     contentHTML = `<i class="fas fa-eye" style="font-size:${fontSize}; color:${textColor}"></i>`;
   } else {
     const displayText = type === 'custom' ? (document.getElementById('quickview-custom-text').value || 'Quick View') : 'Quick View';
-    contentHTML = `<span style="font-size:${fontSize}; font-family:${fontFamily}; font-weight:${fontWeight}; color:${textColor}; text-transform:${transform}">${displayText}</span>';
+    contentHTML = `<span style="font-size:${fontSize}; font-family:${fontFamily}; font-weight:${fontWeight}; color:${textColor}; text-transform:${transform}">${displayText}</span>`;
   }
-
+ 
   if (pos === 'in-card') {
-    inCard.innerHTML = contentHTML; inCard.classList.remove('hidden');
+    inCard.innerHTML = contentHTML;
+    inCard.classList.remove('hidden');
     inCard.style.backgroundColor = bgColor;
     inCard.style.padding = type === 'button' || type === 'custom' ? '0.3rem 1rem' : '0.35rem';
     inCard.style.borderRadius = type === 'button' || type === 'custom' ? '9999px' : '9999px';
   } else if (pos === 'image-top-right') {
-    imgTR.innerHTML = contentHTML; imgTR.classList.remove('hidden');
+    imgTR.innerHTML = contentHTML;
+    imgTR.classList.remove('hidden');
     imgTR.style.backgroundColor = bgColor;
-    imgTR.className = type === 'eye' ? 'absolute top-2 right-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' : 'absolute top-2 right-2 z-25 px-4 py-2 rounded-xl shadow text-xs transition-all';
+    imgTR.className = type === 'eye' 
+      ? 'absolute top-2 right-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' 
+      : 'absolute top-2 right-2 z-25 px-4 py-2 rounded-2xl shadow text-xs transition-all';
   } else if (pos === 'image-top-left') {
-    imgTL.innerHTML = contentHTML; imgTL.classList.remove('hidden');
+    imgTL.innerHTML = contentHTML;
+    imgTL.classList.remove('hidden');
     imgTL.style.backgroundColor = bgColor;
-    imgTL.className = type === 'eye' ? 'absolute top-2 left-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' : 'absolute top-2 left-2 z-25 px-4 py-2 rounded-xl shadow text-xs transition-all';
+    imgTL.className = type === 'eye' 
+      ? 'absolute top-2 left-2 z-25 w-9 h-9 flex items-center justify-center rounded-2xl shadow transition-all' 
+      : 'absolute top-2 left-2 z-25 px-4 py-2 rounded-2xl shadow text-xs transition-all';
   }
 }
-
-// === PRODUCT PREVIEW ===
+// ==================== PRODUCT PREVIEW ====================
 function formatPrice(basePrice) {
   let price = parseFloat(basePrice);
   if(document.getElementById('round-up').checked) price = Math.ceil(price);
   if(document.getElementById('hide-decimal').checked) price = Math.round(price);
   return '$' + price.toFixed(document.getElementById('hide-decimal').checked ? 0 : 2);
 }
-
 function updateProductPreview() {
   const card = document.getElementById('product-preview');
   const align = document.getElementById('content-align').value;
   const content = document.getElementById('preview-content');
   
   // Update Grid Background Color (surrounding the card)
-  const gridWrapper = document.getElementById('product-grid-wrapper');
+  const gridWrapper = document.getElementById('preview-grid-wrapper');
   gridWrapper.style.backgroundColor = document.getElementById('grid-bg-color').value;
   
   card.style.backgroundColor = document.getElementById('card-bg-color').value;
   card.style.borderColor = document.getElementById('card-border-color').value;
   card.style.borderRadius = document.getElementById('card-radius').value+'px';
-  content.textAlign = align;
-
+  content.style.textAlign = align;
+ 
   const priceBlock = document.getElementById('preview-price-block');
   priceBlock.style.justifyContent = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
-
+ 
   const ratingContainer = document.getElementById('preview-rating-container');
   ratingContainer.style.alignItems = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
-
   document.getElementById('preview-image-container').style.borderRadius = document.getElementById('image-radius').value+'px';
   const img = document.getElementById('preview-image');
   img.classList.toggle('group-hover:scale-105', document.getElementById('hover-zoom').checked);
-
   // Title
   const title = document.getElementById('preview-title');
   title.style.fontSize = document.getElementById('title-font-size').value+'px';
@@ -1404,7 +1392,6 @@ function updateProductPreview() {
   title.style.color = document.getElementById('title-color').value;
   title.style.fontFamily = document.getElementById('title-font').value;
   title.style.fontWeight = document.getElementById('title-weight').value;
-
   // Vendor
   const vendor = document.getElementById('preview-vendor');
   vendor.classList.toggle('hidden', !document.getElementById('show-vendor').checked);
@@ -1413,39 +1400,34 @@ function updateProductPreview() {
   vendor.style.fontFamily = document.getElementById('vendor-font').value;
   vendor.style.fontWeight = document.getElementById('vendor-weight').value;
   vendor.style.textTransform = document.getElementById('vendor-transform').value;
-
   // Rating
   const showRating = document.getElementById('show-rating').checked;
   ratingContainer.classList.toggle('hidden', !showRating);
   if(showRating) {
-    document.getElementById('preview-rating').innerHTML = document.getElementById('rating-type').value === 'star' ? '★★★★☆☆' : '<span class="text-gray-700 font-semibold text-xs">4.5/5</span>';
+    document.getElementById('preview-rating').innerHTML = document.getElementById('rating-type').value === 'star' ? '★★★★☆' : '<span class="text-gray-700 font-semibold">4.5/5</span>';
     document.getElementById('preview-review-count').classList.toggle('hidden', !document.getElementById('show-review-count').checked);
   }
-
   // Prices
   const hideOpt = document.getElementById('hide-price').value;
   let hidePrices = hideOpt !== 'none';
   document.getElementById('preview-price-block').classList.toggle('hidden', hidePrices);
-
+ 
   if(!hidePrices) {
     const fp = document.getElementById('preview-fixed-price');
     const op = document.getElementById('preview-old-price');
     const sp = document.getElementById('preview-sale-price');
-    
     fp.classList.toggle('hidden', !document.getElementById('show-fixed-price').checked);
     fp.textContent = formatPrice(59);
     fp.style.fontSize = document.getElementById('fixed-price-font').value+'px';
     fp.style.color = document.getElementById('fixed-price-color').value;
     fp.style.fontFamily = document.getElementById('fixed-price-font-family').value;
     fp.style.fontWeight = document.getElementById('fixed-price-weight').value;
-    
     op.classList.toggle('hidden', !document.getElementById('show-old-price').checked);
     op.textContent = formatPrice(89);
     op.style.fontSize = document.getElementById('old-price-font').value+'px';
     op.style.color = document.getElementById('old-price-color').value;
     op.style.fontFamily = document.getElementById('old-price-font-family').value;
     op.style.fontWeight = document.getElementById('old-price-weight').value;
-    
     sp.classList.toggle('hidden', !document.getElementById('show-sale-price').checked);
     sp.textContent = formatPrice(49);
     sp.style.fontSize = document.getElementById('sale-price-font').value+'px';
@@ -1453,7 +1435,6 @@ function updateProductPreview() {
     sp.style.fontFamily = document.getElementById('sale-price-font-family').value;
     sp.style.fontWeight = document.getElementById('sale-price-weight').value;
   }
-
   // ATC
   const atc = document.getElementById('preview-atc-btn');
   atc.classList.toggle('hidden', !document.getElementById('show-atc').checked);
@@ -1464,30 +1445,33 @@ function updateProductPreview() {
   atc.style.fontFamily = document.getElementById('atc-font').value;
   atc.style.fontWeight = document.getElementById('atc-weight').value;
   atc.style.borderRadius = document.getElementById('atc-radius').value+'px';
-
+ 
   updateBadgePositions();
   updateWishlistPreview();
   updateQuickViewPreview();
-
+ 
   ['title-color','vendor-color','fixed-price-color','old-price-color','sale-price-color',
    'atc-text-color','atc-bg-color','sale-text-color','sale-bg-color',
    'soldout-text-color','soldout-bg-color','lowstock-text-color','lowstock-bg-color',
    'card-bg-color','card-border-color','wishlist-text-color','wishlist-bg-color',
-   'quickview-text-color','quickview-bg-color'].forEach(syncHex);
+   'quickview-text-color','quickview-bg-color','grid-bg-color'].forEach(syncHex);
 }
-
-// === MODAL WISHLIST ===
+// ==================== MODAL WISHLIST (for Quick View) ====================
 function updateModalWishlist() {
   const show = document.getElementById('show-wishlist').checked;
   const modalOverlay = document.getElementById('modal-wishlist-image-overlay');
-  if (!show) { modalOverlay.classList.add('hidden'); return; }
+  if (!show) {
+    modalOverlay.classList.add('hidden');
+    return;
+  }
   const type = document.getElementById('wishlist-type').value;
   const fontSize = document.getElementById('wishlist-font-size').value + 'px';
   const fontFamily = document.getElementById('wishlist-font').value;
   const fontWeight = document.getElementById('wishlist-weight').value;
   const textColor = document.getElementById('wishlist-text-color').value;
-  const bgColor = document.getElementById('wishlist-bg-color).value;
+  const bgColor = document.getElementById('wishlist-bg-color').value;
   const transform = document.getElementById('wishlist-transform').value;
+ 
   let contentHTML = '';
   if (type === 'heart') {
     contentHTML = `<i class="fas fa-heart" style="font-size:${fontSize};color:${textColor}"></i>`;
@@ -1495,23 +1479,24 @@ function updateModalWishlist() {
   } else {
     const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
     contentHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
-    modalOverlay.className = 'absolute top-6 right-6 z-30 px-5 py-2.5 rounded-2xl shadow-md text-sm transition-all opacity-0 group-hover:opacity-100';
+    modalOverlay.className = 'absolute top-6 right-6 z-30 px-5 py-2 rounded-3xl shadow-md text-sm transition-all opacity-0 group-hover:opacity-100';
   }
   modalOverlay.innerHTML = contentHTML;
   modalOverlay.style.backgroundColor = bgColor;
   modalOverlay.classList.remove('hidden');
 }
-
-// === QUICK VIEW MODAL ===
+// ==================== QUICK VIEW MODAL ====================
 function showQuickViewModal() {
   const modal = document.getElementById('quickview-modal');
   modal.style.display = 'flex';
+ 
   document.getElementById('modal-preview-image').src = document.getElementById('preview-image').src;
   document.getElementById('modal-vendor').innerHTML = document.getElementById('preview-vendor').innerHTML;
   document.getElementById('modal-title').innerHTML = document.getElementById('preview-title').innerHTML;
   document.getElementById('modal-rating').innerHTML = document.getElementById('preview-rating').innerHTML;
   document.getElementById('modal-review-count').innerHTML = document.getElementById('preview-review-count').innerHTML || '';
   document.getElementById('modal-price-block').innerHTML = document.getElementById('preview-price-block').innerHTML;
+ 
   const previewAtc = document.getElementById('preview-atc-btn');
   const modalAtc = document.getElementById('modal-atc-btn');
   modalAtc.textContent = previewAtc.textContent || 'Add to Cart';
@@ -1521,25 +1506,42 @@ function showQuickViewModal() {
   modalAtc.style.fontFamily = previewAtc.style.fontFamily || 'inherit';
   modalAtc.style.fontWeight = previewAtc.style.fontWeight || '600';
   modalAtc.style.borderRadius = previewAtc.style.borderRadius || '9999px';
+ 
   updateModalWishlist();
 }
-
 function closeQuickView() {
   document.getElementById('quickview-modal').style.display = 'none';
-  // Also restore body scroll
-  document.body.style.overflow = '';
 }
-
-// === SLIDERS ===
+// ==================== TOGGLES ====================
+function toggleSaleCustomField() {
+  const isCustom = document.getElementById('sale-style').value === 'text' || document.getElementById('sale-style').value === 'other';
+  document.getElementById('sale-custom-field').classList.toggle('hidden', !isCustom);
+  updateProductPreview();
+}
+function toggleSoldoutCustomField() {
+  const isCustom = document.getElementById('soldout-style').value === 'other';
+  document.getElementById('soldout-custom-field').classList.toggle('hidden', !isCustom);
+  updateProductPreview();
+}
+function toggleWishlistCustomField() {
+  document.getElementById('wishlist-custom-field').classList.toggle('hidden', document.getElementById('wishlist-type').value !== 'custom');
+  updateProductPreview();
+}
+function toggleQuickViewCustomField() {
+  document.getElementById('quickview-custom-field').classList.toggle('hidden', document.getElementById('quickview-type').value !== 'custom');
+  updateProductPreview();
+}
+// ==================== SLIDERS ====================
 function setupSliders() {
   const sliderMap = {
     'opt-font-size': 'opt-font-val', 'val-font-size': 'val-font-val', 'btn-font-size': 'btn-font-val',
     'btn-radius': 'btn-radius-val', 'products-per-page': 'perpage-val', 'title-font-size': 'title-font-val',
     'vendor-font-size': 'vendor-font-val', 'fixed-price-font': 'fixed-font-val', 'old-price-font': 'old-font-val',
-    'sale-price-font': 'sale-font-val', 'atc-font-size': 'atc-font-val',
-    'image-radius': 'img-radius-val', 'card-radius': 'card-radius-val',
+    'sale-price-font': 'sale-font-val', 'atc-font-size': 'atc-font-val', 'image-radius': 'img-radius-val',
     'soldout-font-size': 'soldout-font-size-val', 'sale-font-size': 'sale-font-size-val',
-    'lowstock-font-size': 'lowstock-font-size-val', 'quickview-font-size': 'quickview-font-size-val'
+    'lowstock-font-size': 'lowstock-font-size-val', 'card-radius': 'card-radius-val',
+    'wishlist-font-size': 'wishlist-font-size-val',
+    'quickview-font-size': 'quickview-font-size-val'
   };
   Object.entries(sliderMap).forEach(([id, valId]) => {
     const el = document.getElementById(id);
@@ -1554,8 +1556,15 @@ function setupSliders() {
   });
 }
 
-// === SAVE/OPEN STOREFRONT ===
+// ====================================================================
+// 🔗 LOCALSTORAGE SYNC BRIDGE - Connects to StoreFront.html
+// ====================================================================
 const STORAGE_KEY = 'custom_design_config';
+
+/**
+ * Collects ALL settings from the entire form into one JSON object
+ * This is what gets saved to localStorage and read by StoreFront.html
+ */
 function collectAllSettings() {
   const getVal = (id) => {
     const el = document.getElementById(id);
@@ -1567,94 +1576,76 @@ function collectAllSettings() {
   };
 
   return {
+    // ===== GRID SETTINGS =====
     gridBgColor: getVal('grid-bg-color'),
     itemsPerRow: getVal('items-row'),
     productsPerPage: getVal('products-per-page'),
     pagination: getVal('pagination'),
-    
-    // New: Selected Value / Toolbar settings
-    tagTextColor: getVal('tag-text-color'),
-    tagBgColor: getVal('tag-bg-color'),
-    tagFontSize: getVal('tag-font-size'),
-    tagFontWeight: getVal('tag-font-weight'),
-    tagFont: getVal('tag-font'),
-    clearAllText: getVal('clear-all-text'),
-    clearAllTextColor: getVal('clear-text-color'),
-    clearAllFontSize: getVal('clear-font-size'),
-    clearAllFontWeight: getVal('clear-font-weight'),
-    clearAllBg: getVal('clear-bg-color'),
-    clearAllFont: getVal('clear-font'),
-    
-    sortLabelText: getVal('sort-label-text'),
-    sortLabelColor: getVal('sort-label-color'),
-    sortLabelFont: getVal('sort-label-color'), // Intentionally duplicate for consistency
-    
-    sortDropdownBg: getVal('sort-dropdown-bg'),
-    sortBorderColor: getVal('sort-border-color'),
-    sortOptionSize: getVal('sort-option-size'),
-    sortOptionWeight: getVal('sort-option-weight'),
-    sortOptionFont: getVal('sort-option-weight'),
-    
-    // Card settings
+
+    // ===== CARD SETTINGS =====
     cardBgColor: getVal('card-bg-color'),
     cardBorderColor: getVal('card-border-color'),
     cardRadius: getVal('card-radius'),
     contentAlign: getVal('content-align'),
+
+    // ===== IMAGE SETTINGS =====
     imageRadius: getVal('image-radius'),
     imageRatio: getVal('image-ratio'),
     imageShape: getVal('image-shape'),
     hoverZoom: getVal('hover-zoom'),
-    showSecondImage: getVal('hover-second'),
-    
-    // Title
+    hoverSecondImage: getVal('hover-second'),
+
+    // ===== TITLE =====
     titleFont: getVal('title-font'),
     titleFontSize: getVal('title-font-size'),
     titleColor: getVal('title-color'),
     titleWeight: getVal('title-weight'),
     titleTransform: getVal('title-transform'),
-    
-    // Vendor
+
+    // ===== VENDOR =====
     showVendor: getVal('show-vendor'),
     vendorFont: getVal('vendor-font'),
     vendorFontSize: getVal('vendor-font-size'),
     vendorColor: getVal('vendor-color'),
     vendorWeight: getVal('vendor-weight'),
     vendorTransform: getVal('vendor-transform'),
-    
-    // Rating
+
+    // ===== RATING =====
     showRating: getVal('show-rating'),
     ratingType: getVal('rating-type'),
     showReviewCount: getVal('show-review-count'),
-    
-    // Prices
+
+    // ===== PRICES =====
     hidePrice: getVal('hide-price'),
     hideDecimal: getVal('hide-decimal'),
     roundUp: getVal('round-up'),
+    
     showFixedPrice: getVal('show-fixed-price'),
     fixedPriceFont: getVal('fixed-price-font-family'),
     fixedPriceSize: getVal('fixed-price-font'),
     fixedPriceColor: getVal('fixed-price-color'),
     fixedPriceWeight: getVal('fixed-price-weight'),
+    
     showOldPrice: getVal('show-old-price'),
     oldPriceFont: getVal('old-price-font-family'),
     oldPriceSize: getVal('old-price-font'),
     oldPriceColor: getVal('old-price-color'),
     oldPriceWeight: getVal('old-price-weight'),
+    
     showSalePrice: getVal('show-sale-price'),
     salePriceFont: getVal('sale-price-font-family'),
     salePriceSize: getVal('sale-price-font'),
     salePriceColor: getVal('sale-price-color'),
     salePriceWeight: getVal('sale-price-weight'),
-    
-    // Sale Badge
+
+    // ===== SALE BADGE =====
     showSaleBadge: getVal('show-sale'),
     saleBadgeStyle: getVal('sale-style'),
     saleBadgeText: (() => {
       const s = document.getElementById('sale-style').value;
-      if(s === 'percentage') return '-30%';
-      if(s === 'amount') return '-$20';
-      if(s === 'text') return (document.getElementById('sale-custom-text').value || 'SALE');
-      if(s === 'other') return (document.getElementById('sale-custom-text').value || 'OTHER');
+      if (s === 'percentage') return '-30%';
+      if (s === 'amount') return '-$20';
+      return document.getElementById('sale-custom-text').value || 'SALE';
     })(),
     saleBadgeBg: getVal('sale-bg-color'),
     saleBadgeColor: getVal('sale-text-color'),
@@ -1662,14 +1653,15 @@ function collectAllSettings() {
     saleBadgeWeight: getVal('sale-weight'),
     saleBadgePos: getVal('sale-position'),
     saleBadgeFont: getVal('sale-badge-font'),
-    
+
+    // ===== SOLD OUT BADGE =====
     showSoldOut: getVal('show-soldout'),
     soldOutStyle: getVal('soldout-style'),
     soldOutText: (() => {
       const s = document.getElementById('soldout-style').value;
-      if(s === 'soldout') return 'Sold Out';
-      if(s === 'outofstock') return 'Out Of Stock';
-      if(s === 'other') return (document.getElementById('soldout-custom-text').value || 'Unavailable');
+      if (s === 'soldout') return 'Sold Out';
+      if (s === 'outofstock') return 'Out of Stock';
+      return document.getElementById('soldout-custom-text').value || 'Unavailable';
     })(),
     soldOutBg: getVal('soldout-bg-color'),
     soldOutColor: getVal('soldout-text-color'),
@@ -1677,7 +1669,8 @@ function collectAllSettings() {
     soldOutWeight: getVal('soldout-weight'),
     soldOutPos: getVal('soldout-position'),
     soldOutFont: getVal('soldout-badge-font'),
-    
+
+    // ===== LOW STOCK BADGE =====
     showLowStock: getVal('show-lowstock'),
     lowStockThreshold: getVal('lowstock-threshold'),
     lowStockBg: getVal('lowstock-bg-color'),
@@ -1686,8 +1679,8 @@ function collectAllSettings() {
     lowStockWeight: getVal('lowstock-weight'),
     lowStockPos: getVal('lowstock-position'),
     lowStockFont: getVal('lowstock-badge-font'),
-    
-    // ATC
+
+    // ===== ADD TO CART BUTTON =====
     showAtc: getVal('show-atc'),
     atcFont: getVal('atc-font'),
     atcFontSize: getVal('atc-font-size'),
@@ -1696,20 +1689,20 @@ function collectAllSettings() {
     atcWeight: getVal('atc-weight'),
     atcTransform: getVal('atc-transform'),
     atcRadius: getVal('atc-radius'),
-    
-    // Wishlist
+
+    // ===== WISHLIST =====
     showWishlist: getVal('show-wishlist'),
     wishlistType: getVal('wishlist-type'),
     wishlistPosition: getVal('wishlist-position'),
     wishlistBg: getVal('wishlist-bg-color'),
-    wishlistColor: getVal('unlock-all-text-color'),
+    wishlistColor: getVal('wishlist-text-color'),
     wishlistFont: getVal('wishlist-font'),
     wishlistFontSize: getVal('wishlist-font-size'),
     wishlistWeight: getVal('wishlist-weight'),
     wishlistTransform: getVal('wishlist-transform'),
     wishlistCustomText: getVal('wishlist-custom-text'),
-    
-    // Quick View
+
+    // ===== QUICK VIEW =====
     showQuickView: getVal('show-quickview'),
     quickViewType: getVal('quickview-type'),
     quickViewPosition: getVal('quickview-position'),
@@ -1717,29 +1710,29 @@ function collectAllSettings() {
     quickViewColor: getVal('quickview-text-color'),
     quickViewFont: getVal('quickview-font'),
     quickViewFontSize: getVal('quickview-font-size'),
-    quickViewWeight: getVal('quickview-weight),
+    quickViewWeight: getVal('quickview-weight'),
     quickViewTransform: getVal('quickview-transform'),
     quickViewCustomText: getVal('quickview-custom-text'),
-    
-    // Filter bar
+
+    // ===== FILTER BAR (for sidebar) =====
     filterBarBg: getVal('filter-bar-bg'),
     stickyFilter: getVal('sticky-filter'),
     
-    // Filter option labels
+    // ===== FILTER OPTION LABELS =====
     optLabelFont: getVal('opt-font'),
     optLabelSize: getVal('opt-font-size'),
     optLabelColor: getVal('opt-color'),
-    optLabelWeight: getVal('opt-label-weight'),
+    optLabelWeight: getVal('opt-weight'),
     optLabelTransform: getVal('opt-transform'),
     
-    // Filter values
+    // ===== FILTER VALUES =====
     valFont: getVal('val-font'),
     valSize: getVal('val-font-size'),
     valColor: getVal('val-color'),
     valWeight: getVal('val-weight'),
     valTransform: getVal('val-transform'),
     
-    // Filter button
+    // ===== FILTER BUTTON =====
     btnFont: getVal('btn-font'),
     btnFontSize: getVal('btn-font-size'),
     btnTextColor: getVal('btn-text-color'),
@@ -1748,40 +1741,62 @@ function collectAllSettings() {
     btnTransform: getVal('btn-transform'),
     btnRadius: getVal('btn-radius'),
     
-    // Filter behavior
-    filterBehavior: document.querySelector('input[name="filterBehavior"]:checked)?.value || 'manual'
+    // ===== FILTER BEHAVIOR =====
+    filterBehavior: document.querySelector('input[name="filterBehavior"]:checked')?.value || 'manual'
   };
 }
 
+/**
+ * Saves current state to localStorage
+ */
 function saveToLocalStorage() {
   try {
     const config = collectAllSettings();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    console.log('✅ Config saved');
+    console.log('✅ Config saved to localStorage (' + Object.keys(config).length + ' settings)');
+    console.log('📦 Data:', config);
+    
+    // Dispatch event for same-tab listeners (if any)
     window.dispatchEvent(new CustomEvent('configSaved', { detail: config }));
     return true;
-  } catch(e) { console.error('❌ Error:', e); return false; }
+  } catch (e) {
+    console.error('❌ Error saving config:', e);
+    return false;
+  }
 }
 
+/**
+ * Opens StoreFront.html in a new tab after saving
+ */
 function openStoreFront() {
-  saveToLocalStorage();
-  window.open('StoreFront.html', '_blank');
+  const saved = saveToLocalStorage();
+  if (saved) {
+    window.open('StoreFront.html', '_blank');
+  } else {
+    alert('Error saving settings. Please try again.');
+  }
 }
 
+/**
+ * Override the save button action
+ */
 window.saveSettings = function() {
-  if(saveToLocalStorage()) {
-    alert('✅ Changes saved!\n\nStoreFront.html will automatically load these settings.');
+  if (saveToLocalStorage()) {
+    alert('✅ All changes saved!\n\nStoreFront.html will automatically load these settings.\n\n💡 Tip: Open both files in separate tabs for live preview.');
   }
 };
 
-// Debounced auto-save
+// Debounced auto-save (saves 300ms after user stops changing things)
 let autoSaveTimeout;
 function debouncedAutoSave() {
   clearTimeout(autoSaveTimeout);
-  autoSaveTimeout = setTimeout(saveToLocalStorage, 300);
+  autoSaveTimeout = setTimeout(() => {
+    saveToLocalStorage();
+    // Visual feedback - subtle flash on save button could go here
+  }, 300);
 }
 
-// === INIT ===
+// ==================== INIT ====================
 window.onload = () => {
   initFontSelects();
   setupSliders();
@@ -1789,7 +1804,7 @@ window.onload = () => {
   // Attach original preview updaters
   document.querySelectorAll('#filter-tab input, #filter-tab select').forEach(el => {
     el.addEventListener('input', updateFilterPreview);
-    el.addEventListener('new-item propertychange', updateFilterPreview);
+    el.addEventListener('change', updateFilterPreview);
   });
   document.querySelectorAll('#grid-tab input, #grid-tab select').forEach(el => {
     el.addEventListener('input', updateProductPreview);
@@ -1805,31 +1820,43 @@ window.onload = () => {
   document.getElementById('sale-style')?.addEventListener('change', toggleSaleCustomField);
   document.getElementById('soldout-style')?.addEventListener('change', toggleSoldoutCustomField);
   document.getElementById('wishlist-type')?.addEventListener('change', toggleWishlistCustomField);
-  document.getElementById('clear-all-text')?.addEventListener('input', updateProductPreview);
-  document.getElementById('clear-all-text')?.addEventListener('input', updateProductPreview);
-  document.getElementById('sort-label-text')?.addEventListener('input', updateProductPreview);
-  document.getElementById('sort-label-color')?.addEventListener('input', updateProductPreview);
-  document.getElementById('sort-option-size')?.addEventListener('input', updateProductPreview);
-  document.getElementById('sort-option-weight')?.addEventListener('change', updateProductPreview);
-  [/* ... other existing listeners ... */
+  document.getElementById('quickview-type')?.addEventListener('change', toggleQuickViewCustomField);
   
+  // Custom text field listeners
+  ['sale-custom-text','soldout-custom-text','wishlist-custom-text','quickview-custom-text'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateProductPreview);
+  });
+
+  // Quick view click handlers
+  const qvCard = document.getElementById('quickview-in-card');
+  const qvTR = document.getElementById('quickview-image-overlay-tr');
+  const qvTL = document.getElementById('quickview-image-overlay-tl');
+  [qvCard, qvTR, qvTL].forEach(el => {
+    if (el) el.addEventListener('click', showQuickViewModal);
+  });
+
+  // Initialize toggles
+  toggleSaleCustomField(); 
+  toggleSoldoutCustomField(); 
+  toggleWishlistCustomField();
+  toggleQuickViewCustomField();
+  
+  // Initial preview render
+  updateFilterPreview(); 
+  updateProductPreview();
+
   // 🔗 CRITICAL: Attach auto-save to ALL inputs for live sync
   document.querySelectorAll('#filter-tab input, #filter-tab select, #grid-tab input, #grid-tab select').forEach(el => {
     el.addEventListener('input', debouncedAutoSave);
     el.addEventListener('change', debouncedAutoSave);
   });
 
-  // Initial render
-  setTimeout(() => {
-    toggleCollapse(document.querySelector('.settings-group:nth-child(2) .collapsible-header')); // Expand Product Grid by default
-    toggleCollapse(document.querySelector('.settings-group:last-child .collapsible-header')); // Collapse Action Buttons by default
-    updateFilterPreview(); 
-    updateProductPreview();
-    saveToLocalStorage(); // Initial save after 2 seconds
-  }, 2000);
+  // Initial save after 2 seconds (so StoreFront can pick it up on first load)
+  setTimeout(saveToLocalStorage, 2000);
 
   console.log('🎨 Custom Design Editor loaded');
-  console.log('🔗 Live Sync: ON');
+  console.log('🔗 Live Sync: ON (saves to localStorage key: "' + STORAGE_KEY + '")');
+  console.log('💡 Open StoreFront.html in another tab to see live updates!');
 };
 </script>
 </body>
