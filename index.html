@@ -81,7 +81,7 @@
    
     .config-box {
       background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;
-      margin-bottom: 1rem; /* increased spacing between sections */
+      margin-bottom: 1rem;
     }
     .preview-sticky { position: sticky; top: 16px; }
    
@@ -129,13 +129,29 @@
       border-radius: 8px;
       transition: background-color 0.3s ease;
     }
+
+    /* Sync status indicator */
+    .sync-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body class="bg-gray-100 antialiased">
 <div class="max-w-7xl mx-auto my-5 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
   <!-- Header -->
   <div class="flex justify-between items-center px-8 py-3 border-b border-gray-200 bg-gray-50/60">
-    <h1 class="text-lg font-bold text-gray-900 tracking-tight">Custom Design</h1>
+    <div class="flex items-center gap-3">
+      <h1 class="text-lg font-bold text-gray-900 tracking-tight">Custom Design</h1>
+      <div class="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+        <div class="sync-dot"></div>
+        <span>Live Sync Active</span>
+      </div>
+    </div>
     <div class="flex gap-1 bg-gray-200/80 p-1 rounded-md">
       <button onclick="switchTab(0)" id="tab-filter" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all tab-active">Filter Design</button>
       <button onclick="switchTab(1)" id="tab-grid" class="tab-button px-4 py-1.5 text-sm font-medium rounded transition-all text-gray-600 hover:text-gray-900">Product Grid & Card</button>
@@ -144,7 +160,7 @@
   <!-- ==================== FILTER DESIGN TAB ==================== -->
   <div id="filter-tab" class="tab-content">
     <div class="flex gap-5 p-5 bg-gray-50/50">
-      <div class="w-2/3 space-y-4"> <!-- increased spacing -->
+      <div class="w-2/3 space-y-4">
         <!-- Filter Layout -->
         <div class="config-box">
           <h2 class="section-title mb-1">Filter Layout</h2>
@@ -449,7 +465,7 @@
   <!-- ==================== PRODUCT GRID & CARD TAB ==================== -->
   <div id="grid-tab" class="tab-content hidden">
     <div class="flex gap-5 p-5 bg-gray-50/50">
-      <div class="w-2/3 space-y-3.5"> <!-- increased spacing -->
+      <div class="w-2/3 space-y-3.5">
        
         <!-- Desktop Grid -->
         <div class="config-box">
@@ -557,7 +573,7 @@
               <option value="other">Other</option>
             </select></div>
           </div>
-          <div id="sale-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300"> <!-- expanded spacing -->
+          <div id="sale-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
             <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="sale-custom-text" value="SALE" class="w-36 micro-select"></div>
           </div>
         </div>
@@ -600,7 +616,7 @@
               <option value="other">Custom</option>
             </select></div>
           </div>
-          <div id="soldout-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300"> <!-- expanded spacing -->
+          <div id="soldout-custom-field" class="hidden mt-3 pl-2.5 border-l-2 border-gray-300">
             <div class="ctrl-row mb-0"><label class="min-w-[80px]">Custom Text</label><input type="text" id="soldout-custom-text" value="Unavailable" class="w-36 micro-select"></div>
           </div>
         </div>
@@ -1067,10 +1083,19 @@
       </div>
     </div>
   </div>
-  <div class="flex justify-end px-6 py-3 border-t border-gray-200 bg-gray-50/60">
+  
+  <!-- UPDATED FOOTER WITH PREVIEW BUTTON -->
+  <div class="flex justify-end px-6 py-3 border-t border-gray-200 bg-gray-50/60 gap-3">
+    <button onclick="openStoreFront()" class="px-6 py-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-lg transition-all shadow-sm flex items-center gap-2">
+      <i class="fas fa-external-link-alt text-xs"></i> Preview Storefront
+    </button>
     <button onclick="saveSettings()" class="px-7 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition-all shadow-sm">Save Changes</button>
   </div>
 </div>
+
+<!-- ==================================================================== -->
+<!-- CONNECTION SCRIPT: Saves ALL settings to localStorage for StoreFront   -->
+<!-- ==================================================================== -->
 <script>
 // ==================== FONT LIBRARY ====================
 const FONT_LIBRARY = [
@@ -1144,7 +1169,7 @@ function updateFilterPreview() {
     el.style.fontWeight = document.getElementById('val-weight').value;
   });
   const btn = document.getElementById('preview-btn');
-  btn.textContent = document.getElementById('btn-text').value || 'Apply Filters';
+  btn.textContent = 'Apply Filters';
   btn.style.fontSize = document.getElementById('btn-font-size').value+'px';
   btn.style.borderRadius = document.getElementById('btn-radius').value+'px';
   btn.style.textTransform = document.getElementById('btn-transform').value;
@@ -1465,7 +1490,6 @@ function showQuickViewModal() {
   const modal = document.getElementById('quickview-modal');
   modal.style.display = 'flex';
  
-  // Copy live preview data into modal
   document.getElementById('modal-preview-image').src = document.getElementById('preview-image').src;
   document.getElementById('modal-vendor').innerHTML = document.getElementById('preview-vendor').innerHTML;
   document.getElementById('modal-title').innerHTML = document.getElementById('preview-title').innerHTML;
@@ -1531,11 +1555,253 @@ function setupSliders() {
     }
   });
 }
+
+// ====================================================================
+// 🔗 LOCALSTORAGE SYNC BRIDGE - Connects to StoreFront.html
+// ====================================================================
+const STORAGE_KEY = 'custom_design_config';
+
+/**
+ * Collects ALL settings from the entire form into one JSON object
+ * This is what gets saved to localStorage and read by StoreFront.html
+ */
+function collectAllSettings() {
+  const getVal = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    if (el.type === 'checkbox') return el.checked;
+    if (el.type === 'color' || el.type === 'text' || el.type === 'number' || el.type === 'select-one') return el.value;
+    if (el.type === 'range') return el.value;
+    return el.value;
+  };
+
+  return {
+    // ===== GRID SETTINGS =====
+    gridBgColor: getVal('grid-bg-color'),
+    itemsPerRow: getVal('items-row'),
+    productsPerPage: getVal('products-per-page'),
+    pagination: getVal('pagination'),
+
+    // ===== CARD SETTINGS =====
+    cardBgColor: getVal('card-bg-color'),
+    cardBorderColor: getVal('card-border-color'),
+    cardRadius: getVal('card-radius'),
+    contentAlign: getVal('content-align'),
+
+    // ===== IMAGE SETTINGS =====
+    imageRadius: getVal('image-radius'),
+    imageRatio: getVal('image-ratio'),
+    imageShape: getVal('image-shape'),
+    hoverZoom: getVal('hover-zoom'),
+    hoverSecondImage: getVal('hover-second'),
+
+    // ===== TITLE =====
+    titleFont: getVal('title-font'),
+    titleFontSize: getVal('title-font-size'),
+    titleColor: getVal('title-color'),
+    titleWeight: getVal('title-weight'),
+    titleTransform: getVal('title-transform'),
+
+    // ===== VENDOR =====
+    showVendor: getVal('show-vendor'),
+    vendorFont: getVal('vendor-font'),
+    vendorFontSize: getVal('vendor-font-size'),
+    vendorColor: getVal('vendor-color'),
+    vendorWeight: getVal('vendor-weight'),
+    vendorTransform: getVal('vendor-transform'),
+
+    // ===== RATING =====
+    showRating: getVal('show-rating'),
+    ratingType: getVal('rating-type'),
+    showReviewCount: getVal('show-review-count'),
+
+    // ===== PRICES =====
+    hidePrice: getVal('hide-price'),
+    hideDecimal: getVal('hide-decimal'),
+    roundUp: getVal('round-up'),
+    
+    showFixedPrice: getVal('show-fixed-price'),
+    fixedPriceFont: getVal('fixed-price-font-family'),
+    fixedPriceSize: getVal('fixed-price-font'),
+    fixedPriceColor: getVal('fixed-price-color'),
+    fixedPriceWeight: getVal('fixed-price-weight'),
+    
+    showOldPrice: getVal('show-old-price'),
+    oldPriceFont: getVal('old-price-font-family'),
+    oldPriceSize: getVal('old-price-font'),
+    oldPriceColor: getVal('old-price-color'),
+    oldPriceWeight: getVal('old-price-weight'),
+    
+    showSalePrice: getVal('show-sale-price'),
+    salePriceFont: getVal('sale-price-font-family'),
+    salePriceSize: getVal('sale-price-font'),
+    salePriceColor: getVal('sale-price-color'),
+    salePriceWeight: getVal('sale-price-weight'),
+
+    // ===== SALE BADGE =====
+    showSaleBadge: getVal('show-sale'),
+    saleBadgeStyle: getVal('sale-style'),
+    saleBadgeText: (() => {
+      const s = document.getElementById('sale-style').value;
+      if (s === 'percentage') return '-30%';
+      if (s === 'amount') return '-$20';
+      return document.getElementById('sale-custom-text').value || 'SALE';
+    })(),
+    saleBadgeBg: getVal('sale-bg-color'),
+    saleBadgeColor: getVal('sale-text-color'),
+    saleBadgeFontSize: getVal('sale-font-size'),
+    saleBadgeWeight: getVal('sale-weight'),
+    saleBadgePos: getVal('sale-position'),
+    saleBadgeFont: getVal('sale-badge-font'),
+
+    // ===== SOLD OUT BADGE =====
+    showSoldOut: getVal('show-soldout'),
+    soldOutStyle: getVal('soldout-style'),
+    soldOutText: (() => {
+      const s = document.getElementById('soldout-style').value;
+      if (s === 'soldout') return 'Sold Out';
+      if (s === 'outofstock') return 'Out of Stock';
+      return document.getElementById('soldout-custom-text').value || 'Unavailable';
+    })(),
+    soldOutBg: getVal('soldout-bg-color'),
+    soldOutColor: getVal('soldout-text-color'),
+    soldOutFontSize: getVal('soldout-font-size'),
+    soldOutWeight: getVal('soldout-weight'),
+    soldOutPos: getVal('soldout-position'),
+    soldOutFont: getVal('soldout-badge-font'),
+
+    // ===== LOW STOCK BADGE =====
+    showLowStock: getVal('show-lowstock'),
+    lowStockThreshold: getVal('lowstock-threshold'),
+    lowStockBg: getVal('lowstock-bg-color'),
+    lowStockColor: getVal('lowstock-text-color'),
+    lowStockFontSize: getVal('lowstock-font-size'),
+    lowStockWeight: getVal('lowstock-weight'),
+    lowStockPos: getVal('lowstock-position'),
+    lowStockFont: getVal('lowstock-badge-font'),
+
+    // ===== ADD TO CART BUTTON =====
+    showAtc: getVal('show-atc'),
+    atcFont: getVal('atc-font'),
+    atcFontSize: getVal('atc-font-size'),
+    atcTextColor: getVal('atc-text-color'),
+    atcBgColor: getVal('atc-bg-color'),
+    atcWeight: getVal('atc-weight'),
+    atcTransform: getVal('atc-transform'),
+    atcRadius: getVal('atc-radius'),
+
+    // ===== WISHLIST =====
+    showWishlist: getVal('show-wishlist'),
+    wishlistType: getVal('wishlist-type'),
+    wishlistPosition: getVal('wishlist-position'),
+    wishlistBg: getVal('wishlist-bg-color'),
+    wishlistColor: getVal('wishlist-text-color'),
+    wishlistFont: getVal('wishlist-font'),
+    wishlistFontSize: getVal('wishlist-font-size'),
+    wishlistWeight: getVal('wishlist-weight'),
+    wishlistTransform: getVal('wishlist-transform'),
+    wishlistCustomText: getVal('wishlist-custom-text'),
+
+    // ===== QUICK VIEW =====
+    showQuickView: getVal('show-quickview'),
+    quickViewType: getVal('quickview-type'),
+    quickViewPosition: getVal('quickview-position'),
+    quickViewBg: getVal('quickview-bg-color'),
+    quickViewColor: getVal('quickview-text-color'),
+    quickViewFont: getVal('quickview-font'),
+    quickViewFontSize: getVal('quickview-font-size'),
+    quickViewWeight: getVal('quickview-weight'),
+    quickViewTransform: getVal('quickview-transform'),
+    quickViewCustomText: getVal('quickview-custom-text'),
+
+    // ===== FILTER BAR (for sidebar) =====
+    filterBarBg: getVal('filter-bar-bg'),
+    stickyFilter: getVal('sticky-filter'),
+    
+    // ===== FILTER OPTION LABELS =====
+    optLabelFont: getVal('opt-font'),
+    optLabelSize: getVal('opt-font-size'),
+    optLabelColor: getVal('opt-color'),
+    optLabelWeight: getVal('opt-weight'),
+    optLabelTransform: getVal('opt-transform'),
+    
+    // ===== FILTER VALUES =====
+    valFont: getVal('val-font'),
+    valSize: getVal('val-font-size'),
+    valColor: getVal('val-color'),
+    valWeight: getVal('val-weight'),
+    valTransform: getVal('val-transform'),
+    
+    // ===== FILTER BUTTON =====
+    btnFont: getVal('btn-font'),
+    btnFontSize: getVal('btn-font-size'),
+    btnTextColor: getVal('btn-text-color'),
+    btnBgColor: getVal('btn-bg-color'),
+    btnWeight: getVal('btn-weight'),
+    btnTransform: getVal('btn-transform'),
+    btnRadius: getVal('btn-radius'),
+    
+    // ===== FILTER BEHAVIOR =====
+    filterBehavior: document.querySelector('input[name="filterBehavior"]:checked')?.value || 'manual'
+  };
+}
+
+/**
+ * Saves current state to localStorage
+ */
+function saveToLocalStorage() {
+  try {
+    const config = collectAllSettings();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    console.log('✅ Config saved to localStorage (' + Object.keys(config).length + ' settings)');
+    console.log('📦 Data:', config);
+    
+    // Dispatch event for same-tab listeners (if any)
+    window.dispatchEvent(new CustomEvent('configSaved', { detail: config }));
+    return true;
+  } catch (e) {
+    console.error('❌ Error saving config:', e);
+    return false;
+  }
+}
+
+/**
+ * Opens StoreFront.html in a new tab after saving
+ */
+function openStoreFront() {
+  const saved = saveToLocalStorage();
+  if (saved) {
+    window.open('StoreFront.html', '_blank');
+  } else {
+    alert('Error saving settings. Please try again.');
+  }
+}
+
+/**
+ * Override the save button action
+ */
+window.saveSettings = function() {
+  if (saveToLocalStorage()) {
+    alert('✅ All changes saved!\n\nStoreFront.html will automatically load these settings.\n\n💡 Tip: Open both files in separate tabs for live preview.');
+  }
+};
+
+// Debounced auto-save (saves 300ms after user stops changing things)
+let autoSaveTimeout;
+function debouncedAutoSave() {
+  clearTimeout(autoSaveTimeout);
+  autoSaveTimeout = setTimeout(() => {
+    saveToLocalStorage();
+    // Visual feedback - subtle flash on save button could go here
+  }, 300);
+}
+
 // ==================== INIT ====================
-function saveSettings() { alert('✓ All changes saved successfully!'); }
 window.onload = () => {
   initFontSelects();
   setupSliders();
+  
+  // Attach original preview updaters
   document.querySelectorAll('#filter-tab input, #filter-tab select').forEach(el => {
     el.addEventListener('input', updateFilterPreview);
     el.addEventListener('change', updateFilterPreview);
@@ -1544,32 +1810,53 @@ window.onload = () => {
     el.addEventListener('input', updateProductPreview);
     el.addEventListener('change', updateProductPreview);
   });
+  
+  // Price logic listeners
   ['show-fixed-price','show-old-price','show-sale-price'].forEach(id => {
-    document.getElementById(id).addEventListener('change', enforcePriceLogic);
+    document.getElementById(id)?.addEventListener('change', enforcePriceLogic);
   });
-  document.getElementById('sale-style').addEventListener('change', toggleSaleCustomField);
-  document.getElementById('soldout-style').addEventListener('change', toggleSoldoutCustomField);
-  document.getElementById('wishlist-type').addEventListener('change', toggleWishlistCustomField);
-  document.getElementById('quickview-type').addEventListener('change', toggleQuickViewCustomField);
+  
+  // Toggle field visibility
+  document.getElementById('sale-style')?.addEventListener('change', toggleSaleCustomField);
+  document.getElementById('soldout-style')?.addEventListener('change', toggleSoldoutCustomField);
+  document.getElementById('wishlist-type')?.addEventListener('change', toggleWishlistCustomField);
+  document.getElementById('quickview-type')?.addEventListener('change', toggleQuickViewCustomField);
+  
+  // Custom text field listeners
   ['sale-custom-text','soldout-custom-text','wishlist-custom-text','quickview-custom-text'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('input', updateProductPreview);
+    document.getElementById(id)?.addEventListener('input', updateProductPreview);
   });
- 
-  // Make quick view elements clickable
+
+  // Quick view click handlers
   const qvCard = document.getElementById('quickview-in-card');
   const qvTR = document.getElementById('quickview-image-overlay-tr');
   const qvTL = document.getElementById('quickview-image-overlay-tl');
   [qvCard, qvTR, qvTL].forEach(el => {
     if (el) el.addEventListener('click', showQuickViewModal);
   });
- 
+
+  // Initialize toggles
   toggleSaleCustomField(); 
   toggleSoldoutCustomField(); 
   toggleWishlistCustomField();
   toggleQuickViewCustomField();
+  
+  // Initial preview render
   updateFilterPreview(); 
   updateProductPreview();
+
+  // 🔗 CRITICAL: Attach auto-save to ALL inputs for live sync
+  document.querySelectorAll('#filter-tab input, #filter-tab select, #grid-tab input, #grid-tab select').forEach(el => {
+    el.addEventListener('input', debouncedAutoSave);
+    el.addEventListener('change', debouncedAutoSave);
+  });
+
+  // Initial save after 2 seconds (so StoreFront can pick it up on first load)
+  setTimeout(saveToLocalStorage, 2000);
+
+  console.log('🎨 Custom Design Editor loaded');
+  console.log('🔗 Live Sync: ON (saves to localStorage key: "' + STORAGE_KEY + '")');
+  console.log('💡 Open StoreFront.html in another tab to see live updates!');
 };
 </script>
 </body>
