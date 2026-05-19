@@ -63,6 +63,7 @@
     .slider-row {
       display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap;
     }
+    #filter-tab .slider-row { gap: 0.35rem; }
     /* Increase vertical breathing room between rows in setting sections */
     .config-box .space-y-1\.5 > * + * { margin-top: 0.75rem !important; }
     .config-box .space-y-2 > * + * { margin-top: 0.85rem !important; }
@@ -74,6 +75,7 @@
     .slider-row > label:first-child {
       font-size: 0.72rem; font-weight: 500; color: #374151; min-width: 85px; flex-shrink: 0;
     }
+    #filter-tab .slider-row > label:first-child { min-width: 60px; }
     .slider-val {
       font-size: 0.68rem; color: #2563eb; font-family: ui-monospace, monospace; min-width: 32px; font-weight: 600;
     }
@@ -233,7 +235,7 @@
       border: 1px solid #d1d5db;
       border-radius: 5px;
       font-size: 0.6rem;
-      padding: 0.2rem 0.35rem;
+      padding: 0.2rem 1.1rem 0.2rem 0.35rem;
       background: white;
       display: none;
       min-width: 0;
@@ -241,6 +243,19 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      position: relative;
+    }
+
+    .filter-preview-select::after {
+      content: '▼';
+      position: absolute;
+      right: 0.35rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.55rem;
+      color: currentColor;
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     .filter-preview-select:focus {
@@ -255,6 +270,7 @@
     .filter-preview-horizontal .filter-preview-section.open .filter-preview-values {
       display: grid;
     }
+    
 
     /* Extra spacing for all sections */
     #grid-tab .config-box { margin-bottom: 1.25rem; }
@@ -638,7 +654,7 @@
   <!-- ==================== FILTER DESIGN TAB ==================== -->
   <div id="filter-tab" class="tab-content">
     <div class="flex gap-8 p-5 bg-gray-50/50 items-start justify-center">
-      <div id="filter-settings-col" class="space-y-4" style="flex: 0 1 600px; min-width: 0;">
+      <div id="filter-settings-col" class="space-y-4" style="flex: 0 1 640px; min-width: 0;">
         <!-- Filter Layout -->
         <div class="config-box">
           <h2 class="section-title mb-1">Filter Layout</h2>
@@ -752,7 +768,7 @@
           <h2 class="section-title mb-1">Filter Option Label</h2>
 
           <div class="space-y-3">
-            <div class="flex flex-nowrap items-end gap-3">
+            <div class="flex flex-nowrap items-end gap-3" id="opt-row-top">
               <div class="font-select-wrap mb-0">
                 <label>Font</label>
                 <select id="opt-font" class="font-select w-36"></select>
@@ -764,7 +780,14 @@
               </div>
             </div>
 
-            <div class="flex flex-nowrap items-end gap-3">
+            <div class="flex flex-nowrap items-end gap-3" id="opt-row-bottom">
+              <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-bg-control">
+                <label>Background</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="opt-bg-color" value="#ffffff">
+                  <input type="text" id="opt-bg-color-hex" value="#ffffff" readonly>
+                </div>
+              </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
                 <label>Color</label>
                 <div class="color-picker-compact">
@@ -772,14 +795,14 @@
                   <input type="text" id="opt-color-hex" value="#111827" readonly>
                 </div>
               </div>
-              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+              <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-weight-control">
                 <label>Weight</label>
                 <select id="opt-weight" class="micro-select w-28">
                     <option value="400" selected>Regular</option>
                   <option value="700">Bold</option>
                 </select>
               </div>
-              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+              <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-transform-control">
                 <label>Transform</label>
                 <select id="opt-transform" class="micro-select w-32">
                   <option value="none">None</option>
@@ -1176,9 +1199,17 @@
         <div class="config-box">
           <h2 class="section-title mb-2">Product Grid (Desktop)</h2>
           <!-- Row 1: Products/Page + Items/Row -->
-          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5 mb-3">
-            <div class="slider-row"><label class="min-w-[110px]">Products per Page</label><input type="range" id="products-per-page" min="1" max="36" value="24" class="flex-1"><span id="perpage-val" class="slider-val">24</span></div>
-            <div class="ctrl-row"><label class="min-w-[110px]">Items per Rows</label><select id="items-row" class="micro-select w-24"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
+          <div class="flex flex-nowrap items-center gap-3 mb-3">
+            <label class="text-[12px] text-gray-700 font-medium whitespace-nowrap">Products per Page</label>
+            <input type="range" id="products-per-page" min="1" max="36" value="24" class="w-[80px] flex-shrink-0">
+            <span id="perpage-val" class="slider-val">24</span>
+            <label class="text-[12px] text-gray-700 font-medium whitespace-nowrap">Items per Row</label>
+            <select id="items-row" class="micro-select w-24">
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
           </div>
           <!-- Row 2: Background Color + Pagination -->
           <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
@@ -1255,20 +1286,8 @@
               <div class="reorder-item-info">
                 <div class="reorder-item-icon"><i class="fas fa-star text-xs"></i></div>
                 <div>
-                  <div class="reorder-item-label">Rating Star</div>
-                  <div class="reorder-item-desc">Customer rating display</div>
-                </div>
-              </div>
-            </div>
-            <div class="reorder-item" data-element="review" draggable="true">
-              <div class="drag-handle">
-                <span></span><span></span><span></span>
-              </div>
-              <div class="reorder-item-info">
-                <div class="reorder-item-icon"><i class="fas fa-comment text-xs"></i></div>
-                <div>
-                  <div class="reorder-item-label">Review Count</div>
-                  <div class="reorder-item-desc">Number of reviews</div>
+                  <div class="reorder-item-label">Rating/Review</div>
+                  <div class="reorder-item-desc">Customer rating and reviews</div>
                 </div>
               </div>
             </div>
@@ -1533,7 +1552,7 @@
         <!-- Rating -->
         <div class="config-box">
           <div class="flex items-center justify-between mb-1.5">
-            <h2 class="section-title">Rating Star</h2>
+            <h2 class="section-title">Rating/Review</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="flex flex-wrap gap-x-6 gap-y-1.5">
@@ -1981,13 +2000,9 @@
                     <div id="preview-vendor" class="text-[11px] truncate">Nike Sportswear</div>
                   </div>
                  
-                  <!-- Rating -->
-                  <div id="container-rating" class="content-section mb-1.5 flex flex-col">
+                  <!-- Rating/Review -->
+                  <div id="container-rating" class="content-section mb-1.5 flex items-center gap-2">
                     <div id="preview-rating" class="flex text-amber-400 text-xs">★★★★☆</div>
-                  </div>
-                  
-                  <!-- Review Count -->
-                  <div id="container-review" class="content-section mb-1.5">
                     <div id="preview-review-count" class="text-[10px] text-gray-400">(124 reviews)</div>
                   </div>
                  
@@ -2113,7 +2128,7 @@ const FONT_LIBRARY = [
 ];
 
 // Element order state (default order)
-let elementOrder = ['title', 'sku', 'vendor', 'rating', 'review', 'price'];
+let elementOrder = ['title', 'sku', 'vendor', 'rating', 'price'];
 
 function initFontSelects() {
   document.querySelectorAll('.font-select').forEach(select => {
@@ -2148,6 +2163,8 @@ function selectLayout(el) {
   const columnsRow = document.getElementById('horizontal-columns-row');
   if (columnsRow) columnsRow.classList.toggle('hidden', layout !== 'horizontal');
 
+  syncOptLabelLayout(layout);
+
   // Apply Filters Button config only visible for off-canvas (desktop)
   const btnBox = document.getElementById('filter-button-config-box');
   if (btnBox) btnBox.classList.toggle('hidden', layout !== 'offcanvas-desktop');
@@ -2157,6 +2174,39 @@ function selectLayout(el) {
 }
 
 // ==================== FILTER PREVIEW ====================
+function syncOptLabelLayout(layout) {
+  const bgControl = document.getElementById('opt-bg-control');
+  const topRow = document.getElementById('opt-row-top');
+  const bottomRow = document.getElementById('opt-row-bottom');
+  const weightControl = document.getElementById('opt-weight-control');
+  const transformControl = document.getElementById('opt-transform-control');
+  if (!topRow || !bottomRow || !weightControl) return;
+
+  const isHorizontal = layout === 'horizontal';
+  if (bgControl) bgControl.classList.toggle('hidden', !isHorizontal);
+
+  if (isHorizontal) {
+    const sizeRow = topRow.querySelector('.slider-row');
+    if (sizeRow && weightControl.parentElement !== topRow) {
+      topRow.insertBefore(weightControl, sizeRow);
+    }
+    // Tighten the spacing between Weight dropdown and the Size slider in horizontal mode
+    topRow.classList.remove('gap-3');
+    topRow.classList.add('gap-1.5');
+  } else if (weightControl.parentElement !== bottomRow) {
+    if (transformControl) {
+      bottomRow.insertBefore(weightControl, transformControl);
+    } else {
+      bottomRow.appendChild(weightControl);
+    }
+    topRow.classList.remove('gap-1.5');
+    topRow.classList.add('gap-3');
+  } else {
+    topRow.classList.remove('gap-1.5');
+    topRow.classList.add('gap-3');
+  }
+}
+
 function updateFilterPreview() {
   const panel = document.getElementById('filter-preview-panel');
   const barBg = document.getElementById('filter-bar-bg').value;
@@ -2166,6 +2216,7 @@ function updateFilterPreview() {
   const layout = document.getElementById('filter-layout')?.value || 'offcanvas-desktop';
   const columns = document.getElementById('horizontal-columns')?.value || '2';
   panel.classList.toggle('filter-preview-horizontal', layout === 'horizontal');
+  syncOptLabelLayout(layout);
   panel.style.setProperty('--filter-value-columns', columns);
   const gapMap = { '2': '10px', '3': '10px', '4': '9px', '5': '8px', '6': '8px' };
   panel.style.setProperty('--filter-gap', gapMap[columns] || '10px');
@@ -2203,6 +2254,7 @@ function updateFilterPreview() {
   const optFontSize = document.getElementById('opt-font-size').value+'px';
   const optTransform = document.getElementById('opt-transform').value;
   const optColor = document.getElementById('opt-color').value;
+  const optBg = document.getElementById('opt-bg-color')?.value || '';
   const optFont = document.getElementById('opt-font').value;
   const optWeight = document.getElementById('opt-weight').value;
   if (previewTitle) {
@@ -2218,6 +2270,29 @@ function updateFilterPreview() {
     el.style.color = optColor;
     el.style.fontFamily = optFont;
     el.style.fontWeight = optWeight;
+  });
+  document.querySelectorAll('.filter-preview-select').forEach(el => {
+    el.style.fontSize = optFontSize;
+    el.style.textTransform = optTransform;
+    el.style.color = optColor;
+    el.style.fontFamily = optFont;
+    el.style.fontWeight = optWeight;
+    if (layout === 'horizontal') {
+      el.style.borderColor = optColor || '#d1d5db';
+      el.style.backgroundColor = optBg || '';
+    } else {
+      el.style.backgroundColor = '';
+      el.style.borderColor = '';
+    }
+  });
+  document.querySelectorAll('#filter-preview-panel .filter-preview-values').forEach(el => {
+    if (layout === 'horizontal') {
+      el.style.backgroundColor = optBg || '';
+      el.style.borderColor = optColor || '#e5e7eb';
+    } else {
+      el.style.backgroundColor = '';
+      el.style.borderColor = '';
+    }
   });
 
   // Filter Value settings drive value labels
@@ -2262,7 +2337,7 @@ function updateFilterPreview() {
   btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
   btn.style.fontFamily = document.getElementById('btn-font').value;
   btn.style.fontWeight = document.getElementById('btn-weight').value;
-  syncHex('opt-color'); syncHex('val-color'); syncHex('btn-text-color');
+  syncHex('opt-color'); syncHex('opt-bg-color'); syncHex('val-color'); syncHex('btn-text-color');
   syncHex('btn-bg-color'); syncHex('filter-bar-bg');
   syncHex('filter-bar-text-color'); syncHex('filter-bar-close-color'); syncHex('filter-bar-active-bg');
   // Update ToolBar preview pills
@@ -2715,7 +2790,7 @@ function updateProductPreview() {
   priceBlock.style.justifyContent = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
 
   const ratingContainer = document.getElementById('container-rating');
-  ratingContainer.style.alignItems = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
+  ratingContainer.style.justifyContent = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
   
   document.getElementById('preview-image-container').style.borderRadius = document.getElementById('image-radius').value+'px';
   const img = document.getElementById('preview-image');
@@ -2748,9 +2823,9 @@ function updateProductPreview() {
   // Rating
   const showRating = document.getElementById('show-rating').checked;
   const ratingSection = document.getElementById('container-rating');
-  const reviewSection = document.getElementById('container-review');
+  const reviewCount = document.getElementById('preview-review-count');
   ratingSection.classList.toggle('hidden', !showRating);
-  reviewSection.classList.toggle('hidden', !showRating || !document.getElementById('show-review-count').checked);
+  if (reviewCount) reviewCount.style.display = (showRating && document.getElementById('show-review-count').checked) ? '' : 'none';
   
   if(showRating) {
     document.getElementById('preview-rating').innerHTML = document.getElementById('rating-type').value === 'star' ? '★★★★☆' : '<span class="text-gray-700 font-semibold">4.5/5</span>';
@@ -2958,7 +3033,9 @@ function setupSliders() {
     if(el) {
       el.addEventListener('input', () => {
         const valEl = document.getElementById(valId);
-        if(valEl) valEl.textContent = el.value + 'px';
+        if (valEl) {
+          valEl.textContent = id === 'products-per-page' ? el.value : el.value + 'px';
+        }
         if(['opt','val','btn'].some(p => id.startsWith(p))) updateFilterPreview();
         else if (id.startsWith('sku')) updateSKUPreview();
         else updateProductPreview();
@@ -3131,6 +3208,7 @@ function collectAllSettings() {
     optLabelFont: getVal('opt-font'),
     optLabelSize: getVal('opt-font-size'),
     optLabelColor: getVal('opt-color'),
+    optLabelBg: getVal('opt-bg-color'),
     optLabelWeight: getVal('opt-weight'),
     optLabelTransform: getVal('opt-transform'),
     
