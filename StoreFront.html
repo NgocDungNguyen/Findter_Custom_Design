@@ -90,42 +90,29 @@
       font-size: 11px;
       font-weight: 600;
       border-radius: 4px;
-      position: absolute;
+      position: relative;
       z-index: 10;
       white-space: nowrap;
       line-height: 1.3;
       display: inline-block;
     }
     
-    /* Badge zones - ensure proper spacing */
-    .badge-zone-tl { 
-      top: 8px; left: 8px; 
+    /* Badge zones - stack multiple badges vertically when same corner */
+    .badge-zone-tl,
+    .badge-zone-tr,
+    .badge-zone-bl,
+    .badge-zone-br {
+      position: absolute;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: 4px;
+      z-index: 10;
+      pointer-events: none;
     }
-    .badge-zone-tr { 
-      top: 8px; right: 8px; 
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-    }
-    .badge-zone-bl { 
-      bottom: 8px; left: 8px; 
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
-    .badge-zone-br { 
-      bottom: 8px; right: 8px; 
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-    }
+    .badge-zone-tl { top: 8px; left: 8px; align-items: flex-start; }
+    .badge-zone-tr { top: 8px; right: 8px; align-items: flex-end; }
+    .badge-zone-bl { bottom: 8px; left: 8px; align-items: flex-start; }
+    .badge-zone-br { bottom: 8px; right: 8px; align-items: flex-end; }
     
     /* Quick view & Wishlist overlay */
     .card-overlay {
@@ -1007,14 +994,14 @@
           <div id="filter-horizontal-wrapper" class="hidden mb-6"></div>
           
           <!-- Toolbar: Active Filters + Sort -->
-          <div class="flex flex-wrap items-center justify-between gap-4 mb-6" id="toolbar-area">
+          <div class="flex flex-nowrap items-start justify-between gap-4 mb-6" id="toolbar-area">
             <!-- Active Filters (populated dynamically when user selects filter values) -->
-            <div class="flex flex-wrap items-center gap-2" id="active-filters-area">
+            <div class="flex flex-wrap items-center gap-2 flex-1 min-w-0" id="active-filters-area">
               <button id="clear-all-btn" class="text-sm text-gray-900 hover:text-gray-700 font-medium ml-2 underline" style="display:none;">Clear all</button>
             </div>
 
             <!-- Sort Dropdown -->
-            <div class="flex items-center gap-3" id="sort-by-area">
+            <div class="flex items-center gap-3 flex-shrink-0" id="sort-by-area">
               <label id="sort-label" class="text-sm font-medium text-gray-900 whitespace-nowrap">Sort by</label>
               <select id="sort-select" class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:border-blue-500 focus:outline-none cursor-pointer">
                 <option>What's New?</option>
@@ -1027,7 +1014,10 @@
           </div>
 
           <!-- Product Count -->
-          <div id="product-count" class="text-sm text-gray-900 mb-4">9 products</div>
+          <div id="product-count-row" class="flex items-center justify-between gap-4 mb-4">
+            <div id="product-count" class="text-sm text-gray-900">9 products</div>
+            <div id="sort-by-slot-horizontal"></div>
+          </div>
 
           <!-- ==================== PRODUCT GRID ==================== -->
           <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1613,6 +1603,7 @@
     optLabelFont: "'Inter', sans-serif",
     optLabelSize: '14',
     optLabelColor: '#111827',
+    optLabelBg: '#ffffff',
     optLabelWeight: '600',
     valFont: "'Inter', sans-serif",
     valSize: '13',
@@ -1660,7 +1651,7 @@
     skuTransformCodeOnly: 'none',
 
     // Element order
-    elementOrder: ['title', 'sku', 'vendor', 'rating', 'review', 'price']
+    elementOrder: ['title', 'sku', 'vendor', 'rating', 'price']
   };
 
   /**
@@ -1737,8 +1728,15 @@
    */
   function applyGridBackground(c) {
     const wrapper = document.getElementById('main-content-wrapper');
-    if (wrapper && c.gridBgColor) {
-      wrapper.style.backgroundColor = c.gridBgColor;
+    const sidebar = document.getElementById('filter-sidebar');
+    const main = document.querySelector('main');
+    if (c.gridBgColor) {
+      if (wrapper) wrapper.style.backgroundColor = c.gridBgColor;
+      if (sidebar) sidebar.style.backgroundColor = c.gridBgColor;
+      if (main) main.style.backgroundColor = c.gridBgColor;
+      // Also apply to body so the margins surrounding the filter bar and
+      // product grid remain visually consistent with the chosen background.
+      document.body.style.backgroundColor = c.gridBgColor;
     }
   }
 
@@ -1797,6 +1795,20 @@
       sidebar.style.display = '';
       if (!sidebar.contains(panel)) {
         sidebar.appendChild(panel);
+      }
+    }
+
+    // Move Sort-By block: in horizontal layout, place it on the product-count
+    // row (top-right above the grid). In vertical/off-canvas, keep it pinned
+    // top-right of the toolbar (above the selected filter values).
+    const sortArea = document.getElementById('sort-by-area');
+    const toolbar = document.getElementById('toolbar-area');
+    const horizSlot = document.getElementById('sort-by-slot-horizontal');
+    if (sortArea && toolbar && horizSlot) {
+      if (isHorizontal) {
+        if (sortArea.parentElement !== horizSlot) horizSlot.appendChild(sortArea);
+      } else {
+        if (sortArea.parentElement !== toolbar) toolbar.appendChild(sortArea);
       }
     }
   }
@@ -1865,6 +1877,7 @@
       setI(el, 'font-weight', c.valWeight);
       setI(el, 'text-transform', c.valTransform);
     };
+    const clearProp = (el, prop) => { if (el) el.style.removeProperty(prop); };
 
     // Filter section headers (vertical) — style the whole button + inner span
     document.querySelectorAll('.filter-header').forEach(btn => {
@@ -1874,8 +1887,70 @@
     document.querySelectorAll('.filter-select').forEach(applyLabel);
     document.querySelectorAll('.filter-dropdown-toggle').forEach(applyLabel);
 
+    const optBg = c.optLabelBg;
+    document.querySelectorAll('.filter-dropdown-toggle').forEach(el => {
+      if (isHorizontal && optBg) setI(el, 'background-color', optBg);
+      else clearProp(el, 'background-color');
+      if (isHorizontal) {
+        setI(el, 'border-width', '1px');
+        setI(el, 'border-style', 'solid');
+        setI(el, 'border-color', c.optLabelColor || '#e5e7eb');
+      } else {
+        clearProp(el, 'border-width');
+        clearProp(el, 'border-style');
+        clearProp(el, 'border-color');
+      }
+    });
+    document.querySelectorAll('#filter-panel.filter-horizontal .filter-values-list').forEach(el => {
+      if (isHorizontal && optBg) setI(el, 'background-color', optBg);
+      else clearProp(el, 'background-color');
+      if (isHorizontal) {
+        setI(el, 'border-width', '1px');
+        setI(el, 'border-style', 'solid');
+        setI(el, 'border-color', c.optLabelColor || '#e5e7eb');
+      } else {
+        clearProp(el, 'border-width');
+        clearProp(el, 'border-style');
+        clearProp(el, 'border-color');
+      }
+    });
+
     // Filter values + count badges (count syncs with value styling)
     document.querySelectorAll('.filter-value, .count-badge').forEach(applyVal);
+
+    // Sync checkbox + box-option border with filter value color
+    const valColor = c.valColor || '';
+    document.querySelectorAll('#filter-panel .custom-checkbox').forEach(cb => {
+      if (valColor) {
+        setI(cb, 'border-color', valColor);
+        setI(cb, 'accent-color', valColor);
+        if (cb.checked) {
+          setI(cb, 'background-color', valColor);
+        } else {
+          cb.style.removeProperty('background-color');
+        }
+      } else {
+        clearProp(cb, 'border-color');
+        clearProp(cb, 'accent-color');
+        clearProp(cb, 'background-color');
+      }
+    });
+    document.querySelectorAll('#filter-panel .filter-option.box-option').forEach(box => {
+      if (valColor) {
+        setI(box, 'border-color', valColor);
+        const input = box.querySelector('input');
+        if (input && input.checked) {
+          setI(box, 'background-color', valColor);
+          const val = box.querySelector('.filter-value');
+          if (val) setI(val, 'color', '#ffffff');
+        } else {
+          box.style.removeProperty('background-color');
+        }
+      } else {
+        clearProp(box, 'border-color');
+        clearProp(box, 'background-color');
+      }
+    });
 
     // Filter title ("Filter by:") fully syncs with Filter Option Label settings
     applyLabel(document.getElementById('filter-title'));
@@ -2003,7 +2078,7 @@
     const count = document.getElementById('product-count');
 
     if (grid && c.itemsPerRow) {
-      grid.style.gridTemplateColumns = `repeat(${c.itemsPerRow}, minmax(0, 1fr))`;
+      grid.style.setProperty('grid-template-columns', `repeat(${c.itemsPerRow}, minmax(0, 1fr))`, 'important');
     }
 
     if (cards.length && c.productsPerPage) {
@@ -2168,13 +2243,15 @@
     
     // Content area alignment
     const content = card.querySelector('.product-content');
-    if (content && c.contentAlign) {
-      content.textAlign = c.contentAlign;
+    const alignVal = c.contentAlign || 'left';
+    if (content) {
+      content.style.textAlign = alignVal;
     }
     
     // TITLE
     const title = card.querySelector('.product-title');
     if (title) {
+      title.style.textAlign = alignVal;
       if (c.titleFont) title.style.fontFamily = c.titleFont;
       if (c.titleFontSize) title.style.fontSize = c.titleFontSize + 'px';
       if (c.titleColor) title.style.color = c.titleColor;
@@ -2189,6 +2266,7 @@
     const vendor = card.querySelector('.product-vendor');
     if (vendor) {
       vendor.style.display = c.showVendor ? '' : 'none';
+      vendor.style.textAlign = alignVal;
       if (c.vendorFont) vendor.style.fontFamily = c.vendorFont;
       if (c.vendorFontSize) vendor.style.fontSize = c.vendorFontSize + 'px';
       if (c.vendorColor) vendor.style.color = c.vendorColor;
@@ -2198,13 +2276,10 @@
     
     // RATING + REVIEW
     const ratingSection = card.querySelector('[data-section="rating"]');
-    const reviewSection = card.querySelector('[data-section="review"]');
     const ratingContainer = card.querySelector('.rating-container');
+    const reviewCount = card.querySelector('.review-count');
     if (ratingSection) {
       ratingSection.style.display = c.showRating ? '' : 'none';
-    }
-    if (reviewSection) {
-      reviewSection.style.display = (c.showRating && c.showReviewCount) ? '' : 'none';
     }
     if (ratingContainer) {
       ratingContainer.style.justifyContent = c.contentAlign === 'center' ? 'center' : c.contentAlign === 'right' ? 'flex-end' : 'flex-start';
@@ -2213,12 +2288,16 @@
         stars.innerHTML = '<span class="text-gray-700 font-semibold text-xs">4.5/5</span>';
       }
     }
+    if (reviewCount) {
+      reviewCount.style.display = (c.showRating && c.showReviewCount) ? '' : 'none';
+    }
     
     // PRICES
     const priceBlock = card.querySelector('.price-block');
     if (priceBlock) {
       const shouldHide = c.hidePrice && c.hidePrice !== 'none';
       priceBlock.style.display = shouldHide ? 'none' : '';
+      priceBlock.style.justifyContent = c.contentAlign === 'center' ? 'center' : c.contentAlign === 'right' ? 'flex-end' : 'flex-start';
       
       if (!shouldHide) {
         // Fixed / Regular price
@@ -2298,7 +2377,6 @@
     const title = content.querySelector('.product-title');
     const vendor = content.querySelector('.product-vendor');
     const rating = content.querySelector('.rating-container');
-    const reviewCount = content.querySelector('.review-count');
     const price = content.querySelector('.price-block');
     let actions = content.querySelector('.actions-row');
     if (!actions) {
@@ -2308,11 +2386,6 @@
         actions.className = 'actions-row flex gap-2';
         actionButtons.forEach(btn => actions.appendChild(btn));
       }
-    }
-
-    // Detach review count so it can be its own section
-    if (reviewCount && reviewCount.parentElement === rating) {
-      reviewCount.remove();
     }
 
     const fragment = document.createDocumentFragment();
@@ -2338,16 +2411,9 @@
     const vendorWrap = wrapSection('vendor', vendor);
     const ratingWrap = wrapSection('rating', rating);
 
-    const reviewWrap = document.createElement('div');
-    reviewWrap.className = 'content-section';
-    reviewWrap.dataset.section = 'review';
-    if (reviewCount) {
-      reviewWrap.appendChild(reviewCount);
-    }
-
     const priceWrap = wrapSection('price', price);
 
-    [titleWrap, skuWrap, vendorWrap, ratingWrap, reviewWrap, priceWrap].forEach(section => {
+    [titleWrap, skuWrap, vendorWrap, ratingWrap, priceWrap].forEach(section => {
       if (section) fragment.appendChild(section);
     });
 
@@ -2367,7 +2433,7 @@
 
     const order = Array.isArray(c.elementOrder) && c.elementOrder.length
       ? c.elementOrder
-      : ['title', 'sku', 'vendor', 'rating', 'review', 'price'];
+      : ['title', 'sku', 'vendor', 'rating', 'price'];
 
     const sections = {};
     content.querySelectorAll('.content-section').forEach(section => {
