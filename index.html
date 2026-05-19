@@ -125,6 +125,31 @@
     .filter-preview-horizontal #filter-preview-sections > .filter-preview-section:nth-child(n+5) {
       display: none;
     }
+
+    /* Filter-value search bar in live preview */
+    .filter-preview-section .fv-search {
+      position: relative;
+      margin: 4px -4px 6px -4px;
+    }
+    .filter-preview-section .fv-search input {
+      width: 100%;
+      border: 1px solid var(--fv-search-color, #000) !important;
+      border-radius: 0 !important;
+      padding: 5px 8px 5px 26px !important;
+      font-size: 12px !important;
+      color: var(--fv-search-color, #000) !important;
+      background: transparent;
+      outline: none;
+    }
+    .filter-preview-section .fv-search input::placeholder {
+      color: var(--fv-search-color, #000); opacity: 0.7;
+    }
+    .filter-preview-section .fv-search .fv-search-icon {
+      position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+      color: var(--fv-search-color, #000); font-size: 11px; pointer-events: none;
+    }
+    .filter-preview-horizontal .filter-preview-section > .fv-search { display: none; }
+
     .filter-preview-horizontal .filter-preview-section.open .filter-preview-values {
       position: absolute;
       z-index: 50;
@@ -933,6 +958,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-1" class="text-[13px] font-semibold mb-1.5">Category</div>
                 <button type="button" class="filter-preview-select" aria-label="Category">Category</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer group">
                     <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -966,6 +992,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-2" class="text-[13px] font-semibold mb-1.5">Price Range</div>
                 <button type="button" class="filter-preview-select" aria-label="Price Range">Price Range</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -999,6 +1026,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-3" class="text-[13px] font-semibold mb-1.5">Color</div>
                 <button type="button" class="filter-preview-select" aria-label="Color">Color</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1031,6 +1059,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-4" class="text-[13px] font-semibold mb-1.5">Size</div>
                 <button type="button" class="filter-preview-select" aria-label="Size">Size</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1052,6 +1081,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-5" class="text-[13px] font-semibold mb-1.5">Brand</div>
                 <button type="button" class="filter-preview-select" aria-label="Brand">Brand</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1073,6 +1103,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-6" class="text-[13px] font-semibold mb-1.5">Material</div>
                 <button type="button" class="filter-preview-select" aria-label="Material">Material</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1094,6 +1125,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-7" class="text-[13px] font-semibold mb-1.5">Style</div>
                 <button type="button" class="filter-preview-select" aria-label="Style">Style</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1115,6 +1147,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-8" class="text-[13px] font-semibold mb-1.5">Fit</div>
                 <button type="button" class="filter-preview-select" aria-label="Fit">Fit</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1136,6 +1169,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-9" class="text-[13px] font-semibold mb-1.5">Sleeve</div>
                 <button type="button" class="filter-preview-select" aria-label="Sleeve">Sleeve</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -1157,6 +1191,7 @@
               <div class="filter-preview-section mb-3.5">
                 <div id="preview-opt-label-10" class="text-[13px] font-semibold mb-1.5">Pattern</div>
                 <button type="button" class="filter-preview-select" aria-label="Pattern">Pattern</button>
+                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer">
                     <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
@@ -2327,6 +2362,20 @@ function updateFilterPreview() {
     el.style.fontWeight = '';
     el.style.textTransform = '';
   });
+
+  // Filter-value search preview: inherit Filter Value color settings
+  document.querySelectorAll('.filter-preview-section .fv-search').forEach(el => {
+    el.style.setProperty('--fv-search-color', valColor);
+  });
+  document.querySelectorAll('.filter-preview-section .fv-search input').forEach(inp => {
+    inp.style.borderColor = valColor;
+    inp.style.color = valColor;
+    inp.style.fontFamily = valFont;
+  });
+  document.querySelectorAll('.filter-preview-section .fv-search-icon').forEach(ic => {
+    ic.style.color = valColor;
+  });
+
   const btn = document.getElementById('preview-btn');
   const customText = (document.getElementById('btn-custom-text')?.value || '').trim();
   btn.textContent = customText || 'Apply Filters';
