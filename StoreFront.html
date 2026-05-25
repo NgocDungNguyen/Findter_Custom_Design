@@ -17,6 +17,13 @@
     .filter-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
     .filter-scroll::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
     .filter-scroll::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+    /* Thinner scrollbar for filter value lists */
+    .filter-values-list { scrollbar-width: thin; scrollbar-color: #c1c1c1 #f1f1f1; }
+    .filter-values-list::-webkit-scrollbar { width: 4px; height: 4px; }
+    .filter-values-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+    .filter-values-list::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+    .filter-values-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
     
     /* Price range slider */
     .range-slider {
@@ -245,6 +252,119 @@
       cursor: not-allowed;
     }
 
+
+    /* ===== Search bars (collection + per-filter-value) ===== */
+    .lov-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #ffffff;
+    }
+    .lov-search input {
+      width: 100% !important;
+      border: 1px solid var(--lov-search-border, #111827) !important;
+      border-radius: 6px !important;
+      padding: 8px 10px 8px 32px !important;
+      font-size: 13px !important;
+      color: var(--lov-search-color, #374151) !important;
+      background: transparent !important;
+      outline: none;
+    }
+    .lov-search input::placeholder { color: var(--lov-search-color, #9ca3af); opacity: 0.9; }
+    .lov-search input:focus { box-shadow: none !important; }
+    .lov-search .lov-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--lov-search-color, #6b7280);
+      pointer-events: none;
+      font-size: 12px;
+    }
+    /* Filter-value search inside a section — slightly wider than values list below */
+    .filter-section .filter-value-search { margin: 4px -6px 8px -6px; }
+    .filter-section .filter-value-search input { padding-left: 30px !important; }
+    /* Hide per-section search when section is collapsed (vertical) */
+    #filter-panel:not(.filter-horizontal) .filter-section.collapsed .filter-value-search { display: none; }
+    /* Hide per-section search in horizontal layout — it lives inside the open dropdown */
+    #filter-panel.filter-horizontal .filter-section > .filter-value-search { display: none; }
+    #filter-panel.filter-horizontal .filter-section.open .filter-values-list .filter-value-search-inline {
+      display: block;
+      margin-bottom: 8px;
+      grid-column: 1 / -1;
+    }
+    #filter-panel:not(.filter-horizontal) .filter-values-list .filter-value-search-inline { display: none; }
+    #filter-panel.filter-horizontal .filter-value-search-inline input {
+      font-size: 11px !important;
+      padding: 6px 8px 6px 26px !important;
+    }
+    #filter-panel.filter-horizontal .filter-value-search-inline .lov-search-icon {
+      left: 8px;
+      font-size: 11px;
+    }
+
+    /* ===== Off-canvas Filter By button ===== */
+    #offcanvas-filter-btn {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid #111827;
+      background: #ffffff;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #offcanvas-filter-btn:hover { background: #f9fafb; }
+
+    /* ===== Off-canvas modal (slide-in side panel) ===== */
+    #offcanvas-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9998;
+      display: none;
+    }
+    #offcanvas-overlay.open { display: block; }
+    #offcanvas-modal {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(380px, 92vw);
+      background: #ffffff;
+      z-index: 9999;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    }
+    #offcanvas-modal.open { transform: translateX(0); }
+    #offcanvas-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    #offcanvas-modal-header h3 { margin: 0; font-size: 15px; font-weight: 700; color: #111827; }
+    #offcanvas-modal-close {
+      background: transparent; border: none; cursor: pointer;
+      width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+      color: #111827; font-size: 18px;
+    }
+    #offcanvas-modal-body {
+      flex: 1; overflow-y: auto; padding: 16px;
+    }
+    /* When panel lives inside the modal, neutralize its sidebar sizing */
+    #offcanvas-modal #filter-panel {
+      width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+      max-height: none; border: none; box-shadow: none; padding: 0;
+    }
+
+    /* Box-type values keep their individual box borders in every layout */
+
+    /* Collection search alignment */
+    #collection-search-row { margin-bottom: 10px; }
+
     /* Grid wrapper - NOW COVERS ENTIRE RIGHT SIDE */
     #main-content-wrapper {
       transition: background-color 0.3s ease;
@@ -279,6 +399,10 @@
       overflow-x: hidden;
       padding-right: 4px;
     }
+    /* Off-canvas (vertical) value list should not show a container border */
+    #offcanvas-modal #filter-panel:not(.filter-horizontal) .filter-values-list {
+      border: none !important;
+    }
     #filter-panel:not(.filter-horizontal) .filter-option {
       display: flex;
       align-items: center;
@@ -299,8 +423,18 @@
       transition: transform 0.2s ease;
     }
     #filter-panel:not(.filter-horizontal) .filter-header i.fa-chevron-down {
+      font-size: 13px;
+      color: #4b5563;
       transition: transform 0.2s ease;
     }
+    #filter-panel:not(.filter-horizontal) .filter-header { cursor: pointer; }
+    /* Hide the "Filter by:" subtitle inside the off-canvas modal */
+    #offcanvas-modal #filter-title { display: none !important; }
+    /* Off-canvas modal & body inherit the filter bar background so chosen colors
+       fill the entire left side panel (not just the inner area). */
+    #offcanvas-modal { background: var(--lov-offcanvas-bg, #ffffff); }
+    #offcanvas-modal-body { background: var(--lov-offcanvas-bg, #ffffff); }
+    #offcanvas-modal-header { background: var(--lov-offcanvas-bg, #ffffff); }
 
     /* Horizontal filter layout */
     #filter-panel.filter-horizontal {
@@ -492,6 +626,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Category">Category</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Heels</span><span class="count-badge text-xs text-gray-400 ml-auto">(34)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Flats</span><span class="count-badge text-xs text-gray-400 ml-auto">(21)</span></label>
@@ -517,6 +652,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Price">Price</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list px-1">
                 <input type="range" min="0" max="500" value="180" class="range-slider w-full mb-3">
                 <div class="flex items-center gap-3">
@@ -541,6 +677,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Color">Color</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option swatch-option"><span class="swatch" style="background:#000000"></span><span class="filter-value text-sm">Black</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
                 <label class="filter-option swatch-option"><span class="swatch" style="background:#ffffff"></span><span class="filter-value text-sm">White</span><span class="count-badge text-xs text-gray-400 ml-auto">(22)</span></label>
@@ -566,6 +703,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Size">Size</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">5</span><span class="count-badge text-xs text-gray-400 ml-auto">(6)</span></label>
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">5.5</span><span class="count-badge text-xs text-gray-400 ml-auto">(7)</span></label>
@@ -591,6 +729,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Brand">Brand</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Aldo</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Nine West</span><span class="count-badge text-xs text-gray-400 ml-auto">(9)</span></label>
@@ -616,6 +755,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Material">Material</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Leather</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Suede</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
@@ -641,6 +781,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Style">Style</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Classic</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Minimal</span><span class="count-badge text-xs text-gray-400 ml-auto">(10)</span></label>
@@ -666,6 +807,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Fit">Fit</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Slim</span><span class="count-badge text-xs text-gray-400 ml-auto">(16)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Regular</span><span class="count-badge text-xs text-gray-400 ml-auto">(24)</span></label>
@@ -691,6 +833,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Sleeve">Sleeve</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Sleeveless</span><span class="count-badge text-xs text-gray-400 ml-auto">(7)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Short</span><span class="count-badge text-xs text-gray-400 ml-auto">(10)</span></label>
@@ -716,6 +859,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Pattern">Pattern</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option swatch-option"><img class="swatch-img" src="https://picsum.photos/id/101/40/40" alt="Solid"><span class="filter-value text-sm">Solid</span><span class="count-badge text-xs text-gray-400 ml-auto">(30)</span></label>
                 <label class="filter-option swatch-option"><img class="swatch-img" src="https://picsum.photos/id/102/40/40" alt="Stripe"><span class="filter-value text-sm">Stripe</span><span class="count-badge text-xs text-gray-400 ml-auto">(9)</span></label>
@@ -741,6 +885,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Heel Height">Heel Height</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">Flat</span><span class="count-badge text-xs text-gray-400 ml-auto">(8)</span></label>
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">Low (1-2")</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
@@ -766,6 +911,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Toe Shape">Toe Shape</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Round</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Almond</span><span class="count-badge text-xs text-gray-400 ml-auto">(9)</span></label>
@@ -791,6 +937,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Closure">Closure</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Slip-On</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Lace-Up</span><span class="count-badge text-xs text-gray-400 ml-auto">(11)</span></label>
@@ -816,6 +963,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Occasion">Occasion</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Work</span><span class="count-badge text-xs text-gray-400 ml-auto">(14)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Party</span><span class="count-badge text-xs text-gray-400 ml-auto">(9)</span></label>
@@ -841,6 +989,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Season">Season</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Spring</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Summer</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
@@ -866,6 +1015,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Sport">Sport</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Running</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Training</span><span class="count-badge text-xs text-gray-400 ml-auto">(9)</span></label>
@@ -891,6 +1041,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Gender">Gender</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Women</span><span class="count-badge text-xs text-gray-400 ml-auto">(38)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Men</span><span class="count-badge text-xs text-gray-400 ml-auto">(12)</span></label>
@@ -916,6 +1067,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Width">Width</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">Narrow</span><span class="count-badge text-xs text-gray-400 ml-auto">(6)</span></label>
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">Standard</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
@@ -941,6 +1093,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Feature">Feature</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Cushioned</span><span class="count-badge text-xs text-gray-400 ml-auto">(16)</span></label>
                 <label class="filter-option"><input type="checkbox" class="custom-checkbox"><span class="filter-value text-sm">Arch Support</span><span class="count-badge text-xs text-gray-400 ml-auto">(10)</span></label>
@@ -966,6 +1119,7 @@
                 <i class="fas fa-chevron-down text-xs text-gray-400 group-hover:text-gray-600"></i>
               </button>
               <button type="button" class="filter-dropdown-toggle" aria-label="Rating">Rating</button>
+              <div class="filter-value-search lov-search"><i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
               <div class="filter-values-list">
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">5 Stars</span><span class="count-badge text-xs text-gray-400 ml-auto">(18)</span></label>
                 <label class="filter-option box-option"><input type="checkbox"><span class="filter-value text-sm">4+ Stars</span><span class="count-badge text-xs text-gray-400 ml-auto">(26)</span></label>
@@ -991,16 +1145,37 @@
         
         <!-- FIX #3: WRAPPER FOR BACKGROUND COLOR - Now covers toolbar + grid + pagination -->
         <div id="main-content-wrapper" style="background-color: #f3f4f6;">
+          <!-- Horizontal-mode collection search (above filters) -->
+          <div id="collection-search-horizontal-slot"></div>
           <div id="filter-horizontal-wrapper" class="hidden mb-6"></div>
-          
-          <!-- Toolbar: Active Filters + Sort -->
-          <div class="flex flex-nowrap items-start justify-between gap-4 mb-6" id="toolbar-area">
-            <!-- Active Filters (populated dynamically when user selects filter values) -->
+
+          <!-- Collection search (vertical / off-canvas) — sits directly above active filters + [Filter By? | 9 products | Sort By] -->
+          <div id="collection-search-row">
+            <div class="lov-search">
+              <i class="fas fa-search lov-search-icon"></i>
+              <input id="collection-search-input" type="text" placeholder="Search in this Collection" aria-label="Search in this Collection">
+            </div>
+          </div>
+
+          <!-- Toolbar: Active Filters — sits between collection search and product-count row -->
+          <div class="flex flex-nowrap items-start justify-between gap-4 mt-3 mb-4" id="toolbar-area">
             <div class="flex flex-wrap items-center gap-2 flex-1 min-w-0" id="active-filters-area">
               <button id="clear-all-btn" class="text-sm text-gray-900 hover:text-gray-700 font-medium ml-2 underline" style="display:none;">Clear all</button>
             </div>
+          </div>
 
-            <!-- Sort Dropdown -->
+
+          <!-- Product Count row: [Filter By (off-canvas only)] [9 products] [Sort By] -->
+          <div id="product-count-row" class="flex items-center justify-between gap-4 mb-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <button type="button" id="offcanvas-filter-btn" aria-label="Open filters">
+                <i class="fas fa-sliders-h"></i>
+                <span>Filter By</span>
+              </button>
+              <div id="product-count" class="text-sm text-gray-900">9 products</div>
+            </div>
+
+            <!-- Sort Dropdown — pinned to this position in vertical/offcanvas; moved to horizontal slot when horizontal -->
             <div class="flex items-center gap-3 flex-shrink-0" id="sort-by-area">
               <label id="sort-label" class="text-sm font-medium text-gray-900 whitespace-nowrap">Sort by</label>
               <select id="sort-select" class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:border-blue-500 focus:outline-none cursor-pointer">
@@ -1011,12 +1186,9 @@
                 <option>A-Z</option>
               </select>
             </div>
-          </div>
 
-          <!-- Product Count -->
-          <div id="product-count-row" class="flex items-center justify-between gap-4 mb-4">
-            <div id="product-count" class="text-sm text-gray-900">9 products</div>
-            <div id="sort-by-slot-horizontal"></div>
+            <!-- Slot used only when horizontal layout (existing behavior) -->
+            <div id="sort-by-slot-horizontal" class="hidden"></div>
           </div>
 
           <!-- ==================== PRODUCT GRID ==================== -->
@@ -1693,6 +1865,7 @@
 
     // Filter layout (horizontal vs sidebar)
     applyFilterLayout(c);
+    ensureInlineFilterSearch();
 
     initFilterDropdowns();
     
@@ -1771,11 +1944,18 @@
     const panel = document.getElementById('filter-panel');
     const sidebar = document.getElementById('filter-sidebar');
     const horizontalWrapper = document.getElementById('filter-horizontal-wrapper');
+    const modalBody = document.getElementById('offcanvas-modal-body');
+    const offcanvasBtn = document.getElementById('offcanvas-filter-btn');
+    const productCountRow = document.getElementById('product-count-row');
+    const collectionSearchRow = document.getElementById('collection-search-row');
+    const collectionSearchHorizSlot = document.getElementById('collection-search-horizontal-slot');
 
     if (!panel || !sidebar || !horizontalWrapper) return;
 
     const layout = c.filterLayout || 'offcanvas-desktop';
     const isHorizontal = layout === 'horizontal';
+    const isOffcanvas = layout === 'offcanvas-desktop';
+    const isVertical = layout === 'vertical';
     const columnCount = c.horizontalColumns || '3';
 
     panel.classList.toggle('filter-horizontal', isHorizontal);
@@ -1786,31 +1966,96 @@
       horizontalWrapper.classList.remove('hidden');
       sidebar.classList.add('hidden');
       sidebar.style.display = 'none';
-      if (!horizontalWrapper.contains(panel)) {
-        horizontalWrapper.appendChild(panel);
-      }
+      if (!horizontalWrapper.contains(panel)) horizontalWrapper.appendChild(panel);
+      closeOffcanvasModal();
+    } else if (isOffcanvas) {
+      // Off-canvas: hide the inline sidebar entirely, move panel into the modal body.
+      horizontalWrapper.classList.add('hidden');
+      sidebar.classList.add('hidden');
+      sidebar.style.display = 'none';
+      if (modalBody && !modalBody.contains(panel)) modalBody.appendChild(panel);
     } else {
+      // Vertical: classic left sidebar
       horizontalWrapper.classList.add('hidden');
       sidebar.classList.remove('hidden');
       sidebar.style.display = '';
-      if (!sidebar.contains(panel)) {
-        sidebar.appendChild(panel);
+      if (!sidebar.contains(panel)) sidebar.appendChild(panel);
+      closeOffcanvasModal();
+    }
+
+    // Filter By button visibility (off-canvas only)
+    if (offcanvasBtn) offcanvasBtn.style.display = isOffcanvas ? 'inline-flex' : 'none';
+
+    // Collection search bar — vertical/offcanvas above product-count row;
+    // horizontal above the filter panel.
+    if (collectionSearchRow && collectionSearchHorizSlot && productCountRow) {
+      // Detach the search row, then attach to the right spot.
+      const searchRow = collectionSearchRow;
+      if (isHorizontal) {
+        searchRow.classList.remove('hidden');
+        if (searchRow.parentElement !== collectionSearchHorizSlot) {
+          collectionSearchHorizSlot.appendChild(searchRow);
+        }
+        collectionSearchHorizSlot.classList.remove('hidden');
+      } else {
+        searchRow.classList.remove('hidden');
+        // Search bar sits ABOVE the active-filter pills (toolbar-area), which sits above product-count-row.
+        const toolbarArea = document.getElementById('toolbar-area');
+        const anchor = toolbarArea || productCountRow;
+        const parent = anchor.parentElement;
+        if (parent && (searchRow.parentElement !== parent || searchRow.nextElementSibling !== anchor)) {
+          parent.insertBefore(searchRow, anchor);
+        }
+        collectionSearchHorizSlot.classList.add('hidden');
       }
     }
 
-    // Move Sort-By block: in horizontal layout, place it on the product-count
-    // row (top-right above the grid). In vertical/off-canvas, keep it pinned
-    // top-right of the toolbar (above the selected filter values).
+    // Sort-By position. In all modes vertical/offcanvas: pinned to product-count-row.
+    // In horizontal: moves into the sort-by-slot-horizontal (existing behaviour).
     const sortArea = document.getElementById('sort-by-area');
-    const toolbar = document.getElementById('toolbar-area');
     const horizSlot = document.getElementById('sort-by-slot-horizontal');
-    if (sortArea && toolbar && horizSlot) {
+    if (sortArea && productCountRow && horizSlot) {
       if (isHorizontal) {
+        horizSlot.classList.remove('hidden');
         if (sortArea.parentElement !== horizSlot) horizSlot.appendChild(sortArea);
       } else {
-        if (sortArea.parentElement !== toolbar) toolbar.appendChild(sortArea);
+        horizSlot.classList.add('hidden');
+        if (sortArea.parentElement !== productCountRow) productCountRow.appendChild(sortArea);
       }
     }
+  }
+
+  function ensureInlineFilterSearch() {
+    document.querySelectorAll('.filter-section').forEach(section => {
+      const list = section.querySelector('.filter-values-list');
+      if (!list || list.querySelector('.filter-value-search-inline')) return;
+      const base = section.querySelector('.filter-value-search');
+      const wrap = document.createElement('div');
+      wrap.className = 'filter-value-search filter-value-search-inline lov-search';
+      wrap.innerHTML = '<i class="fas fa-search lov-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value">';
+      const baseInput = base ? base.querySelector('input') : null;
+      if (baseInput && baseInput.placeholder) {
+        wrap.querySelector('input').placeholder = baseInput.placeholder;
+      }
+      list.prepend(wrap);
+    });
+  }
+
+  function openOffcanvasModal() {
+    const modal = document.getElementById('offcanvas-modal');
+    const overlay = document.getElementById('offcanvas-overlay');
+    if (!modal || !overlay) return;
+    overlay.classList.add('open');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeOffcanvasModal() {
+    const modal = document.getElementById('offcanvas-modal');
+    const overlay = document.getElementById('offcanvas-overlay');
+    if (!modal || !overlay) return;
+    overlay.classList.remove('open');
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
   }
 
   /**
@@ -1833,6 +2078,13 @@
         panel.style.borderRadius = '';
       }
     }
+    // Off-canvas: propagate filter bar bg color to the modal shell so the
+    // entire left side panel (header + body padding) reflects the chosen color.
+    const isOffcanvasMode = (c.filterLayout || 'offcanvas-desktop') === 'offcanvas-desktop';
+    document.documentElement.style.setProperty(
+      '--lov-offcanvas-bg',
+      (isOffcanvasMode && c.filterBarBg) ? c.filterBarBg : '#ffffff'
+    );
     // Apply bar background to the horizontal wrapper so it actually shows in horizontal layout
     const horizWrap = document.getElementById('filter-horizontal-wrapper');
     if (horizWrap) {
@@ -1901,10 +2153,11 @@
         clearProp(el, 'border-color');
       }
     });
-    document.querySelectorAll('#filter-panel.filter-horizontal .filter-values-list').forEach(el => {
-      if (isHorizontal && optBg) setI(el, 'background-color', optBg);
+    document.querySelectorAll('.filter-values-list').forEach(el => {
+      const inHorizontal = !!el.closest('#filter-panel.filter-horizontal');
+      if (isHorizontal && inHorizontal && optBg) setI(el, 'background-color', optBg);
       else clearProp(el, 'background-color');
-      if (isHorizontal) {
+      if (isHorizontal && inHorizontal) {
         setI(el, 'border-width', '1px');
         setI(el, 'border-style', 'solid');
         setI(el, 'border-color', c.optLabelColor || '#e5e7eb');
@@ -1950,6 +2203,23 @@
         clearProp(box, 'border-color');
         clearProp(box, 'background-color');
       }
+    });
+
+
+    // ---- Search bars (Collection + per-filter-value): only text/icon follow
+    // the Filter Value color. The input border is a clear black for visibility.
+    const searchColor = c.valColor || '#374151';
+    document.querySelectorAll('.lov-search').forEach(wrap => {
+      wrap.style.setProperty('--lov-search-color', '#e5e7eb');
+      wrap.style.setProperty('--lov-search-border', '#111827');
+    });
+    document.querySelectorAll('.lov-search input').forEach(inp => {
+      setI(inp, 'border-color', '#111827');
+      setI(inp, 'color', searchColor);
+      if (c.valFont) setI(inp, 'font-family', c.valFont);
+    });
+    document.querySelectorAll('.lov-search .lov-search-icon').forEach(ic => {
+      setI(ic, 'color', searchColor);
     });
 
     // Filter title ("Filter by:") fully syncs with Filter Option Label settings
@@ -2878,6 +3148,40 @@
 
   refreshClearAllVisibility();
 
+
+  // ===== Off-canvas modal + filter-value search wiring =====
+  document.addEventListener('click', function(ev) {
+    if (ev.target.closest('#offcanvas-filter-btn')) { openOffcanvasModal(); return; }
+    if (ev.target.closest('#offcanvas-modal-close')) { closeOffcanvasModal(); return; }
+    if (ev.target.id === 'offcanvas-overlay') { closeOffcanvasModal(); return; }
+  });
+  document.addEventListener('keydown', function(ev) {
+    if (ev.key === 'Escape') closeOffcanvasModal();
+  });
+  // Per-section filter value search
+  document.addEventListener('input', function(ev) {
+    const input = ev.target.closest('.filter-value-search input');
+    if (!input) return;
+    const section = input.closest('.filter-section');
+    if (!section) return;
+    const q = input.value.trim().toLowerCase();
+    section.querySelectorAll('.filter-values-list .filter-option').forEach(opt => {
+      const txt = (opt.querySelector('.filter-value')?.textContent || '').toLowerCase();
+      opt.style.display = (!q || txt.includes(q)) ? '' : 'none';
+    });
+  });
+  // Collection search: filter visible product cards
+  const collectionInput = document.getElementById('collection-search-input');
+  if (collectionInput) {
+    collectionInput.addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      document.querySelectorAll('#product-grid .product-card').forEach(card => {
+        const title = (card.querySelector('.product-title')?.textContent || '').toLowerCase();
+        card.style.display = (!q || title.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
   // ====================================================================
   // INITIALIZATION
   // ====================================================================
@@ -2891,5 +3195,17 @@
   console.log('🏪 StoreFront.html loaded and connected to index.html');
 
   </script>
+
+  <!-- ========== OFF-CANVAS FILTER MODAL ========== -->
+  <div id="offcanvas-overlay" aria-hidden="true"></div>
+  <aside id="offcanvas-modal" role="dialog" aria-label="Filters" aria-hidden="true">
+    <div id="offcanvas-modal-header">
+      <h3>Filter By</h3>
+      <button type="button" id="offcanvas-modal-close" aria-label="Close filters">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="offcanvas-modal-body"></div>
+  </aside>
 </body>
 </html>
