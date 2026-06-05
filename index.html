@@ -318,6 +318,47 @@
     #grid-tab .config-box.collapsed .collapse-body { display: none; }
     #grid-tab .config-box:not(.collapsed) .collapse-subtext { display: none; }
 
+
+    /* Extend collapsible behavior to Filter Design side */
+    #filter-settings-col .config-box .collapse-header {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+    }
+    #filter-settings-col .config-box .collapse-header .section-title { margin: 0; flex: 0 0 auto; }
+    #filter-settings-col .config-box .collapse-header .header-toggle { margin-left: auto; display: inline-flex; align-items: center; }
+    #filter-settings-col .config-box .collapse-chev {
+      background: transparent; border: none; padding: 4px; cursor: pointer;
+      color: #6b7280; transition: transform 0.2s ease;
+    }
+    #filter-settings-col .config-box.collapsed .collapse-chev { transform: rotate(-90deg); }
+    #filter-settings-col .config-box .collapse-subtext {
+      font-size: 11px; color: #6b7280; margin-top: 4px; line-height: 1.4;
+    }
+    #filter-settings-col .config-box.collapsed .collapse-body { display: none; }
+    #filter-settings-col .config-box:not(.collapsed) .collapse-subtext { display: none; }
+
+    /* Design mode (Default/Custom) toggle */
+    .design-mode-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 2px 0 0 0;
+    }
+    .design-mode-row label.dm-label {
+      font-size: 12px; font-weight: 600; color: #374151; margin: 0;
+    }
+    .design-mode-row .design-mode-select {
+      width: 110px; padding: 0.2rem 0.4rem !important;
+    }
+    .design-mode-row .dm-note {
+      font-size: 11px; color: #6b7280; font-style: italic;
+    }
+    .design-mode-sep {
+      border: 0; border-top: 1px solid #e5e7eb;
+      margin: 8px 0 10px 0;
+    }
+    .design-customize { transition: opacity 0.2s ease; }
+    .config-box.design-default .design-customize {
+      opacity: 0.45; pointer-events: none; user-select: none; filter: grayscale(20%);
+    }
+
     /* Preview container wrapper for grid background */
     .preview-grid-wrapper {
       padding: 20px;
@@ -3552,6 +3593,202 @@ document.addEventListener('DOMContentLoaded', initGridCollapsibles);
 document.addEventListener('click', (e) => {
   if (e.target.closest('[data-tab="grid"], .tab-btn')) {
     setTimeout(initGridCollapsibles, 50);
+  }
+});
+
+
+// ===== Collapsibles for Filter Design side =====
+function initFilterCollapsibles() {
+  const col = document.getElementById('filter-settings-col');
+  if (!col) return;
+  const FILTER_NO_COLLAPSE = new Set(['Filter Layout']);
+  const FILTER_DEFAULT_EXPANDED = new Set([
+    'ToolBar','Tool Bar','Filter Bar',
+    'Filter Option Label','Filter Value','Apply Filters Button'
+  ]);
+  col.querySelectorAll(':scope > .config-box').forEach(box => {
+    if (box.dataset.collapseInit === '1') return;
+    if (box.dataset.noCollapse === '1') { box.dataset.collapseInit = '1'; return; }
+    if (box.id === 'filter-preview-card') { box.dataset.collapseInit = '1'; return; }
+    const title = box.querySelector(':scope > .section-title, :scope > div > .section-title');
+    if (!title) return;
+    const tText = (title.textContent || '').trim();
+    if (FILTER_NO_COLLAPSE.has(tText)) { box.dataset.collapseInit = '1'; return; }
+    const toggle = box.querySelector('.toggle-switch');
+    const header = document.createElement('div');
+    header.className = 'collapse-header';
+    const titleClone = title.cloneNode(true);
+    titleClone.classList.remove('mb-1','mb-1.5','mb-2','mb-3');
+    header.appendChild(titleClone);
+    if (toggle) {
+      const wrap = document.createElement('span');
+      wrap.className = 'header-toggle';
+      const tp = toggle.parentElement;
+      wrap.appendChild(toggle);
+      header.appendChild(wrap);
+      if (tp && tp !== box && tp.children.length === 0) tp.remove();
+    }
+    const chev = document.createElement('button');
+    chev.type = 'button';
+    chev.className = 'collapse-chev';
+    chev.setAttribute('aria-label','Toggle section');
+    chev.innerHTML = '<i class="fas fa-chevron-down"></i>';
+    if (!toggle) header.style.justifyContent = 'space-between';
+    header.appendChild(chev);
+
+    const body = document.createElement('div');
+    body.className = 'collapse-body';
+    while (box.firstChild) body.appendChild(box.firstChild);
+    const origTitle = body.querySelector('.section-title');
+    if (origTitle) {
+      const op = origTitle.parentElement;
+      origTitle.remove();
+      if (op && op !== body && op.children.length === 0) op.remove();
+    }
+    box.appendChild(header);
+    box.appendChild(body);
+    if (!FILTER_DEFAULT_EXPANDED.has(tText)) box.classList.add('collapsed');
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.toggle-switch')) return;
+      box.classList.toggle('collapsed');
+    });
+    box.dataset.collapseInit = '1';
+  });
+}
+
+// ===== Design Mode (Default / Custom) toggle =====
+const DESIGN_TITLES_TOP = new Set([
+  'Filter Option Label','Filter Value','Apply Filters Button',
+  'Product Title','Vendor','Add to Cart Button',
+  'Wishlist Settings','Quick View Settings',
+  'Sale Badge','Sold Out Badge','Low Stock Badge',
+  'SKU Display'
+]);
+const DESIGN_TITLES_PRICE = new Set(['Price Settings']);
+
+function buildDesignRow() {
+  const wrap = document.createElement('div');
+  wrap.className = 'design-mode-wrapper';
+  wrap.innerHTML = `
+    <div class="design-mode-row">
+      <label class="dm-label">Design:</label>
+      <select class="design-mode-select micro-select">
+        <option value="default" selected>Default</option>
+        <option value="custom">Custom</option>
+      </select>
+      <span class="dm-note">Note: <strong>Default</strong> using the theme design</span>
+    </div>
+    <hr class="design-mode-sep">
+  `;
+  return wrap;
+}
+
+function buildDesignRowOnly() {
+  const wrap = document.createElement('div');
+  wrap.className = 'design-mode-wrapper';
+  wrap.innerHTML = `
+    <div class="design-mode-row">
+      <label class="dm-label">Design:</label>
+      <select class="design-mode-select micro-select">
+        <option value="default" selected>Default</option>
+        <option value="custom">Custom</option>
+      </select>
+      <span class="dm-note">Note: <strong>Default</strong> using the theme design</span>
+    </div>
+  `;
+  return wrap;
+}
+
+function buildDesignSep() {
+  const hr = document.createElement('hr');
+  hr.className = 'design-mode-sep';
+  return hr;
+}
+
+function initDesignModeToggles() {
+  document.querySelectorAll('.config-box').forEach(box => {
+    if (box.dataset.designInit === '1') return;
+    const titleEl = box.querySelector('.section-title');
+    if (!titleEl) return;
+    const t = (titleEl.textContent || '').trim();
+    const isTop = DESIGN_TITLES_TOP.has(t);
+    const isPrice = DESIGN_TITLES_PRICE.has(t);
+    if (!isTop && !isPrice) return;
+    box.dataset.designInit = '1';
+
+    const body = box.querySelector(':scope > .collapse-body') || box;
+    const customDiv = document.createElement('div');
+    customDiv.className = 'design-customize';
+
+    let sel;
+    if (t === 'SKU Display') {
+      // Design row goes INSIDE the existing Display Format block so they share
+      // its single bottom border (no extra separator). Everything after that
+      // block becomes the customizable area.
+      const first = body.firstElementChild; // Display Format wrapper (has border-b)
+      const designRow = buildDesignRowOnly();
+      if (first) {
+        first.insertBefore(designRow, first.firstChild);
+        let next = first.nextSibling;
+        while (next) {
+          const cur = next; next = cur.nextSibling;
+          customDiv.appendChild(cur);
+        }
+        first.after(customDiv);
+      } else {
+        body.appendChild(designRow);
+        body.appendChild(customDiv);
+      }
+      sel = designRow.querySelector('.design-mode-select');
+      designRow.addEventListener('click', (e) => e.stopPropagation());
+    } else if (isTop) {
+      const designWrap = buildDesignRow();
+      while (body.firstChild) customDiv.appendChild(body.firstChild);
+      body.appendChild(designWrap);
+      body.appendChild(customDiv);
+      sel = designWrap.querySelector('.design-mode-select');
+      designWrap.addEventListener('click', (e) => e.stopPropagation());
+    } else {
+      // Price Settings: Design row ABOVE the first row (Hide Price/Hide Decimal),
+      // separator BELOW that row, rest of the section faded in Default mode.
+      const designRow = buildDesignRowOnly();
+      const sep = buildDesignSep();
+      const first = body.firstElementChild;
+      let next = first ? first.nextSibling : null;
+      while (next) {
+        const cur = next; next = cur.nextSibling;
+        customDiv.appendChild(cur);
+      }
+      if (first) {
+        body.insertBefore(designRow, first);
+        first.after(sep);
+        sep.after(customDiv);
+      } else {
+        body.appendChild(designRow);
+        body.appendChild(sep);
+        body.appendChild(customDiv);
+      }
+      sel = designRow.querySelector('.design-mode-select');
+      designRow.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    box.classList.add('design-default');
+    sel.addEventListener('change', () => {
+      if (sel.value === 'custom') box.classList.remove('design-default');
+      else box.classList.add('design-default');
+    });
+  });
+}
+
+function initCollapsiblesAndDesign() {
+  if (typeof initGridCollapsibles === 'function') initGridCollapsibles();
+  initFilterCollapsibles();
+  initDesignModeToggles();
+}
+document.addEventListener('DOMContentLoaded', initCollapsiblesAndDesign);
+document.addEventListener('click', (e) => {
+  if (e.target.closest('[data-tab="filter"], [data-tab="grid"], .tab-btn')) {
+    setTimeout(initCollapsiblesAndDesign, 60);
   }
 });
 
