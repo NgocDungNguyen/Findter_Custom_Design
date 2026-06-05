@@ -97,6 +97,16 @@
       background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;
       margin-bottom: 1rem;
     }
+
+    .design-note {
+      font-size: 11px;
+      font-style: italic;
+      color: #6b7280;   /* grey */
+      margin-top: 6px;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
     /* Inline row layout: groups multiple fields on the same line */
     .h-row {
       display: flex; align-items: center; gap: 1.1rem;
@@ -358,6 +368,13 @@
     .config-box.design-default .design-customize {
       opacity: 0.45; pointer-events: none; user-select: none; filter: grayscale(20%);
     }
+    /* Design toggle is explicitly pill-shaped (overrides any tab-scoped overrides) */
+    .design-mode-row .toggle-switch.design-toggle .toggle-slider { border-radius: 9999px; }
+    .design-mode-row .toggle-switch.design-toggle .toggle-slider:before { border-radius: 50%; }
+    .design-mode-row .dm-label { font-weight: 600; }
+    /* Rectangle-shaped show/hide toggles on Product Grid & Card side */
+    #grid-tab .toggle-switch:not(.design-toggle) .toggle-slider { border-radius: 4px; }
+    #grid-tab .toggle-switch:not(.design-toggle) .toggle-slider:before { border-radius: 2px; }
 
     /* Preview container wrapper for grid background */
     .preview-grid-wrapper {
@@ -3671,13 +3688,10 @@ function buildDesignRow() {
   wrap.className = 'design-mode-wrapper';
   wrap.innerHTML = `
     <div class="design-mode-row">
-      <label class="dm-label">Design:</label>
-      <select class="design-mode-select micro-select">
-        <option value="default" selected>Default</option>
-        <option value="custom">Custom</option>
-      </select>
-      <span class="dm-note">Note: <strong>Default</strong> using the theme design</span>
+      <label class="dm-label">Enable custom design</label>
+      <label class="toggle-switch design-toggle"><input type="checkbox" class="design-mode-toggle"><span class="toggle-slider"></span></label>
     </div>
+    <div class="design-note">Note: <b>On</b> - Enable custom, <b>Off</b> - Default theme design</div>
     <hr class="design-mode-sep">
   `;
   return wrap;
@@ -3688,13 +3702,10 @@ function buildDesignRowOnly() {
   wrap.className = 'design-mode-wrapper';
   wrap.innerHTML = `
     <div class="design-mode-row">
-      <label class="dm-label">Design:</label>
-      <select class="design-mode-select micro-select">
-        <option value="default" selected>Default</option>
-        <option value="custom">Custom</option>
-      </select>
-      <span class="dm-note">Note: <strong>Default</strong> using the theme design</span>
+      <label class="dm-label">Enable custom design</label>
+      <label class="toggle-switch design-toggle"><input type="checkbox" class="design-mode-toggle"><span class="toggle-slider"></span></label>
     </div>
+    <div class="design-note">Note: <b>On</b> - Enable custom, <b>Off</b> - Default theme design</div>
   `;
   return wrap;
 }
@@ -3739,14 +3750,14 @@ function initDesignModeToggles() {
         body.appendChild(designRow);
         body.appendChild(customDiv);
       }
-      sel = designRow.querySelector('.design-mode-select');
+      sel = designRow.querySelector('.design-mode-toggle');
       designRow.addEventListener('click', (e) => e.stopPropagation());
     } else if (isTop) {
       const designWrap = buildDesignRow();
       while (body.firstChild) customDiv.appendChild(body.firstChild);
       body.appendChild(designWrap);
       body.appendChild(customDiv);
-      sel = designWrap.querySelector('.design-mode-select');
+      sel = designWrap.querySelector('.design-mode-toggle');
       designWrap.addEventListener('click', (e) => e.stopPropagation());
     } else {
       // Price Settings: Design row ABOVE the first row (Hide Price/Hide Decimal),
@@ -3768,13 +3779,14 @@ function initDesignModeToggles() {
         body.appendChild(sep);
         body.appendChild(customDiv);
       }
-      sel = designRow.querySelector('.design-mode-select');
+      sel = designRow.querySelector('.design-mode-toggle');
       designRow.addEventListener('click', (e) => e.stopPropagation());
     }
 
     box.classList.add('design-default');
+    sel.checked = false;
     sel.addEventListener('change', () => {
-      if (sel.value === 'custom') box.classList.remove('design-default');
+      if (sel.checked) box.classList.remove('design-default');
       else box.classList.add('design-default');
     });
   });
