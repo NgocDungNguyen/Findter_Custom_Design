@@ -1317,16 +1317,6 @@
           <h2 class="section-title mb-1">Product Grid (Mobile)</h2>
           <p class="text-[11px] text-gray-500 leading-relaxed">Fixed at 2 items per row. Pagination not available. <span class="contact-link" onclick="openChatWithMessage('Hi, i need help with mobile customize')">Contact us</span> for mobile customization.</p>
         </div>
-       
-        <!-- General Settings -->
-        <div class="config-box" data-default-expanded="1">
-          <h2 class="section-title mb-2">General Settings</h2>
-          <div class="flex flex-wrap gap-x-6 gap-y-1.5">
-            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-second" checked class="accent-blue-600 w-3.5 h-3.5"> Show second image on hover</label>
-            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer"><input type="checkbox" id="hover-zoom" checked class="accent-blue-600 w-3.5 h-3.5"> Zoom effect on hover</label>
-            <div class="ctrl-row mb-0"><label>Content Align</label><select id="content-align" class="micro-select w-26"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>
-          </div>
-        </div>
 
         <!-- ============================================== -->
         <!-- NEW: SECTION REORDER (Drag & Drop)           -->
@@ -1402,13 +1392,41 @@
         <!-- Product Card -->
         <div class="config-box">
           <h2 class="section-title mb-2">Product Card</h2>
-          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
-            <div class="ctrl-row"><label>Background</label><div class="color-picker-compact"><input type="color" id="card-bg-color" value="#ffffff"><input type="text" id="card-bg-color-hex" value="#ffffff" readonly></div></div>
-            <div class="ctrl-row"><label>Border Color</label><div class="color-picker-compact"><input type="color" id="card-border-color" value="#e5e7eb"><input type="text" id="card-border-color-hex" value="#e5e7eb" readonly></div></div>
-            <div class="slider-row col-span-2"><label>Border Radius</label><input type="range" id="card-radius" min="0" max="30" value="12" class="flex-1 max-w-[280px]"><span id="card-radius-val" class="slider-val">12px</span></div>
+          <!-- Line 1: Content Align + Background Color -->
+          <div class="flex flex-wrap items-center gap-4 mb-3">
+            <div class="ctrl-row mb-0">
+              <label>Content Align</label>
+              <select id="content-align" class="micro-select w-26">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Background</label>
+              <div class="color-picker-compact">
+                <input type="color" id="card-bg-color" value="#ffffff">
+                <input type="text" id="card-bg-color-hex" value="#ffffff" readonly>
+              </div>
+            </div>
+          </div>
+          <!-- Line 2: Border Radius + Border Color -->
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="slider-row mb-0">
+              <label>Border Radius</label>
+              <input type="range" id="card-radius" min="0" max="30" value="12" class="w-28">
+              <span id="card-radius-val" class="slider-val">12px</span>
+            </div>
+            <div class="ctrl-row mb-0">
+              <label>Border Color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="card-border-color" value="#e5e7eb">
+                <input type="text" id="card-border-color-hex" value="#e5e7eb" readonly>
+              </div>
+            </div>
           </div>
         </div>
-       
+
         <!-- Product Image -->
         <div class="config-box">
           <h2 class="section-title mb-2">Product Image</h2>
@@ -1433,7 +1451,16 @@
               <span id="img-radius-val" class="slider-val">8px</span>
             </div>
           </div>
-        </div>
+          <!-- Hover settings moved from General Settings -->
+          <div class="flex flex-wrap gap-x-6 gap-y-2 mt-3 pt-2 border-t border-gray-200">
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer">
+              <input type="checkbox" id="hover-second" checked class="accent-blue-600 w-3.5 h-3.5"> Show second image on hover
+            </label>
+            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer">
+              <input type="checkbox" id="hover-zoom" checked class="accent-blue-600 w-3.5 h-3.5"> Zoom effect on hover
+            </label>
+          </div>
+        </div>  
         
         <!-- Product Title (moved above SKU) -->
         <div class="config-box">
