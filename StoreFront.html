@@ -384,6 +384,20 @@
       background: #ffffff;
     }
 
+    /* Hide scroll UI but keep scroll behavior (vertical & off-canvas desktop) */
+    .hide-filter-scroll,
+    .hide-filter-scroll .filter-values-list {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .hide-filter-scroll::-webkit-scrollbar,
+    .hide-filter-scroll .filter-values-list::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none !important;
+    }
+
+
     .filter-title-row {
       display: block;
     }
@@ -1744,6 +1758,7 @@
     atcWeight: '600',
     atcTransform: 'uppercase',
     atcRadius: '6',
+    atcHoverColor: '#1f2937',
     
     // Wishlist defaults
     showWishlist: true,
@@ -1793,6 +1808,7 @@
     
     // Sticky filter
     stickyFilter: false,
+    hideFilterScroll: false,
 
     // Filter bar token colors (Clear All + active filter pills)
     filterBarTextColor: '#111827',
@@ -1862,6 +1878,7 @@
     
     // FIX #2: Sticky filter logic
     applyStickyFilter(c);
+    applyHideFilterScroll(c);
 
     // Filter layout (horizontal vs sidebar)
     applyFilterLayout(c);
@@ -1936,6 +1953,22 @@
     }
     console.log('📌 Sticky filter enabled');
   }
+
+  /**
+   * Hide scroll UI on filter panel + value lists (vertical & off-canvas desktop only)
+   */
+  function applyHideFilterScroll(c) {
+    const enabled = c.hideFilterScroll === true || c.hideFilterScroll === 'true';
+    const layout = c.filterLayout || 'offcanvas-desktop';
+    const apply = enabled && layout !== 'horizontal';
+    const targets = [
+      document.getElementById('filter-panel'),
+      document.getElementById('offcanvas-modal-body'),
+    ];
+    targets.forEach(el => el && el.classList.toggle('hide-filter-scroll', apply));
+  }
+
+
 
   /**
    * Filter Layout - horizontal grid vs sidebar
@@ -2619,6 +2652,15 @@
       if (c.atcWeight) atcBtn.style.fontWeight = c.atcWeight;
       if (c.atcTransform) atcBtn.style.textTransform = c.atcTransform;
       if (c.atcRadius) atcBtn.style.borderRadius = c.atcRadius + 'px';
+      const bg = c.atcBgColor || '#1f2937';
+      const hover = c.atcHoverColor || bg;
+      atcBtn.dataset.bg = bg;
+      atcBtn.dataset.hover = hover;
+      if (!atcBtn.dataset.hoverBound) {
+        atcBtn.addEventListener('mouseenter', () => { atcBtn.style.backgroundColor = atcBtn.dataset.hover || atcBtn.dataset.bg; });
+        atcBtn.addEventListener('mouseleave', () => { atcBtn.style.backgroundColor = atcBtn.dataset.bg; });
+        atcBtn.dataset.hoverBound = '1';
+      }
     }
     
     // Inline wishlist button in actions row
@@ -2992,6 +3034,15 @@
       if (c.atcWeight) modalAtc.style.fontWeight = c.atcWeight;
       if (c.atcTransform) modalAtc.style.textTransform = c.atcTransform;
       if (c.atcRadius) modalAtc.style.borderRadius = c.atcRadius + 'px';
+      const mBg = c.atcBgColor || '#1f2937';
+      const mHover = c.atcHoverColor || mBg;
+      modalAtc.dataset.bg = mBg;
+      modalAtc.dataset.hover = mHover;
+      if (!modalAtc.dataset.hoverBound) {
+        modalAtc.addEventListener('mouseenter', () => { modalAtc.style.backgroundColor = modalAtc.dataset.hover || modalAtc.dataset.bg; });
+        modalAtc.addEventListener('mouseleave', () => { modalAtc.style.backgroundColor = modalAtc.dataset.bg; });
+        modalAtc.dataset.hoverBound = '1';
+      }
     }
     
     const modalWish = document.getElementById('modal-wish-btn');
