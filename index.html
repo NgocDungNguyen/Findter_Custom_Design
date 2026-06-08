@@ -265,6 +265,21 @@
       min-width: 16px;
     }
 
+    /* Hide scroll UI but keep scroll behavior — vertical & off-canvas desktop layouts */
+    .hide-filter-scroll,
+    .hide-filter-scroll .filter-preview-values {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .hide-filter-scroll::-webkit-scrollbar,
+    .hide-filter-scroll .filter-preview-values::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none !important;
+    }
+
+
+
     .filter-preview-select {
       width: 100%;
       border: 1px solid #d1d5db;
@@ -824,10 +839,15 @@
         <div class="config-box">
           <h2 class="section-title mb-2">Filter Bar</h2>
           <div class="space-y-2">
-            <!-- Line 1: Sticky Filter -->
-            <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer">
-              <input type="checkbox" id="sticky-filter" class="accent-blue-600 w-3.5 h-3.5"> Sticky Filter (scrolls with page)
-            </label>
+            <!-- Line 1: Sticky Filter + Hide scroll -->
+            <div class="flex flex-wrap items-center gap-4">
+              <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="sticky-filter" class="accent-blue-600 w-3.5 h-3.5"> Sticky Filter (scrolls with page)
+              </label>
+              <label class="flex items-center gap-1.5 text-[13px] text-gray-700 cursor-pointer">
+                <input type="checkbox" id="hide-filter-scroll" class="accent-blue-600 w-3.5 h-3.5"> Hide scroll
+              </label>
+            </div>
 
             <!-- Line 2: Bar Background + Bar Width -->
             <div class="flex flex-wrap items-end gap-4">
@@ -1796,14 +1816,6 @@
             <div class="h-cell"><label>Font</label>
               <select id="atc-font" class="font-select"></select>
             </div>
-            <div class="h-cell"><label>Color</label>
-              <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
-            </div>
-            <div class="h-cell"><label>Background</label>
-              <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
-            </div>
-          </div>
-          <div class="h-row">
             <div class="h-cell"><label>Transform</label>
               <select id="atc-transform" class="micro-select">
                 <option value="none">None</option>
@@ -1811,17 +1823,28 @@
                 <option value="uppercase">Uppercase</option>
               </select>
             </div>
-            <div class="h-cell"><label>Size</label>
-              <input type="range" id="atc-font-size" min="11" max="20" value="13">
-              <span id="atc-font-val" class="slider-val">13px</span>
-            </div>
-          </div>
-          <div class="h-row">
             <div class="h-cell"><label>Weight</label>
               <select id="atc-weight" class="micro-select">
                 <option value="400" selected>Regular</option>
                 <option value="700">Bold</option>
               </select>
+            </div>
+          </div>
+          <div class="h-row">
+            <div class="h-cell"><label>Color</label>
+              <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
+            </div>
+            <div class="h-cell"><label>Background</label>
+              <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
+            </div>
+            <div class="h-cell"><label>Hover</label>
+              <div class="color-picker-compact"><input type="color" id="atc-hover-color" value="#1f2937"><input type="text" id="atc-hover-color-hex" value="#1f2937" readonly></div>
+            </div>
+          </div>
+          <div class="h-row">
+            <div class="h-cell"><label>Size</label>
+              <input type="range" id="atc-font-size" min="11" max="20" value="13">
+              <span id="atc-font-val" class="slider-val">13px</span>
             </div>
             <div class="h-cell"><label>Radius</label>
               <input type="range" id="atc-radius" min="0" max="50" value="6">
@@ -2336,6 +2359,8 @@ function updateFilterPreview() {
   const layout = document.getElementById('filter-layout')?.value || 'offcanvas-desktop';
   const columns = document.getElementById('horizontal-columns')?.value || '2';
   panel.classList.toggle('filter-preview-horizontal', layout === 'horizontal');
+  const hideScroll = document.getElementById('hide-filter-scroll')?.checked;
+  panel.classList.toggle('hide-filter-scroll', !!hideScroll && layout !== 'horizontal');
   syncOptLabelLayout(layout);
   panel.style.setProperty('--filter-value-columns', columns);
   const gapMap = { '2': '10px', '3': '10px', '4': '9px', '5': '8px', '6': '8px' };
@@ -3001,18 +3026,28 @@ function updateProductPreview() {
   atc.classList.toggle('hidden', !document.getElementById('show-atc').checked);
   atc.style.fontSize = document.getElementById('atc-font-size').value+'px';
   atc.style.textTransform = document.getElementById('atc-transform').value;
-  atc.style.color = document.getElementById('atc-text-color').value;
-  atc.style.backgroundColor = document.getElementById('atc-bg-color').value;
+  const atcColor = document.getElementById('atc-text-color').value;
+  const atcBg = document.getElementById('atc-bg-color').value;
+  const atcHover = document.getElementById('atc-hover-color').value;
+  atc.style.color = atcColor;
+  atc.style.backgroundColor = atcBg;
   atc.style.fontFamily = document.getElementById('atc-font').value;
   atc.style.fontWeight = document.getElementById('atc-weight').value;
   atc.style.borderRadius = document.getElementById('atc-radius').value+'px';
+  atc.dataset.bg = atcBg;
+  atc.dataset.hover = atcHover;
+  if (!atc.dataset.hoverBound) {
+    atc.addEventListener('mouseenter', () => { atc.style.backgroundColor = atc.dataset.hover || atc.dataset.bg; });
+    atc.addEventListener('mouseleave', () => { atc.style.backgroundColor = atc.dataset.bg; });
+    atc.dataset.hoverBound = '1';
+  }
  
   updateBadgePositions();
   updateWishlistPreview();
   updateQuickViewPreview();
  
   ['title-color','vendor-color','fixed-price-color','old-price-color','sale-price-color',
-   'atc-text-color','atc-bg-color','sale-text-color','sale-bg-color',
+   'atc-text-color','atc-bg-color','atc-hover-color','sale-text-color','sale-bg-color',
    'soldout-text-color','soldout-bg-color','lowstock-text-color','lowstock-bg-color',
    'card-bg-color','card-border-color','wishlist-text-color','wishlist-bg-color',
    'quickview-text-color','quickview-bg-color','grid-bg-color',
@@ -3306,6 +3341,7 @@ function collectAllSettings() {
     atcWeight: getVal('atc-weight'),
     atcTransform: getVal('atc-transform'),
     atcRadius: getVal('atc-radius'),
+    atcHoverColor: getVal('atc-hover-color'),
 
     // ===== WISHLIST =====
     showWishlist: getVal('show-wishlist'),
@@ -3335,6 +3371,7 @@ function collectAllSettings() {
     filterBarBg: getVal('filter-bar-bg'),
     filterBarWidth: getVal('filter-bar-width'),
     stickyFilter: getVal('sticky-filter'),
+    hideFilterScroll: getVal('hide-filter-scroll'),
     filterLayout: getVal('filter-layout'),
     horizontalColumns: getVal('horizontal-columns'),
     
