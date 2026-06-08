@@ -785,13 +785,13 @@
             <!-- Line 1: Preview -->
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-[12px] text-gray-600 font-medium">Preview:</span>
-              <span id="toolbar-pill-1" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] border" style="background:#f3f4f6;border-color:#f3f4f6;color:#111827;">
+              <span id="toolbar-pill-1" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] border" style="background:#f3f4f6;border-color:#f3f4f6;color:#000000;">
                 Blue <span class="toolbar-pill-x cursor-pointer" style="color:#6b7280;">&times;</span>
               </span>
-              <span id="toolbar-pill-2" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] border" style="background:#f3f4f6;border-color:#f3f4f6;color:#111827;">
+              <span id="toolbar-pill-2" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] border" style="background:#f3f4f6;border-color:#f3f4f6;color:#000000;">
                 Red <span class="toolbar-pill-x cursor-pointer" style="color:#6b7280;">&times;</span>
               </span>
-              <span id="toolbar-clear-all" class="text-[12px] underline cursor-pointer" style="color:#111827;">Clear all</span>
+              <span id="toolbar-clear-all" class="text-[12px] underline cursor-pointer" style="color:#000000;">Clear all</span>
             </div>
 
             <!-- Line 2: Color + Background + Close Icon -->
@@ -799,8 +799,8 @@
               <div class="ctrl-row mb-0">
                 <label>Color</label>
                 <div class="color-picker-compact">
-                  <input type="color" id="filter-bar-text-color" value="#111827">
-                  <input type="text" id="filter-bar-text-color-hex" value="#111827" readonly>
+                  <input type="color" id="filter-bar-text-color" value="#000000">
+                  <input type="text" id="filter-bar-text-color-hex" value="#000000" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0">
@@ -813,8 +813,8 @@
               <div class="ctrl-row mb-0">
                 <label>Close Icon</label>
                 <div class="color-picker-compact">
-                  <input type="color" id="filter-bar-close-color" value="#6b7280">
-                  <input type="text" id="filter-bar-close-color-hex" value="#6b7280" readonly>
+                  <input type="color" id="filter-bar-close-color" value="#000000">
+                  <input type="text" id="filter-bar-close-color-hex" value="#000000" readonly>
                 </div>
               </div>
             </div>
@@ -867,15 +867,15 @@
               <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-bg-control">
                 <label>Background</label>
                 <div class="color-picker-compact">
-                  <input type="color" id="opt-bg-color" value="#ffffff">
-                  <input type="text" id="opt-bg-color-hex" value="#ffffff" readonly>
+                  <input type="color" id="opt-bg-color" value="#f3f4f6">
+                  <input type="text" id="opt-bg-color-hex" value="#f3f4f6" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
                 <label>Color</label>
                 <div class="color-picker-compact">
-                  <input type="color" id="opt-color" value="#111827">
-                  <input type="text" id="opt-color-hex" value="#111827" readonly>
+                  <input type="color" id="opt-color" value="#000000">
+                  <input type="text" id="opt-color-hex" value="#000000" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-weight-control">
@@ -917,8 +917,8 @@
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
                 <label>Color</label>
                 <div class="color-picker-compact">
-                  <input type="color" id="val-color" value="#4b5563">
-                  <input type="text" id="val-color-hex" value="#4b5563" readonly>
+                  <input type="color" id="val-color" value="#000000">
+                  <input type="text" id="val-color-hex" value="#000000" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
@@ -3702,6 +3702,7 @@ function initFilterCollapsibles() {
 
 // ===== Design Mode (Default / Custom) toggle =====
 const DESIGN_TITLES_TOP = new Set([
+  'ToolBar','Filter Bar',
   'Filter Option Label','Filter Value','Apply Filters Button',
   'Product Title','Vendor','Add to Cart Button',
   'Wishlist Settings','Quick View Settings',
