@@ -3870,41 +3870,14 @@ document.addEventListener('click', (e) => {
 // ==================== EDIT MODE (NUDGE EVERY ELEMENT IN PLACE) ====================
 (function(){
   const STORAGE_KEY = 'editLayoutOffsets_v3';
-  // Cross-device sync via jsonblob.com (free, anonymous, CORS-enabled).
-  // Replace BLOB_ID below with your own (POST to https://jsonblob.com/api/jsonBlob to mint one).
-  const BLOB_ID = '019e263d-1187-731c-9084-7e6e5eadced1';
-  const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/' + BLOB_ID;
   let editMode = false;
-  let cloudLayout = null;
 
-  async function fetchCloudLayout(){
-    try {
-      const r = await fetch(BLOB_URL, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
-      if (!r.ok) return null;
-      const data = await r.json();
-      if (data && typeof data === 'object') {
-        cloudLayout = data;
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(_) {}
-      }
-      return cloudLayout;
-    } catch(e){ console.warn('layout sync fetch failed', e); return null; }
-  }
-  async function pushCloudLayout(data){
-    try {
-      const r = await fetch(BLOB_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      return r.ok;
-    } catch(e){ console.warn('layout sync push failed', e); return false; }
-  }
   function getStoredLayout(){
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      return saved && typeof saved === 'object' ? saved : (cloudLayout || {});
+      return saved && typeof saved === 'object' ? saved : {};
     } catch(_) {
-      return cloudLayout || {};
+      return {};
     }
   }
 
@@ -3957,12 +3930,8 @@ document.addEventListener('click', (e) => {
     });
   }
 
-  // On load: apply the last local layout immediately, then refresh from cloud
-  // so normal mode, reloads, and other devices all show the saved positions.
-  async function hydrateFromCloud(){
+  function hydrateFromLocal(){
     applyLayoutToDOM(getStoredLayout(), { clearMissing: true });
-    const data = await fetchCloudLayout();
-    if (data) applyLayoutToDOM(data, { clearMissing: true });
   }
 
   let dragEl = null, startX = 0, startY = 0, origDX = 0, origDY = 0, moved = false;
@@ -4232,7 +4201,6 @@ document.addEventListener('click', (e) => {
     } else {
       const currentLayout = collectCurrentLayout();
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(currentLayout)); } catch(_) {}
-      cloudLayout = currentLayout;
       disableEdit();
       btn.innerHTML = '<i class="fas fa-lock text-sm"></i>';
       btn.classList.remove('bg-blue-50','border-blue-400','text-blue-600');
@@ -4240,29 +4208,22 @@ document.addEventListener('click', (e) => {
     }
   };
 
-  window.saveEditLayout = async function(){
+  window.saveEditLayout = function(){
     const data = collectCurrentLayout();
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(_) {}
-    cloudLayout = data;
     applyLayoutToDOM(data, { clearMissing: true });
     const save = document.getElementById('edit-save-btn');
     const orig = save.dataset.origLabel || save.textContent;
     save.dataset.origLabel = orig;
-    save.textContent = 'Saving…';
+    save.textContent = 'Saved ✓';
     save.disabled = true;
-    const ok = await pushCloudLayout(data);
-    cloudLayout = data;
-    applyLayoutToDOM(data, { clearMissing: true });
-    save.textContent = ok ? 'Saved ✓ (synced)' : 'Saved locally (sync failed)';
-    save.disabled = false;
-    setTimeout(() => { save.textContent = orig; }, 1600);
+    setTimeout(() => { save.textContent = orig; save.disabled = false; }, 1600);
   };
 
-  // Hydrate from cloud on first paint so reloads / other devices see saved layout.
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', hydrateFromCloud);
+    document.addEventListener('DOMContentLoaded', hydrateFromLocal);
   } else {
-    hydrateFromCloud();
+    hydrateFromLocal();
   }
 })();
 </script>
