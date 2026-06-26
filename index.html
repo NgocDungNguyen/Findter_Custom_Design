@@ -951,6 +951,63 @@
             </div>
           </div>
         </div>
+        <!-- Filter Button (the "Filter By" offcanvas trigger button) -->
+        <div class="config-box">
+          <h2 class="section-title mb-1.5">Filter Button</h2>
+          <div class="h-row" style="border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:4px;">
+            <div class="h-cell" style="flex:1;"><label style="font-weight:600;">Enable custom design</label></div>
+            <label class="toggle-switch"><input type="checkbox" id="filter-btn-enabled"><span class="toggle-slider"></span></label>
+          </div>
+          <!-- L1: Size + Transform + Weight -->
+          <div class="h-row">
+            <div class="h-cell"><label>Size</label>
+              <input type="range" id="filter-btn-size" min="10" max="20" value="13">
+              <span id="filter-btn-size-val" class="slider-val">13px</span>
+            </div>
+            <div class="h-cell"><label>Transform</label>
+              <select id="filter-btn-transform" class="micro-select">
+                <option value="none">None</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="uppercase">Uppercase</option>
+              </select>
+            </div>
+            <div class="h-cell"><label>Weight</label>
+              <select id="filter-btn-weight" class="micro-select">
+                <option value="400" selected>Regular</option>
+                <option value="600">Semibold</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+          </div>
+          <!-- L2: Text color + Background color -->
+          <div class="h-row">
+            <div class="h-cell"><label>Text color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="filter-btn-text-color" value="#111827">
+                <input type="text" id="filter-btn-text-color-hex" value="#111827" readonly>
+              </div>
+            </div>
+            <div class="h-cell"><label>Background color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="filter-btn-bg-color" value="#ffffff">
+                <input type="text" id="filter-btn-bg-color-hex" value="#ffffff" readonly>
+              </div>
+            </div>
+          </div>
+          <!-- L3: Border radius + Border color -->
+          <div class="h-row">
+            <div class="h-cell"><label>Border radius</label>
+              <input type="range" id="filter-btn-radius" min="0" max="50" value="6">
+              <span id="filter-btn-radius-val" class="slider-val">6px</span>
+            </div>
+            <div class="h-cell"><label>Border color</label>
+              <div class="color-picker-compact">
+                <input type="color" id="filter-btn-border-color" value="#d1d5db">
+                <input type="text" id="filter-btn-border-color-hex" value="#d1d5db" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- Apply Filters Button (only for Off-Canvas Desktop) -->
         <div class="config-box" id="filter-button-config-box">
           <h2 class="section-title mb-1">Apply Filters Button</h2>
@@ -1777,11 +1834,12 @@
             <h2 class="section-title">Add to Cart Button</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
           </div>
-          <!-- L1: Label + Radius + Size -->
+          <!-- L1: Padding + Radius + Size -->
           <div class="h-row">
             <div class="h-cell">
-              <label>Label</label>
-              <input type="text" id="atc-label" placeholder="Add to Cart" class="micro-select" style="width:90px;">
+              <label>Padding</label>
+              <input type="range" id="atc-padding" min="0" max="30" value="8">
+              <span id="atc-padding-val" class="slider-val">8px</span>
             </div>
             <div class="h-cell">
               <label>Radius</label>
@@ -1836,12 +1894,31 @@
               <div class="color-picker-compact"><input type="color" id="atc-hover-border-color" value="#374151"><input type="text" id="atc-hover-border-color-hex" value="#374151" readonly></div>
             </div>
           </div>
+          <!-- Custom Label -->
+          <div class="h-row" style="margin-top:6px;border-top:1px solid #e5e7eb;padding-top:6px;">
+            <div class="h-cell" style="flex:1;"><label style="font-weight:600;">Custom Label</label></div>
+            <label class="toggle-switch"><input type="checkbox" id="atc-custom-label-enabled"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="atc-custom-label-group" style="opacity:0.35;pointer-events:none;transition:opacity 0.2s;">
+            <div class="h-row">
+              <div class="h-cell" style="min-width:92px;"><label style="white-space:nowrap;">Add to Cart</label></div>
+              <div style="flex:1;"><input type="text" id="atc-custom-atc" placeholder="Input custom label" class="micro-select" style="width:100%;box-sizing:border-box;"></div>
+            </div>
+            <div class="h-row">
+              <div class="h-cell" style="min-width:92px;"><label style="white-space:nowrap;">Choose options</label></div>
+              <div style="flex:1;"><input type="text" id="atc-custom-choose" placeholder="Input custom label" class="micro-select" style="width:100%;box-sizing:border-box;"></div>
+            </div>
+            <div class="h-row">
+              <div class="h-cell" style="min-width:92px;"><label style="white-space:nowrap;">View full detail</label></div>
+              <div style="flex:1;"><input type="text" id="atc-custom-view" placeholder="Input custom label" class="micro-select" style="width:100%;box-sizing:border-box;"></div>
+            </div>
+          </div>
         </div>
         <!-- Wishlist Settings -->
         <div class="config-box">
           <div class="flex items-center justify-between mb-1.5">
             <h2 class="section-title">Wishlist Settings</h2>
-            <label class="toggle-switch"><input type="checkbox" id="show-wishlist" checked><span class="toggle-slider"></span></label>
+            <label class="toggle-switch"><input type="checkbox" id="show-wishlist"><span class="toggle-slider"></span></label>
           </div>
           <input type="hidden" id="wishlist-type" value="heart">
           <input type="hidden" id="wishlist-transform" value="none">
@@ -1884,7 +1961,7 @@
         <div class="config-box">
           <div class="flex items-center justify-between mb-1.5">
             <h2 class="section-title">Quick View Settings</h2>
-            <label class="toggle-switch"><input type="checkbox" id="show-quickview" checked><span class="toggle-slider"></span></label>
+            <label class="toggle-switch"><input type="checkbox" id="show-quickview"><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
             <div class="h-cell"><label>Size</label>
@@ -2370,27 +2447,23 @@ function updateFilterPreview() {
   const optTransform = document.getElementById('opt-transform').value;
   const optColor = document.getElementById('opt-color').value;
   const optBg = document.getElementById('opt-bg-color')?.value || '';
-  const optFont = document.getElementById('opt-font').value;
   const optWeight = document.getElementById('opt-weight').value;
   if (previewTitle) {
     previewTitle.style.fontSize = optFontSize;
     previewTitle.style.textTransform = optTransform;
     previewTitle.style.color = optColor;
-    previewTitle.style.fontFamily = optFont;
     previewTitle.style.fontWeight = optWeight;
   }
   document.querySelectorAll('[id^="preview-opt-label"]').forEach(el => {
     el.style.fontSize = optFontSize;
     el.style.textTransform = optTransform;
     el.style.color = optColor;
-    el.style.fontFamily = optFont;
     el.style.fontWeight = optWeight;
   });
   document.querySelectorAll('.filter-preview-select').forEach(el => {
     el.style.fontSize = optFontSize;
     el.style.textTransform = optTransform;
     el.style.color = optColor;
-    el.style.fontFamily = optFont;
     el.style.fontWeight = optWeight;
     if (layout === 'horizontal') {
       el.style.borderColor = optColor || '#d1d5db';
@@ -2414,14 +2487,12 @@ function updateFilterPreview() {
   const valFontSize = document.getElementById('val-font-size').value+'px';
   const valTransform = document.getElementById('val-transform').value;
   const valColor = document.getElementById('val-color').value;
-  const valFont = document.getElementById('val-font').value;
   const valWeight = document.getElementById('val-weight').value;
   // Value labels (NOT count badges) — full inheritance from Filter Value
   document.querySelectorAll('#filter-preview-panel .filter-preview-values label > span:not(.count-badge)').forEach(el => {
     el.style.fontSize = valFontSize;
     el.style.textTransform = valTransform;
     el.style.color = valColor;
-    el.style.fontFamily = valFont;
     el.style.fontWeight = valWeight;
   });
   // Count badges: Font + Size from Filter Value, Color = 70% opacity of valColor,
@@ -2435,7 +2506,6 @@ function updateFilterPreview() {
   })(valColor);
   document.querySelectorAll('#filter-preview-panel .count-badge').forEach(el => {
     el.style.fontSize = valFontSize;
-    el.style.fontFamily = valFont;
     el.style.color = valColorRgba;
     el.style.backgroundColor = 'transparent';
     // Intentionally do NOT set fontWeight — count badge weight is independent
@@ -2450,7 +2520,6 @@ function updateFilterPreview() {
   document.querySelectorAll('.filter-preview-section .fv-search input').forEach(inp => {
     inp.style.borderColor = valColor;
     inp.style.color = valColor;
-    inp.style.fontFamily = valFont;
   });
   document.querySelectorAll('.filter-preview-section .fv-search-icon').forEach(ic => {
     ic.style.color = valColor;
@@ -2464,11 +2533,11 @@ function updateFilterPreview() {
   btn.style.textTransform = document.getElementById('btn-transform').value;
   btn.style.color = document.getElementById('btn-text-color').value;
   btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
-  btn.style.fontFamily = document.getElementById('btn-font').value;
   btn.style.fontWeight = document.getElementById('btn-weight').value;
   syncHex('opt-color'); syncHex('opt-bg-color'); syncHex('val-color'); syncHex('btn-text-color');
   syncHex('btn-bg-color'); syncHex('filter-bar-bg');
   syncHex('filter-bar-text-color'); syncHex('filter-bar-close-color'); syncHex('filter-bar-active-bg');
+  syncHex('filter-btn-text-color'); syncHex('filter-btn-bg-color'); syncHex('filter-btn-border-color');
   // Update ToolBar preview pills
   const tbText = document.getElementById('filter-bar-text-color').value;
   const tbBg = document.getElementById('filter-bar-active-bg').value;
@@ -2574,7 +2643,6 @@ function createSaleBadge() {
   div.style.backgroundColor = document.getElementById('sale-bg-color').value;
   div.style.color = document.getElementById('sale-text-color').value;
   div.style.fontSize = document.getElementById('sale-font-size').value+'px';
-  div.style.fontFamily = document.getElementById('sale-badge-font').value;
   div.style.fontWeight = document.getElementById('sale-weight').value;
   return div;
 }
@@ -2588,7 +2656,6 @@ function createSoldoutBadge() {
   div.style.backgroundColor = document.getElementById('soldout-bg-color').value;
   div.style.color = document.getElementById('soldout-text-color').value;
   div.style.fontSize = document.getElementById('soldout-font-size').value+'px';
-  div.style.fontFamily = document.getElementById('soldout-badge-font').value;
   div.style.fontWeight = document.getElementById('soldout-weight').value;
   return div;
 }
@@ -2601,7 +2668,6 @@ function createLowStockBadge() {
   div.style.backgroundColor = document.getElementById('lowstock-bg-color').value;
   div.style.color = document.getElementById('lowstock-text-color').value;
   div.style.fontSize = document.getElementById('lowstock-font-size').value+'px';
-  div.style.fontFamily = document.getElementById('lowstock-badge-font').value;
   div.style.fontWeight = document.getElementById('lowstock-weight').value;
   return div;
 }
@@ -2621,7 +2687,6 @@ function updateWishlistPreview() {
   imgTL.classList.add('hidden');
   if(!show) return;
   const fontSize = document.getElementById('wishlist-font-size').value+'px';
-  const fontFamily = document.getElementById('wishlist-font').value;
   const fontWeight = document.getElementById('wishlist-weight').value;
   const textColor = document.getElementById('wishlist-text-color').value;
   const bgColor = document.getElementById('wishlist-bg-color').value;
@@ -2633,7 +2698,7 @@ function updateWishlistPreview() {
     else { imgTL.innerHTML = heartHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 w-7 h-7 flex items-center justify-center rounded-full shadow'; imgTL.style.background = bgColor; }
   } else {
     const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
-    const textHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
+    const textHTML = `<span style="font-size:${fontSize};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
     if(pos === 'in-card') { inCard.innerHTML = textHTML; inCard.classList.remove('hidden'); inCard.style.background = bgColor; inCard.style.padding = '0.2rem 0.4rem'; }
     else if(pos === 'image-top-right') { imgTR.innerHTML = textHTML; imgTR.classList.remove('hidden'); imgTR.className = 'absolute top-1.5 right-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTR.style.background = bgColor; }
     else { imgTL.innerHTML = textHTML; imgTL.classList.remove('hidden'); imgTL.className = 'absolute top-1.5 left-1.5 z-25 px-1.5 py-0.5 rounded shadow text-[10px]'; imgTL.style.background = bgColor; }
@@ -2653,19 +2718,18 @@ function updateQuickViewPreview() {
   [inCard, imgTR, imgTL].forEach(el => el.classList.add('hidden'));
   if(!show) return;
  
-  const fontFamily = document.getElementById('quickview-font').value;
   const fontSize = document.getElementById('quickview-font-size').value + 'px';
   const fontWeight = document.getElementById('quickview-weight').value;
   const textColor = document.getElementById('quickview-text-color').value;
   const bgColor = document.getElementById('quickview-bg-color').value;
   const transform = document.getElementById('quickview-transform').value;
- 
+
   let contentHTML = '';
   if (type === 'eye') {
     contentHTML = `<i class="fas fa-eye" style="font-size:${fontSize}; color:${textColor}"></i>`;
   } else {
     const displayText = type === 'custom' ? (document.getElementById('quickview-custom-text').value || 'Quick View') : 'Quick View';
-    contentHTML = `<span style="font-size:${fontSize}; font-family:${fontFamily}; font-weight:${fontWeight}; color:${textColor}; text-transform:${transform}">${displayText}</span>`;
+    contentHTML = `<span style="font-size:${fontSize}; font-weight:${fontWeight}; color:${textColor}; text-transform:${transform}">${displayText}</span>`;
   }
  
   if (pos === 'in-card') {
@@ -2711,22 +2775,20 @@ function updateSKUPreview() {
   
   if (mode === 'full') {
     // SKU: CODE format
-    const fontFamily = document.getElementById('sku-font-full').value;
     const transform = 'none';
-    
+
     const labelSize = document.getElementById('sku-label-size').value + 'px';
     const labelColor = document.getElementById('sku-label-color').value;
     const labelBg = document.getElementById('sku-label-bg').value;
     const labelWeight = document.getElementById('sku-label-weight').value;
-    
+
     const codeSize = document.getElementById('sku-code-size').value + 'px';
     const codeColor = document.getElementById('sku-code-color').value;
     const codeBg = document.getElementById('sku-code-bg').value;
     const codeWeight = document.getElementById('sku-code-weight').value;
-    
+
     skuContainer.innerHTML = `
       <span class="sku-preview-label" style="
-        font-family: ${fontFamily};
         font-size: ${labelSize};
         color: ${labelColor};
         background: ${labelBg};
@@ -2736,7 +2798,6 @@ function updateSKUPreview() {
         border-radius: 3px;
       ">SKU:</span>
       <span class="sku-preview-code" style="
-        font-family: ${fontFamily};
         font-size: ${codeSize};
         color: ${codeColor};
         background: ${codeBg};
@@ -2748,16 +2809,14 @@ function updateSKUPreview() {
     `;
   } else {
     // Code only format
-    const fontFamily = document.getElementById('sku-font-code-only').value;
     const codeSize = document.getElementById('sku-code-only-size').value + 'px';
     const codeColor = document.getElementById('sku-code-only-color').value;
     const codeBg = document.getElementById('sku-code-only-bg').value;
     const codeWeight = document.getElementById('sku-code-only-weight').value;
     const transform = 'none';
-    
+
     skuContainer.innerHTML = `
       <span class="sku-preview-code" style="
-        font-family: ${fontFamily};
         font-size: ${codeSize};
         color: ${codeColor};
         background: ${codeBg};
@@ -2989,11 +3048,18 @@ function updateProductPreview() {
   // ATC
   const atc = document.getElementById('preview-atc-btn');
   atc.classList.toggle('hidden', !document.getElementById('show-atc').checked);
-  atc.textContent = document.getElementById('atc-label').value || 'Add to Cart';
+  const atcCustomOn = document.getElementById('atc-custom-label-enabled').checked;
+  const atcCustomText = document.getElementById('atc-custom-atc').value.trim();
+  atc.textContent = (atcCustomOn && atcCustomText) ? atcCustomText : 'Add to Cart';
   atc.style.fontSize = document.getElementById('atc-font-size').value+'px';
   atc.style.textTransform = document.getElementById('atc-transform').value;
   atc.style.fontWeight = document.getElementById('atc-weight').value;
   atc.style.borderRadius = document.getElementById('atc-radius').value+'px';
+  const atcPad = document.getElementById('atc-padding').value+'px';
+  atc.style.marginTop = '0px';
+  atc.style.marginBottom = atcPad;
+  atc.style.marginLeft = atcPad;
+  atc.style.marginRight = atcPad;
   const atcColor = document.getElementById('atc-text-color').value;
   const atcBg = document.getElementById('atc-bg-color').value;
   const atcBorder = document.getElementById('atc-border-color').value;
@@ -3187,10 +3253,10 @@ function toggleQuickViewCustomField() {
 // ==================== SLIDERS ====================
 function setupSliders() {
   const sliderMap = {
-    'opt-font-size': 'opt-font-val', 'val-font-size': 'val-font-val', 'btn-font-size': 'btn-font-val',
+    'opt-font-size': 'opt-font-val', 'val-font-size': 'val-font-val', 'filter-btn-size': 'filter-btn-size-val', 'filter-btn-radius': 'filter-btn-radius-val', 'btn-font-size': 'btn-font-val',
     'btn-radius': 'btn-radius-val', 'products-per-page': 'perpage-val', 'title-font-size': 'title-font-val',
     'vendor-font-size': 'vendor-font-val', 'fixed-price-font': 'fixed-font-val', 'old-price-font': 'old-font-val',
-    'sale-price-font': 'sale-font-val', 'atc-font-size': 'atc-font-val', 'image-radius': 'img-radius-val',
+    'sale-price-font': 'sale-font-val', 'atc-font-size': 'atc-font-val', 'atc-padding': 'atc-padding-val', 'image-radius': 'img-radius-val',
     'soldout-font-size': 'soldout-font-size-val', 'sale-font-size': 'sale-font-size-val',
     'lowstock-font-size': 'lowstock-font-size-val', 'card-radius': 'card-radius-val',
     'wishlist-font-size': 'wishlist-font-size-val',
@@ -3329,7 +3395,7 @@ function collectAllSettings() {
 
     // ===== ADD TO CART BUTTON =====
     showAtc: getVal('show-atc'),
-    atcLabel: document.getElementById('atc-label').value || 'Add to Cart',
+    atcPadding: getVal('atc-padding'),
     atcFontSize: getVal('atc-font-size'),
     atcTextColor: getVal('atc-text-color'),
     atcBgColor: getVal('atc-bg-color'),
@@ -3340,6 +3406,10 @@ function collectAllSettings() {
     atcHoverTextColor: getVal('atc-hover-text-color'),
     atcHoverBgColor: getVal('atc-hover-bg-color'),
     atcHoverBorderColor: getVal('atc-hover-border-color'),
+    atcCustomLabelEnabled: getVal('atc-custom-label-enabled'),
+    atcCustomAtc: document.getElementById('atc-custom-atc').value.trim(),
+    atcCustomChoose: document.getElementById('atc-custom-choose').value.trim(),
+    atcCustomView: document.getElementById('atc-custom-view').value.trim(),
 
     // ===== WISHLIST =====
     showWishlist: getVal('show-wishlist'),
@@ -3385,8 +3455,18 @@ function collectAllSettings() {
     valColor: getVal('val-color'),
     valWeight: getVal('val-weight'),
     valTransform: getVal('val-transform'),
-    
-    // ===== FILTER BUTTON =====
+
+    // ===== FILTER BY BUTTON (offcanvas trigger) =====
+    filterBtnEnabled: getVal('filter-btn-enabled'),
+    filterBtnSize: getVal('filter-btn-size'),
+    filterBtnTransform: getVal('filter-btn-transform'),
+    filterBtnWeight: getVal('filter-btn-weight'),
+    filterBtnTextColor: getVal('filter-btn-text-color'),
+    filterBtnBgColor: getVal('filter-btn-bg-color'),
+    filterBtnRadius: getVal('filter-btn-radius'),
+    filterBtnBorderColor: getVal('filter-btn-border-color'),
+
+    // ===== APPLY FILTERS BUTTON =====
     btnFont: getVal('btn-font'),
     btnFontSize: getVal('btn-font-size'),
     btnTextColor: getVal('btn-text-color'),
@@ -3537,9 +3617,18 @@ window.onload = () => {
     if (el) el.addEventListener('click', showQuickViewModal);
   });
 
+  // Custom label toggle
+  document.getElementById('atc-custom-label-enabled')?.addEventListener('change', function() {
+    const group = document.getElementById('atc-custom-label-group');
+    group.style.opacity = this.checked ? '1' : '0.35';
+    group.style.pointerEvents = this.checked ? '' : 'none';
+    updateProductPreview();
+    debouncedAutoSave();
+  });
+
   // Initialize toggles
-  toggleSaleCustomField(); 
-  toggleSoldoutCustomField(); 
+  toggleSaleCustomField();
+  toggleSoldoutCustomField();
   toggleWishlistCustomField();
   toggleQuickViewCustomField();
   toggleSKUMode();
@@ -3681,7 +3770,7 @@ function initFilterCollapsibles() {
   const FILTER_NO_COLLAPSE = new Set(['Filter Layout']);
   const FILTER_DEFAULT_EXPANDED = new Set([
     'ToolBar','Tool Bar','Filter Bar',
-    'Filter Option Label','Filter Value','Apply Filters Button'
+    'Filter Option Label','Filter Value','Filter Button','Apply Filters Button'
   ]);
   col.querySelectorAll(':scope > .config-box').forEach(box => {
     if (box.dataset.collapseInit === '1') return;
@@ -3736,7 +3825,7 @@ function initFilterCollapsibles() {
 // ===== Design Mode (Default / Custom) toggle =====
 const DESIGN_TITLES_TOP = new Set([
   'ToolBar','Filter Bar',
-  'Filter Option Label','Filter Value','Apply Filters Button',
+  'Filter Option Label','Filter Value','Filter Button','Apply Filters Button',
   'Product Title','Vendor','Add to Cart Button',
   'Wishlist Settings','Quick View Settings',
   'Sale Badge','Sold Out Badge','Low Stock Badge',
