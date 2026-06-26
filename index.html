@@ -872,10 +872,6 @@
 
           <div class="space-y-3">
             <div class="flex flex-nowrap items-end gap-3" id="opt-row-top">
-              <div class="font-select-wrap mb-0">
-                <label>Font</label>
-                <select id="opt-font" class="font-select w-36"></select>
-              </div>
               <div class="slider-row mb-0 flex-nowrap">
                 <label>Size</label>
                 <input type="range" id="opt-font-size" min="10" max="22" value="14" class="flex-1 max-w-[140px]">
@@ -922,10 +918,6 @@
 
           <div class="space-y-3">
             <div class="flex flex-nowrap items-end gap-3">
-              <div class="font-select-wrap mb-0">
-                <label>Font</label>
-                <select id="val-font" class="font-select w-36"></select>
-              </div>
               <div class="slider-row mb-0 flex-nowrap">
                 <label>Size</label>
                 <input type="range" id="val-font-size" min="10" max="20" value="13" class="flex-1 max-w-[140px]">
@@ -964,12 +956,8 @@
           <h2 class="section-title mb-1">Apply Filters Button</h2>
 
           <div class="space-y-3">
-            <!-- Line 1: Font + Weight + Custom -->
+            <!-- Line 1: Weight + Custom -->
             <div class="flex flex-nowrap items-end gap-3">
-              <div class="font-select-wrap mb-0">
-                <label>Font</label>
-                <select id="btn-font" class="font-select w-36"></select>
-              </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
                 <label>Weight</label>
                 <select id="btn-weight" class="micro-select w-28">
@@ -1486,9 +1474,6 @@
         <div class="config-box">
           <h2 class="section-title mb-1.5">Product Title</h2>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="title-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="title-font-size" min="11" max="24" value="15">
               <span id="title-font-val" class="slider-val">15px</span>
@@ -1541,11 +1526,6 @@
           
           <!-- MODE: FULL (SKU: CODE) -->
           <div id="sku-full-options">
-            <div class="font-select-wrap">
-              <label>Font</label>
-              <select id="sku-font-full" class="font-select"></select>
-            </div>
-
             <div class="grid grid-cols-2 gap-x-4 divide-x divide-gray-200">
               <!-- SKU Label Options -->
               <div class="space-y-1.5 pr-3">
@@ -1622,9 +1602,6 @@
           <!-- MODE: CODE ONLY -->
           <div id="sku-code-only-options" class="hidden">
             <div class="h-row">
-              <div class="h-cell"><label>Font</label>
-                <select id="sku-font-code-only" class="font-select"></select>
-              </div>
               <div class="h-cell"><label>Size</label>
                 <input type="range" id="sku-code-only-size" min="9" max="18" value="12">
                 <span id="sku-code-only-size-val" class="slider-val">12px</span>
@@ -1662,9 +1639,6 @@
             <label class="toggle-switch"><input type="checkbox" id="show-vendor" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="vendor-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="vendor-font-size" min="10" max="18" value="12">
               <span id="vendor-font-val" class="slider-val">12px</span>
@@ -1728,9 +1702,6 @@
                 <input type="checkbox" id="show-fixed-price" checked class="hidden">
               </div>
               <div class="h-row">
-                <div class="h-cell"><label>Font</label>
-                  <select id="fixed-price-font-family" class="font-select"></select>
-                </div>
                 <div class="h-cell"><label>Size</label>
                   <input type="range" id="fixed-price-font" min="11" max="26" value="15">
                   <span id="fixed-font-val" class="slider-val">15px</span>
@@ -1755,9 +1726,6 @@
                 <input type="checkbox" id="show-old-price" checked class="hidden">
               </div>
               <div class="h-row">
-                <div class="h-cell"><label>Font</label>
-                  <select id="old-price-font-family" class="font-select"></select>
-                </div>
                 <div class="h-cell"><label>Size</label>
                   <input type="range" id="old-price-font" min="10" max="22" value="13">
                   <span id="old-font-val" class="slider-val">13px</span>
@@ -1782,9 +1750,6 @@
                 <input type="checkbox" id="show-sale-price" checked class="hidden">
               </div>
               <div class="h-row">
-                <div class="h-cell"><label>Font</label>
-                  <select id="sale-price-font-family" class="font-select"></select>
-                </div>
                 <div class="h-cell"><label>Size</label>
                   <input type="range" id="sale-price-font" min="12" max="30" value="18">
                   <span id="sale-font-val" class="slider-val">18px</span>
@@ -1812,9 +1777,23 @@
             <h2 class="section-title">Add to Cart Button</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
           </div>
+          <!-- L1: Label + Radius -->
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="atc-font" class="font-select"></select>
+            <div class="h-cell" style="flex:1;">
+              <label>Label</label>
+              <input type="text" id="atc-label" placeholder="Add to Cart" class="micro-select" style="width:140px;">
+            </div>
+            <div class="h-cell">
+              <label>Radius</label>
+              <input type="range" id="atc-radius" min="0" max="50" value="6">
+              <span id="atc-radius-val" class="slider-val">6px</span>
+            </div>
+          </div>
+          <!-- L2: Size + Transform + Weight -->
+          <div class="h-row">
+            <div class="h-cell"><label>Size</label>
+              <input type="range" id="atc-font-size" min="11" max="20" value="13">
+              <span id="atc-font-val" class="slider-val">13px</span>
             </div>
             <div class="h-cell"><label>Transform</label>
               <select id="atc-transform" class="micro-select">
@@ -1830,25 +1809,34 @@
               </select>
             </div>
           </div>
+          <!-- L3: Text Color + Background Color + Border Color -->
           <div class="h-row">
-            <div class="h-cell"><label>Color</label>
+            <div class="h-cell"><label>Text Color</label>
               <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
             </div>
             <div class="h-cell"><label>Background</label>
               <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
             </div>
-            <div class="h-cell"><label>Hover</label>
-              <div class="color-picker-compact"><input type="color" id="atc-hover-color" value="#1f2937"><input type="text" id="atc-hover-color-hex" value="#1f2937" readonly></div>
+            <div class="h-cell"><label>Border</label>
+              <div class="color-picker-compact"><input type="color" id="atc-border-color" value="#1f2937"><input type="text" id="atc-border-color-hex" value="#1f2937" readonly></div>
             </div>
           </div>
+          <!-- L4: Hover Text Color -->
           <div class="h-row">
-            <div class="h-cell"><label>Size</label>
-              <input type="range" id="atc-font-size" min="11" max="20" value="13">
-              <span id="atc-font-val" class="slider-val">13px</span>
+            <div class="h-cell"><label>Hover Text</label>
+              <div class="color-picker-compact"><input type="color" id="atc-hover-text-color" value="#ffffff"><input type="text" id="atc-hover-text-color-hex" value="#ffffff" readonly></div>
             </div>
-            <div class="h-cell"><label>Radius</label>
-              <input type="range" id="atc-radius" min="0" max="50" value="6">
-              <span id="atc-radius-val" class="slider-val">6px</span>
+          </div>
+          <!-- L5: Hover Background Color -->
+          <div class="h-row">
+            <div class="h-cell"><label>Hover Background</label>
+              <div class="color-picker-compact"><input type="color" id="atc-hover-bg-color" value="#374151"><input type="text" id="atc-hover-bg-color-hex" value="#374151" readonly></div>
+            </div>
+          </div>
+          <!-- L6: Hover Border Color -->
+          <div class="h-row">
+            <div class="h-cell"><label>Hover Border</label>
+              <div class="color-picker-compact"><input type="color" id="atc-hover-border-color" value="#374151"><input type="text" id="atc-hover-border-color-hex" value="#374151" readonly></div>
             </div>
           </div>
         </div>
@@ -1861,9 +1849,6 @@
           <input type="hidden" id="wishlist-type" value="heart">
           <input type="hidden" id="wishlist-transform" value="none">
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="wishlist-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="wishlist-font-size" min="10" max="24" value="14">
               <span id="wishlist-font-size-val" class="slider-val">14px</span>
@@ -1905,9 +1890,6 @@
             <label class="toggle-switch"><input type="checkbox" id="show-quickview" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="quickview-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="quickview-font-size" min="10" max="18" value="13">
               <span id="quickview-font-size-val" class="slider-val">13px</span>
@@ -1966,9 +1948,6 @@
             <label class="toggle-switch"><input type="checkbox" id="show-sale" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="sale-badge-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="sale-font-size" min="9" max="18" value="11">
               <span id="sale-font-size-val" class="slider-val">11px</span>
@@ -2015,9 +1994,6 @@
             <label class="toggle-switch"><input type="checkbox" id="show-soldout"><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="soldout-badge-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Size</label>
               <input type="range" id="soldout-font-size" min="9" max="18" value="11">
               <span id="soldout-font-size-val" class="slider-val">11px</span>
@@ -2063,9 +2039,6 @@
             <label class="toggle-switch"><input type="checkbox" id="show-lowstock" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="h-row">
-            <div class="h-cell"><label>Font</label>
-              <select id="lowstock-badge-font" class="font-select"></select>
-            </div>
             <div class="h-cell"><label>Show when stock ≤</label>
               <input type="number" id="lowstock-threshold" value="10" min="1" max="999" class="w-14 micro-select text-center">
             </div>
@@ -2963,7 +2936,6 @@ function updateProductPreview() {
   title.style.fontSize = document.getElementById('title-font-size').value+'px';
   title.style.textTransform = document.getElementById('title-transform').value;
   title.style.color = document.getElementById('title-color').value;
-  title.style.fontFamily = document.getElementById('title-font').value;
   title.style.fontWeight = document.getElementById('title-weight').value;
   
   // SKU
@@ -2975,7 +2947,6 @@ function updateProductPreview() {
   vendorSection.classList.toggle('hidden', !document.getElementById('show-vendor').checked);
   vendor.style.fontSize = document.getElementById('vendor-font-size').value+'px';
   vendor.style.color = document.getElementById('vendor-color').value;
-  vendor.style.fontFamily = document.getElementById('vendor-font').value;
   vendor.style.fontWeight = document.getElementById('vendor-weight').value;
   vendor.style.textTransform = document.getElementById('vendor-transform').value;
   
@@ -3005,40 +2976,55 @@ function updateProductPreview() {
     fp.textContent = formatPrice(59);
     fp.style.fontSize = document.getElementById('fixed-price-font').value+'px';
     fp.style.color = document.getElementById('fixed-price-color').value;
-    fp.style.fontFamily = document.getElementById('fixed-price-font-family').value;
     fp.style.fontWeight = document.getElementById('fixed-price-weight').value;
     op.classList.toggle('hidden', !document.getElementById('show-old-price').checked);
     op.textContent = formatPrice(89);
     op.style.fontSize = document.getElementById('old-price-font').value+'px';
     op.style.color = document.getElementById('old-price-color').value;
-    op.style.fontFamily = document.getElementById('old-price-font-family').value;
     op.style.fontWeight = document.getElementById('old-price-weight').value;
     sp.classList.toggle('hidden', !document.getElementById('show-sale-price').checked);
     sp.textContent = formatPrice(49);
     sp.style.fontSize = document.getElementById('sale-price-font').value+'px';
     sp.style.color = document.getElementById('sale-price-color').value;
-    sp.style.fontFamily = document.getElementById('sale-price-font-family').value;
     sp.style.fontWeight = document.getElementById('sale-price-weight').value;
   }
   
   // ATC
   const atc = document.getElementById('preview-atc-btn');
   atc.classList.toggle('hidden', !document.getElementById('show-atc').checked);
+  atc.textContent = document.getElementById('atc-label').value || 'Add to Cart';
   atc.style.fontSize = document.getElementById('atc-font-size').value+'px';
   atc.style.textTransform = document.getElementById('atc-transform').value;
-  const atcColor = document.getElementById('atc-text-color').value;
-  const atcBg = document.getElementById('atc-bg-color').value;
-  const atcHover = document.getElementById('atc-hover-color').value;
-  atc.style.color = atcColor;
-  atc.style.backgroundColor = atcBg;
-  atc.style.fontFamily = document.getElementById('atc-font').value;
   atc.style.fontWeight = document.getElementById('atc-weight').value;
   atc.style.borderRadius = document.getElementById('atc-radius').value+'px';
+  const atcColor = document.getElementById('atc-text-color').value;
+  const atcBg = document.getElementById('atc-bg-color').value;
+  const atcBorder = document.getElementById('atc-border-color').value;
+  const atcHoverText = document.getElementById('atc-hover-text-color').value;
+  const atcHoverBg = document.getElementById('atc-hover-bg-color').value;
+  const atcHoverBorder = document.getElementById('atc-hover-border-color').value;
+  atc.style.color = atcColor;
+  atc.style.backgroundColor = atcBg;
+  atc.style.borderColor = atcBorder;
+  atc.style.borderWidth = '1px';
+  atc.style.borderStyle = 'solid';
   atc.dataset.bg = atcBg;
-  atc.dataset.hover = atcHover;
+  atc.dataset.textColor = atcColor;
+  atc.dataset.borderColor = atcBorder;
+  atc.dataset.hoverText = atcHoverText;
+  atc.dataset.hoverBg = atcHoverBg;
+  atc.dataset.hoverBorder = atcHoverBorder;
   if (!atc.dataset.hoverBound) {
-    atc.addEventListener('mouseenter', () => { atc.style.backgroundColor = atc.dataset.hover || atc.dataset.bg; });
-    atc.addEventListener('mouseleave', () => { atc.style.backgroundColor = atc.dataset.bg; });
+    atc.addEventListener('mouseenter', () => {
+      atc.style.backgroundColor = atc.dataset.hoverBg || atc.dataset.bg;
+      atc.style.color = atc.dataset.hoverText || atc.dataset.textColor;
+      atc.style.borderColor = atc.dataset.hoverBorder || atc.dataset.borderColor;
+    });
+    atc.addEventListener('mouseleave', () => {
+      atc.style.backgroundColor = atc.dataset.bg;
+      atc.style.color = atc.dataset.textColor;
+      atc.style.borderColor = atc.dataset.borderColor;
+    });
     atc.dataset.hoverBound = '1';
   }
  
@@ -3047,7 +3033,7 @@ function updateProductPreview() {
   updateQuickViewPreview();
  
   ['title-color','vendor-color','fixed-price-color','old-price-color','sale-price-color',
-   'atc-text-color','atc-bg-color','atc-hover-color','sale-text-color','sale-bg-color',
+   'atc-text-color','atc-bg-color','atc-border-color','atc-hover-text-color','atc-hover-bg-color','atc-hover-border-color','sale-text-color','sale-bg-color',
    'soldout-text-color','soldout-bg-color','lowstock-text-color','lowstock-bg-color',
    'card-bg-color','card-border-color','wishlist-text-color','wishlist-bg-color',
    'quickview-text-color','quickview-bg-color','grid-bg-color',
@@ -3065,7 +3051,6 @@ function updateModalWishlist() {
   }
   const type = document.getElementById('wishlist-type').value;
   const fontSize = document.getElementById('wishlist-font-size').value + 'px';
-  const fontFamily = document.getElementById('wishlist-font').value;
   const fontWeight = document.getElementById('wishlist-weight').value;
   const textColor = document.getElementById('wishlist-text-color').value;
   const bgColor = document.getElementById('wishlist-bg-color').value;
@@ -3077,7 +3062,7 @@ function updateModalWishlist() {
     modalOverlay.className = 'absolute top-6 right-6 z-30 w-10 h-10 flex items-center justify-center rounded-3xl shadow-md transition-all opacity-0 group-hover:opacity-100';
   } else {
     const customText = type === 'custom' ? (document.getElementById('wishlist-custom-text').value || 'Save') : 'Wishlist';
-    contentHTML = `<span style="font-size:${fontSize};font-family:${fontFamily};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
+    contentHTML = `<span style="font-size:${fontSize};font-weight:${fontWeight};color:${textColor};text-transform:${transform}">${customText}</span>`;
     modalOverlay.className = 'absolute top-6 right-6 z-30 px-5 py-2 rounded-3xl shadow-md text-sm transition-all opacity-0 group-hover:opacity-100';
   }
   modalOverlay.innerHTML = contentHTML;
@@ -3103,9 +3088,30 @@ function showQuickViewModal() {
   modalAtc.style.fontSize = previewAtc.style.fontSize || '15px';
   modalAtc.style.backgroundColor = previewAtc.style.backgroundColor || '#1f2937';
   modalAtc.style.color = previewAtc.style.color || '#ffffff';
-  modalAtc.style.fontFamily = previewAtc.style.fontFamily || 'inherit';
   modalAtc.style.fontWeight = previewAtc.style.fontWeight || '600';
   modalAtc.style.borderRadius = previewAtc.style.borderRadius || '9999px';
+  modalAtc.style.borderColor = previewAtc.style.borderColor || 'transparent';
+  modalAtc.style.borderWidth = '1px';
+  modalAtc.style.borderStyle = 'solid';
+  modalAtc.dataset.bg = previewAtc.dataset.bg || '#1f2937';
+  modalAtc.dataset.textColor = previewAtc.dataset.textColor || '#ffffff';
+  modalAtc.dataset.borderColor = previewAtc.dataset.borderColor || 'transparent';
+  modalAtc.dataset.hoverText = previewAtc.dataset.hoverText || '';
+  modalAtc.dataset.hoverBg = previewAtc.dataset.hoverBg || '';
+  modalAtc.dataset.hoverBorder = previewAtc.dataset.hoverBorder || '';
+  if (!modalAtc.dataset.hoverBound) {
+    modalAtc.addEventListener('mouseenter', () => {
+      modalAtc.style.backgroundColor = modalAtc.dataset.hoverBg || modalAtc.dataset.bg;
+      modalAtc.style.color = modalAtc.dataset.hoverText || modalAtc.dataset.textColor;
+      modalAtc.style.borderColor = modalAtc.dataset.hoverBorder || modalAtc.dataset.borderColor;
+    });
+    modalAtc.addEventListener('mouseleave', () => {
+      modalAtc.style.backgroundColor = modalAtc.dataset.bg;
+      modalAtc.style.color = modalAtc.dataset.textColor;
+      modalAtc.style.borderColor = modalAtc.dataset.borderColor;
+    });
+    modalAtc.dataset.hoverBound = '1';
+  }
  
   updateModalWishlist();
 }
@@ -3249,7 +3255,6 @@ function collectAllSettings() {
     hoverSecondImage: getVal('hover-second'),
 
     // ===== TITLE =====
-    titleFont: getVal('title-font'),
     titleFontSize: getVal('title-font-size'),
     titleColor: getVal('title-color'),
     titleWeight: getVal('title-weight'),
@@ -3257,7 +3262,6 @@ function collectAllSettings() {
 
     // ===== VENDOR =====
     showVendor: getVal('show-vendor'),
-    vendorFont: getVal('vendor-font'),
     vendorFontSize: getVal('vendor-font-size'),
     vendorColor: getVal('vendor-color'),
     vendorWeight: getVal('vendor-weight'),
@@ -3273,19 +3277,16 @@ function collectAllSettings() {
     hideDecimal: getVal('hide-decimal'),
     
     showFixedPrice: getVal('show-fixed-price'),
-    fixedPriceFont: getVal('fixed-price-font-family'),
     fixedPriceSize: getVal('fixed-price-font'),
     fixedPriceColor: getVal('fixed-price-color'),
     fixedPriceWeight: getVal('fixed-price-weight'),
     
     showOldPrice: getVal('show-old-price'),
-    oldPriceFont: getVal('old-price-font-family'),
     oldPriceSize: getVal('old-price-font'),
     oldPriceColor: getVal('old-price-color'),
     oldPriceWeight: getVal('old-price-weight'),
     
     showSalePrice: getVal('show-sale-price'),
-    salePriceFont: getVal('sale-price-font-family'),
     salePriceSize: getVal('sale-price-font'),
     salePriceColor: getVal('sale-price-color'),
     salePriceWeight: getVal('sale-price-weight'),
@@ -3304,7 +3305,6 @@ function collectAllSettings() {
     saleBadgeFontSize: getVal('sale-font-size'),
     saleBadgeWeight: getVal('sale-weight'),
     saleBadgePos: getVal('sale-position'),
-    saleBadgeFont: getVal('sale-badge-font'),
 
     // ===== SOLD OUT BADGE =====
     showSoldOut: getVal('show-soldout'),
@@ -3320,7 +3320,6 @@ function collectAllSettings() {
     soldOutFontSize: getVal('soldout-font-size'),
     soldOutWeight: getVal('soldout-weight'),
     soldOutPos: getVal('soldout-position'),
-    soldOutFont: getVal('soldout-badge-font'),
 
     // ===== LOW STOCK BADGE =====
     showLowStock: getVal('show-lowstock'),
@@ -3330,18 +3329,20 @@ function collectAllSettings() {
     lowStockFontSize: getVal('lowstock-font-size'),
     lowStockWeight: getVal('lowstock-weight'),
     lowStockPos: getVal('lowstock-position'),
-    lowStockFont: getVal('lowstock-badge-font'),
 
     // ===== ADD TO CART BUTTON =====
     showAtc: getVal('show-atc'),
-    atcFont: getVal('atc-font'),
+    atcLabel: document.getElementById('atc-label').value || 'Add to Cart',
     atcFontSize: getVal('atc-font-size'),
     atcTextColor: getVal('atc-text-color'),
     atcBgColor: getVal('atc-bg-color'),
+    atcBorderColor: getVal('atc-border-color'),
     atcWeight: getVal('atc-weight'),
     atcTransform: getVal('atc-transform'),
     atcRadius: getVal('atc-radius'),
-    atcHoverColor: getVal('atc-hover-color'),
+    atcHoverTextColor: getVal('atc-hover-text-color'),
+    atcHoverBgColor: getVal('atc-hover-bg-color'),
+    atcHoverBorderColor: getVal('atc-hover-border-color'),
 
     // ===== WISHLIST =====
     showWishlist: getVal('show-wishlist'),
@@ -3349,7 +3350,6 @@ function collectAllSettings() {
     wishlistPosition: getVal('wishlist-position'),
     wishlistBg: getVal('wishlist-bg-color'),
     wishlistColor: getVal('wishlist-text-color'),
-    wishlistFont: getVal('wishlist-font'),
     wishlistFontSize: getVal('wishlist-font-size'),
     wishlistWeight: getVal('wishlist-weight'),
     wishlistTransform: getVal('wishlist-transform'),
@@ -3361,7 +3361,6 @@ function collectAllSettings() {
     quickViewPosition: getVal('quickview-position'),
     quickViewBg: getVal('quickview-bg-color'),
     quickViewColor: getVal('quickview-text-color'),
-    quickViewFont: getVal('quickview-font'),
     quickViewFontSize: getVal('quickview-font-size'),
     quickViewWeight: getVal('quickview-weight'),
     quickViewTransform: getVal('quickview-transform'),

@@ -1687,7 +1687,6 @@
     showSecondImage: true,
     
     // Title defaults
-    titleFont: "'Inter', sans-serif",
     titleFontSize: '15',
     titleColor: '#111827',
     titleWeight: '600',
@@ -1695,7 +1694,6 @@
     
     // Vendor defaults
     showVendor: true,
-    vendorFont: "'Inter', sans-serif",
     vendorFontSize: '12',
     vendorColor: '#6b7280',
     vendorWeight: '400',
@@ -1711,17 +1709,14 @@
     hideDecimal: false,
     roundUp: false,
     showFixedPrice: true,
-    fixedPriceFont: "'Inter', sans-serif",
     fixedPriceSize: '15',
     fixedPriceColor: '#1f2937',
     fixedPriceWeight: '500',
     showOldPrice: true,
-    oldPriceFont: "'Inter', sans-serif",
     oldPriceSize: '13',
     oldPriceColor: '#9ca3af',
     oldPriceWeight: '400',
     showSalePrice: true,
-    salePriceFont: "'Inter', sans-serif",
     salePriceSize: '18',
     salePriceColor: '#dc2626',
     salePriceWeight: '700',
@@ -1751,14 +1746,17 @@
     
     // ATC defaults
     showAtc: true,
-    atcFont: "'Inter', sans-serif",
+    atcLabel: 'Add to Cart',
     atcFontSize: '13',
     atcTextColor: '#ffffff',
     atcBgColor: '#1f2937',
+    atcBorderColor: '#1f2937',
     atcWeight: '600',
     atcTransform: 'uppercase',
     atcRadius: '6',
-    atcHoverColor: '#1f2937',
+    atcHoverTextColor: '#ffffff',
+    atcHoverBgColor: '#374151',
+    atcHoverBorderColor: '#374151',
     
     // Wishlist defaults
     showWishlist: true,
@@ -1766,7 +1764,6 @@
     wishlistPosition: 'in-card',
     wishlistBg: '#fef2f2',
     wishlistColor: '#ef4444',
-    wishlistFont: "'Inter', sans-serif",
     wishlistFontSize: '14',
     wishlistWeight: '400',
     wishlistTransform: 'none',
@@ -1777,7 +1774,6 @@
     quickViewPosition: 'image-top-right',
     quickViewBg: '#1f2937',
     quickViewColor: '#ffffff',
-    quickViewFont: "'Inter', sans-serif",
     quickViewFontSize: '13',
     quickViewWeight: '400',
     quickViewTransform: 'none',
@@ -1787,18 +1783,15 @@
     filterBarWidth: '256',
     filterLayout: 'offcanvas-desktop',
     horizontalColumns: '3',
-    optLabelFont: "'Inter', sans-serif",
     optLabelSize: '14',
     optLabelColor: '#111827',
     optLabelBg: '#ffffff',
     optLabelWeight: '600',
-    valFont: "'Inter', sans-serif",
     valSize: '13',
     valColor: '#4b5563',
     valWeight: '400',
     
     // Filter button
-    btnFont: "'Inter', sans-serif",
     btnFontSize: '13',
     btnTextColor: '#ffffff',
     btnBgColor: '#2563eb',
@@ -1821,7 +1814,6 @@
     // SKU defaults
     showSku: true,
     skuDisplayMode: 'full',
-    skuFontFull: "'Inter', sans-serif",
     skuLabelSize: '11',
     skuLabelColor: '#6b7280',
     skuLabelBg: '#f3f4f6',
@@ -1831,7 +1823,6 @@
     skuCodeBg: '#ffffff',
     skuCodeWeight: '400',
     skuTransformFull: 'none',
-    skuFontCodeOnly: "'Inter', sans-serif",
     skuCodeOnlySize: '12',
     skuCodeOnlyColor: '#111827',
     skuCodeOnlyBg: '#ffffff',
@@ -2148,7 +2139,6 @@
     const setI = (el, prop, val) => { if (el && val !== undefined && val !== null && val !== '') el.style.setProperty(prop, val, 'important'); };
     const applyLabel = (el) => {
       if (!el) return;
-      setI(el, 'font-family', c.optLabelFont);
       setI(el, 'font-size', c.optLabelSize ? c.optLabelSize + 'px' : '');
       setI(el, 'color', c.optLabelColor);
       setI(el, 'font-weight', c.optLabelWeight);
@@ -2156,7 +2146,6 @@
     };
     const applyVal = (el) => {
       if (!el) return;
-      setI(el, 'font-family', c.valFont);
       setI(el, 'font-size', c.valSize ? c.valSize + 'px' : '');
       setI(el, 'color', c.valColor);
       setI(el, 'font-weight', c.valWeight);
@@ -2249,7 +2238,6 @@
     document.querySelectorAll('.lov-search input').forEach(inp => {
       setI(inp, 'border-color', '#111827');
       setI(inp, 'color', searchColor);
-      if (c.valFont) setI(inp, 'font-family', c.valFont);
     });
     document.querySelectorAll('.lov-search .lov-search-icon').forEach(ic => {
       setI(ic, 'color', searchColor);
@@ -2272,7 +2260,6 @@
       if (applyBtn) {
         applyBtn.style.display = '';
         applyBtn.textContent = (c.applyBtnText && String(c.applyBtnText).trim()) || 'Apply Filters';
-        if (c.btnFont) applyBtn.style.fontFamily = c.btnFont;
         if (c.btnFontSize) applyBtn.style.fontSize = c.btnFontSize + 'px';
         if (c.btnTextColor) applyBtn.style.color = c.btnTextColor;
         if (c.btnBgColor) applyBtn.style.backgroundColor = c.btnBgColor;
@@ -2447,7 +2434,6 @@
     };
     const applyVal = (el) => {
       if (!el) return;
-      if (c.valFont) el.style.fontFamily = c.valFont;
       if (c.valSize) el.style.fontSize = c.valSize + 'px';
       if (c.valColor) el.style.color = c.valColor;
       if (c.valWeight) el.style.fontWeight = c.valWeight;
@@ -2555,7 +2541,6 @@
     const title = card.querySelector('.product-title');
     if (title) {
       title.style.textAlign = alignVal;
-      if (c.titleFont) title.style.fontFamily = c.titleFont;
       if (c.titleFontSize) title.style.fontSize = c.titleFontSize + 'px';
       if (c.titleColor) title.style.color = c.titleColor;
       if (c.titleWeight) title.style.fontWeight = c.titleWeight;
@@ -2570,7 +2555,6 @@
     if (vendor) {
       vendor.style.display = c.showVendor ? '' : 'none';
       vendor.style.textAlign = alignVal;
-      if (c.vendorFont) vendor.style.fontFamily = c.vendorFont;
       if (c.vendorFontSize) vendor.style.fontSize = c.vendorFontSize + 'px';
       if (c.vendorColor) vendor.style.color = c.vendorColor;
       if (c.vendorWeight) vendor.style.fontWeight = c.vendorWeight;
@@ -2609,7 +2593,6 @@
           regularPrice.style.display = c.showFixedPrice ? '' : 'none';
           if (c.fixedPriceSize) regularPrice.style.fontSize = c.fixedPriceSize + 'px';
           if (c.fixedPriceColor) regularPrice.style.color = c.fixedPriceColor;
-          if (c.fixedPriceFont) regularPrice.style.fontFamily = c.fixedPriceFont;
           if (c.fixedPriceWeight) regularPrice.style.fontWeight = c.fixedPriceWeight;
         }
         
@@ -2619,7 +2602,6 @@
           oldPrice.style.display = c.showOldPrice ? '' : 'none';
           if (c.oldPriceSize) oldPrice.style.fontSize = c.oldPriceSize + 'px';
           if (c.oldPriceColor) oldPrice.style.color = c.oldPriceColor;
-          if (c.oldPriceFont) oldPrice.style.fontFamily = c.oldPriceFont;
           if (c.oldPriceWeight) oldPrice.style.fontWeight = c.oldPriceWeight;
         }
         
@@ -2629,7 +2611,6 @@
           salePrice.style.display = c.showSalePrice ? '' : 'none';
           if (c.salePriceSize) salePrice.style.fontSize = c.salePriceSize + 'px';
           if (c.salePriceColor) salePrice.style.color = c.salePriceColor;
-          if (c.salePriceFont) salePrice.style.fontFamily = c.salePriceFont;
           if (c.salePriceWeight) salePrice.style.fontWeight = c.salePriceWeight;
         }
 
@@ -2645,20 +2626,31 @@
     const atcBtn = card.querySelector('.atc-btn');
     if (atcBtn) {
       atcBtn.style.display = c.showAtc ? '' : 'none';
-      if (c.atcFont) atcBtn.style.fontFamily = c.atcFont;
+      atcBtn.textContent = c.atcLabel || 'Add to Cart';
       if (c.atcFontSize) atcBtn.style.fontSize = c.atcFontSize + 'px';
       if (c.atcTextColor) atcBtn.style.color = c.atcTextColor;
       if (c.atcBgColor) atcBtn.style.backgroundColor = c.atcBgColor;
+      if (c.atcBorderColor) { atcBtn.style.borderColor = c.atcBorderColor; atcBtn.style.borderWidth = '1px'; atcBtn.style.borderStyle = 'solid'; }
       if (c.atcWeight) atcBtn.style.fontWeight = c.atcWeight;
       if (c.atcTransform) atcBtn.style.textTransform = c.atcTransform;
       if (c.atcRadius) atcBtn.style.borderRadius = c.atcRadius + 'px';
-      const bg = c.atcBgColor || '#1f2937';
-      const hover = c.atcHoverColor || bg;
-      atcBtn.dataset.bg = bg;
-      atcBtn.dataset.hover = hover;
+      atcBtn.dataset.bg = c.atcBgColor || '#1f2937';
+      atcBtn.dataset.textColor = c.atcTextColor || '#ffffff';
+      atcBtn.dataset.borderColor = c.atcBorderColor || 'transparent';
+      atcBtn.dataset.hoverBg = c.atcHoverBgColor || c.atcBgColor || '#374151';
+      atcBtn.dataset.hoverText = c.atcHoverTextColor || c.atcTextColor || '#ffffff';
+      atcBtn.dataset.hoverBorder = c.atcHoverBorderColor || c.atcBorderColor || 'transparent';
       if (!atcBtn.dataset.hoverBound) {
-        atcBtn.addEventListener('mouseenter', () => { atcBtn.style.backgroundColor = atcBtn.dataset.hover || atcBtn.dataset.bg; });
-        atcBtn.addEventListener('mouseleave', () => { atcBtn.style.backgroundColor = atcBtn.dataset.bg; });
+        atcBtn.addEventListener('mouseenter', () => {
+          atcBtn.style.backgroundColor = atcBtn.dataset.hoverBg || atcBtn.dataset.bg;
+          atcBtn.style.color = atcBtn.dataset.hoverText || atcBtn.dataset.textColor;
+          atcBtn.style.borderColor = atcBtn.dataset.hoverBorder || atcBtn.dataset.borderColor;
+        });
+        atcBtn.addEventListener('mouseleave', () => {
+          atcBtn.style.backgroundColor = atcBtn.dataset.bg;
+          atcBtn.style.color = atcBtn.dataset.textColor;
+          atcBtn.style.borderColor = atcBtn.dataset.borderColor;
+        });
         atcBtn.dataset.hoverBound = '1';
       }
     }
@@ -2782,7 +2774,6 @@
     if (mode === 'full') {
       skuContainer.innerHTML = `
         <span class="sku-preview-label" style="
-          font-family: ${c.skuFontFull || 'inherit'};
           font-size: ${(c.skuLabelSize || '11')}px;
           color: ${c.skuLabelColor || '#6b7280'};
           background: ${c.skuLabelBg || '#f3f4f6'};
@@ -2792,7 +2783,6 @@
           border-radius: 3px;
         ">SKU:</span>
         <span class="sku-preview-code" style="
-          font-family: ${c.skuFontFull || 'inherit'};
           font-size: ${(c.skuCodeSize || '12')}px;
           color: ${c.skuCodeColor || '#111827'};
           background: ${c.skuCodeBg || '#ffffff'};
@@ -2805,7 +2795,6 @@
     } else {
       skuContainer.innerHTML = `
         <span class="sku-preview-code" style="
-          font-family: ${c.skuFontCodeOnly || 'inherit'};
           font-size: ${(c.skuCodeOnlySize || '12')}px;
           color: ${c.skuCodeOnlyColor || '#111827'};
           background: ${c.skuCodeOnlyBg || '#ffffff'};
@@ -2870,7 +2859,6 @@
       badge.style.color = c.saleBadgeColor || '#ffffff';
       badge.style.fontSize = (c.saleBadgeFontSize || '11') + 'px';
       badge.style.fontWeight = c.saleBadgeWeight || '400';
-      if (c.saleBadgeFont) badge.style.fontFamily = c.saleBadgeFont;
       
       const pos = (c.saleBadgePos || 'top-left').replace('-', '');
       const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
@@ -2887,7 +2875,6 @@
       badge.style.color = c.soldOutColor || '#ffffff';
       badge.style.fontSize = (c.soldOutFontSize || '11') + 'px';
       badge.style.fontWeight = c.soldOutWeight || '400';
-      if (c.soldOutFont) badge.style.fontFamily = c.soldOutFont;
       
       const pos = (c.soldOutPos || 'top-left').replace('-', '');
       const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
@@ -2905,7 +2892,6 @@
       badge.style.color = c.lowStockColor || '#ffffff';
       badge.style.fontSize = (c.lowStockFontSize || '10') + 'px';
       badge.style.fontWeight = c.lowStockWeight || '400';
-      if (c.lowStockFont) badge.style.fontFamily = c.lowStockFont;
       
       const pos = (c.lowStockPos || 'top-right').replace('-', '');
       const zoneMap = {'topleft': 'tl', 'topright': 'tr', 'bottomleft': 'bl', 'bottomright': 'br'};
@@ -2950,7 +2936,7 @@
         
         if (c.wishlistType !== 'heart') {
           const customText = c.wishlistType === 'custom' ? 'Save' : 'Wishlist';
-          wishBtn.innerHTML = `<span style="font-size:${c.wishlistFontSize||'14'}px;font-family:${c.wishlistFont||'inherit'};font-weight:${c.wishlistWeight||'400'};text-transform:${c.wishlistTransform||'none'}">${customText}</span>`;
+          wishBtn.innerHTML = `<span style="font-size:${c.wishlistFontSize||'14'}px;font-weight:${c.wishlistWeight||'400'};text-transform:${c.wishlistTransform||'none'}">${customText}</span>`;
           wishBtn.classList.remove('w-9', 'h-9');
           wishBtn.classList.add('px-3', 'py-1.5', 'rounded-lg', 'text-xs');
         } else {
@@ -2960,7 +2946,6 @@
     }
 
     if (wishInline) {
-      if (c.wishlistFont) wishInline.style.fontFamily = c.wishlistFont;
       if (c.wishlistFontSize) wishInline.style.fontSize = c.wishlistFontSize + 'px';
       if (c.wishlistWeight) wishInline.style.fontWeight = c.wishlistWeight;
       if (c.wishlistTransform) wishInline.style.textTransform = c.wishlistTransform;
@@ -3001,7 +2986,7 @@
       
       if (c.quickViewType !== 'eye') {
         const displayText = c.quickViewType === 'custom' ? 'Quick View' : 'Quick View';
-        qvBtn.innerHTML = `<span style="font-size:${c.quickViewFontSize||'13'}px;font-family:${c.quickViewFont||'inherit'};font-weight:${c.quickViewWeight||'400'};text-transform:${c.quickViewTransform||'none'}">${displayText}</span>`;
+        qvBtn.innerHTML = `<span style="font-size:${c.quickViewFontSize||'13'}px;font-weight:${c.quickViewWeight||'400'};text-transform:${c.quickViewTransform||'none'}">${displayText}</span>`;
         qvBtn.classList.remove('w-9', 'h-9', 'rounded-full');
         qvBtn.classList.add('px-4', 'py-2', 'rounded-xl', 'text-xs');
       } else {
@@ -3014,7 +2999,6 @@
       if (c.quickViewType === 'custom') {
         qvInline.textContent = c.quickViewCustomText || 'Quick View';
       }
-      if (c.quickViewFont) qvInline.style.fontFamily = c.quickViewFont;
       if (c.quickViewFontSize) qvInline.style.fontSize = c.quickViewFontSize + 'px';
       if (c.quickViewWeight) qvInline.style.fontWeight = c.quickViewWeight;
       if (c.quickViewTransform) qvInline.style.textTransform = c.quickViewTransform;
@@ -3027,20 +3011,31 @@
   function applyModalButtons(c) {
     const modalAtc = document.getElementById('modal-atc-btn');
     if (modalAtc) {
-      if (c.atcFont) modalAtc.style.fontFamily = c.atcFont;
+      modalAtc.textContent = c.atcLabel || 'Add to Cart';
       if (c.atcFontSize) modalAtc.style.fontSize = c.atcFontSize + 'px';
       if (c.atcTextColor) modalAtc.style.color = c.atcTextColor;
       if (c.atcBgColor) modalAtc.style.backgroundColor = c.atcBgColor;
+      if (c.atcBorderColor) { modalAtc.style.borderColor = c.atcBorderColor; modalAtc.style.borderWidth = '1px'; modalAtc.style.borderStyle = 'solid'; }
       if (c.atcWeight) modalAtc.style.fontWeight = c.atcWeight;
       if (c.atcTransform) modalAtc.style.textTransform = c.atcTransform;
       if (c.atcRadius) modalAtc.style.borderRadius = c.atcRadius + 'px';
-      const mBg = c.atcBgColor || '#1f2937';
-      const mHover = c.atcHoverColor || mBg;
-      modalAtc.dataset.bg = mBg;
-      modalAtc.dataset.hover = mHover;
+      modalAtc.dataset.bg = c.atcBgColor || '#1f2937';
+      modalAtc.dataset.textColor = c.atcTextColor || '#ffffff';
+      modalAtc.dataset.borderColor = c.atcBorderColor || 'transparent';
+      modalAtc.dataset.hoverBg = c.atcHoverBgColor || c.atcBgColor || '#374151';
+      modalAtc.dataset.hoverText = c.atcHoverTextColor || c.atcTextColor || '#ffffff';
+      modalAtc.dataset.hoverBorder = c.atcHoverBorderColor || c.atcBorderColor || 'transparent';
       if (!modalAtc.dataset.hoverBound) {
-        modalAtc.addEventListener('mouseenter', () => { modalAtc.style.backgroundColor = modalAtc.dataset.hover || modalAtc.dataset.bg; });
-        modalAtc.addEventListener('mouseleave', () => { modalAtc.style.backgroundColor = modalAtc.dataset.bg; });
+        modalAtc.addEventListener('mouseenter', () => {
+          modalAtc.style.backgroundColor = modalAtc.dataset.hoverBg || modalAtc.dataset.bg;
+          modalAtc.style.color = modalAtc.dataset.hoverText || modalAtc.dataset.textColor;
+          modalAtc.style.borderColor = modalAtc.dataset.hoverBorder || modalAtc.dataset.borderColor;
+        });
+        modalAtc.addEventListener('mouseleave', () => {
+          modalAtc.style.backgroundColor = modalAtc.dataset.bg;
+          modalAtc.style.color = modalAtc.dataset.textColor;
+          modalAtc.style.borderColor = modalAtc.dataset.borderColor;
+        });
         modalAtc.dataset.hoverBound = '1';
       }
     }
