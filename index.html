@@ -3684,8 +3684,9 @@ function initGridCollapsibles() {
     const title = box.querySelector(':scope > .section-title, :scope > div > .section-title');
     if (!title) return;
 
-    // Locate any existing on/off toggle inside the box (toggle-switch wrapper)
-    const toggle = box.querySelector('.toggle-switch');
+    // Locate any existing on/off toggle that is a DIRECT sibling of the title
+    // (not nested inside h-row or other content — avoids grabbing body toggles like "Enable custom design")
+    const toggle = title.parentElement.querySelector(':scope > label.toggle-switch');
 
     // First descriptive <p> right under title, if any → use as subtext while collapsed
     let subtextSrc = null;
@@ -3780,7 +3781,9 @@ function initFilterCollapsibles() {
     if (!title) return;
     const tText = (title.textContent || '').trim();
     if (FILTER_NO_COLLAPSE.has(tText)) { box.dataset.collapseInit = '1'; return; }
-    const toggle = box.querySelector('.toggle-switch');
+    // Only grab a toggle that is a DIRECT sibling of the title (header toggle),
+    // not one nested inside h-row or other body content
+    const toggle = title.parentElement.querySelector(':scope > label.toggle-switch');
     const header = document.createElement('div');
     header.className = 'collapse-header';
     const titleClone = title.cloneNode(true);
