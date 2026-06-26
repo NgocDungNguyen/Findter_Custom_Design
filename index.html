@@ -1777,24 +1777,24 @@
             <h2 class="section-title">Add to Cart Button</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-atc" checked><span class="toggle-slider"></span></label>
           </div>
-          <!-- L1: Label + Radius -->
+          <!-- L1: Label + Radius + Size -->
           <div class="h-row">
-            <div class="h-cell" style="flex:1;">
+            <div class="h-cell">
               <label>Label</label>
-              <input type="text" id="atc-label" placeholder="Add to Cart" class="micro-select" style="width:140px;">
+              <input type="text" id="atc-label" placeholder="Add to Cart" class="micro-select" style="width:90px;">
             </div>
             <div class="h-cell">
               <label>Radius</label>
               <input type="range" id="atc-radius" min="0" max="50" value="6">
               <span id="atc-radius-val" class="slider-val">6px</span>
             </div>
-          </div>
-          <!-- L2: Size + Transform + Weight -->
-          <div class="h-row">
             <div class="h-cell"><label>Size</label>
               <input type="range" id="atc-font-size" min="11" max="20" value="13">
               <span id="atc-font-val" class="slider-val">13px</span>
             </div>
+          </div>
+          <!-- L2: Transform + Weight -->
+          <div class="h-row">
             <div class="h-cell"><label>Transform</label>
               <select id="atc-transform" class="micro-select">
                 <option value="none">None</option>
@@ -1809,32 +1809,29 @@
               </select>
             </div>
           </div>
-          <!-- L3: Text Color + Background Color + Border Color -->
+          <!-- L3: Text Color + Hover Text Color -->
           <div class="h-row">
             <div class="h-cell"><label>Text Color</label>
               <div class="color-picker-compact"><input type="color" id="atc-text-color" value="#ffffff"><input type="text" id="atc-text-color-hex" value="#ffffff" readonly></div>
             </div>
-            <div class="h-cell"><label>Background</label>
-              <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
-            </div>
-            <div class="h-cell"><label>Border</label>
-              <div class="color-picker-compact"><input type="color" id="atc-border-color" value="#1f2937"><input type="text" id="atc-border-color-hex" value="#1f2937" readonly></div>
-            </div>
-          </div>
-          <!-- L4: Hover Text Color -->
-          <div class="h-row">
             <div class="h-cell"><label>Hover Text</label>
               <div class="color-picker-compact"><input type="color" id="atc-hover-text-color" value="#ffffff"><input type="text" id="atc-hover-text-color-hex" value="#ffffff" readonly></div>
             </div>
           </div>
-          <!-- L5: Hover Background Color -->
+          <!-- L4: Background + Hover Background -->
           <div class="h-row">
+            <div class="h-cell"><label>Background</label>
+              <div class="color-picker-compact"><input type="color" id="atc-bg-color" value="#1f2937"><input type="text" id="atc-bg-color-hex" value="#1f2937" readonly></div>
+            </div>
             <div class="h-cell"><label>Hover Background</label>
               <div class="color-picker-compact"><input type="color" id="atc-hover-bg-color" value="#374151"><input type="text" id="atc-hover-bg-color-hex" value="#374151" readonly></div>
             </div>
           </div>
-          <!-- L6: Hover Border Color -->
+          <!-- L5: Border + Hover Border -->
           <div class="h-row">
+            <div class="h-cell"><label>Border</label>
+              <div class="color-picker-compact"><input type="color" id="atc-border-color" value="#1f2937"><input type="text" id="atc-border-color-hex" value="#1f2937" readonly></div>
+            </div>
             <div class="h-cell"><label>Hover Border</label>
               <div class="color-picker-compact"><input type="color" id="atc-hover-border-color" value="#374151"><input type="text" id="atc-hover-border-color-hex" value="#374151" readonly></div>
             </div>
