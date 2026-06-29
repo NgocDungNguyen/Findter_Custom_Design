@@ -1356,25 +1356,51 @@
         <!-- Desktop Grid -->
         <div class="config-box">
           <h2 class="section-title mb-2">Product Grid (Desktop)</h2>
-          <!-- Row 1: Products/Page + Items/Row -->
-          <div class="flex flex-nowrap items-center gap-3 mb-3">
-            <label class="text-[12px] text-gray-700 font-medium whitespace-nowrap">Products per Page</label>
-            <input type="range" id="products-per-page" min="1" max="36" value="24" class="w-[80px] flex-shrink-0">
-            <span id="perpage-val" class="slider-val">24</span>
-            <label class="text-[12px] text-gray-700 font-medium whitespace-nowrap">Items per Row</label>
-            <select id="items-row" class="micro-select w-24">
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
+          <!-- L1: Products per page -->
+          <div class="h-row">
+            <div class="h-cell"><label>Products per page</label>
+              <input type="range" id="products-per-page" min="1" max="36" value="24">
+              <span id="perpage-val" class="slider-val">24</span>
+            </div>
           </div>
-          <!-- Row 2: Background Color + Pagination -->
-          <div class="grid grid-cols-2 gap-x-5 gap-y-1.5">
-            <div class="ctrl-row"><label class="min-w-[110px]">Background</label><div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div></div>
-            <div class="ctrl-row"><label class="min-w-[110px]">Pagination</label><select id="pagination" class="micro-select w-40"><option value="show-more">Show More</option><option value="infinite">Infinite Scroll</option><option value="numbers">Number Pagination</option></select></div>
+          <!-- L2: Items per rows -->
+          <div class="h-row">
+            <div class="h-cell"><label>Items per rows</label>
+              <select id="items-row" class="micro-select w-24">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
           </div>
-          
+          <!-- L3: Pagination -->
+          <div class="h-row">
+            <div class="h-cell"><label>Pagination</label>
+              <select id="pagination" class="micro-select w-40">
+                <option value="show-more">Show More</option>
+                <option value="infinite">Infinite Scroll</option>
+                <option value="numbers">Number Pagination</option>
+              </select>
+            </div>
+          </div>
+          <!-- L4: Enable custom design -->
+          <div class="h-row" style="border-top:1px solid #e5e7eb;padding-top:6px;margin-top:4px;">
+            <div class="h-cell" style="flex:1;"><label style="font-weight:600;">Enable custom design</label></div>
+            <label class="toggle-switch"><input type="checkbox" id="grid-custom-design"><span class="toggle-slider"></span></label>
+          </div>
+          <!-- Custom design group: background color + show button -->
+          <div id="grid-custom-design-group" style="border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;margin-top:6px;opacity:0.35;pointer-events:none;transition:opacity 0.2s;">
+            <div class="h-row" style="margin:0;">
+              <div class="h-cell"><label>Background</label>
+                <div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div>
+              </div>
+              <div class="h-cell" style="justify-content:flex-end;gap:6px;">
+                <label style="font-size:12px;font-weight:500;color:#374151;white-space:nowrap;">Show button</label>
+                <label class="toggle-switch"><input type="checkbox" id="grid-show-button"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+          </div>
         </div>
        
         <!-- Mobile Grid -->
@@ -2969,9 +2995,10 @@ function updateProductPreview() {
   const align = document.getElementById('content-align').value;
   const content = document.getElementById('preview-content');
   
-  // Update Grid Background Color
+  // Update Grid Background Color (only when custom design is enabled)
   const gridWrapper = document.getElementById('preview-grid-wrapper');
-  gridWrapper.style.backgroundColor = document.getElementById('grid-bg-color').value;
+  const gridCustomOn = document.getElementById('grid-custom-design')?.checked;
+  gridWrapper.style.backgroundColor = gridCustomOn ? document.getElementById('grid-bg-color').value : '#f3f4f6';
   
   card.style.backgroundColor = document.getElementById('card-bg-color').value;
   card.style.borderColor = document.getElementById('card-border-color').value;
@@ -3303,10 +3330,12 @@ function collectAllSettings() {
 
   return {
     // ===== GRID SETTINGS =====
-    gridBgColor: getVal('grid-bg-color'),
     itemsPerRow: getVal('items-row'),
     productsPerPage: getVal('products-per-page'),
     pagination: getVal('pagination'),
+    gridCustomDesign: getVal('grid-custom-design'),
+    gridBgColor: getVal('grid-bg-color'),
+    gridShowButton: getVal('grid-show-button'),
 
     // ===== CARD SETTINGS =====
     cardBgColor: getVal('card-bg-color'),
@@ -3624,6 +3653,15 @@ window.onload = () => {
   // Custom label toggle
   document.getElementById('atc-custom-label-enabled')?.addEventListener('change', function() {
     const group = document.getElementById('atc-custom-label-group');
+    group.style.opacity = this.checked ? '1' : '0.35';
+    group.style.pointerEvents = this.checked ? '' : 'none';
+    updateProductPreview();
+    debouncedAutoSave();
+  });
+
+  // Grid custom design toggle
+  document.getElementById('grid-custom-design')?.addEventListener('change', function() {
+    const group = document.getElementById('grid-custom-design-group');
     group.style.opacity = this.checked ? '1' : '0.35';
     group.style.pointerEvents = this.checked ? '' : 'none';
     updateProductPreview();

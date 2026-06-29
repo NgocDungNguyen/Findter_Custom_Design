@@ -1679,7 +1679,9 @@
   
   // Default fallback values if no config exists yet
   const DEFAULT_CONFIG = {
+    gridCustomDesign: false,
     gridBgColor: '#f3f4f6',
+    gridShowButton: false,
     cardBgColor: '#ffffff',
     cardBorderColor: '#e5e7eb',
     cardRadius: '12',
@@ -1931,14 +1933,12 @@
     const wrapper = document.getElementById('main-content-wrapper');
     const sidebar = document.getElementById('filter-sidebar');
     const main = document.querySelector('main');
-    if (c.gridBgColor) {
-      if (wrapper) wrapper.style.backgroundColor = c.gridBgColor;
-      if (sidebar) sidebar.style.backgroundColor = c.gridBgColor;
-      if (main) main.style.backgroundColor = c.gridBgColor;
-      // Also apply to body so the margins surrounding the filter bar and
-      // product grid remain visually consistent with the chosen background.
-      document.body.style.backgroundColor = c.gridBgColor;
-    }
+    const enabled = c.gridCustomDesign === true || c.gridCustomDesign === 'true';
+    const color = (enabled && c.gridBgColor) ? c.gridBgColor : '';
+    if (wrapper) wrapper.style.backgroundColor = color;
+    if (sidebar) sidebar.style.backgroundColor = color;
+    if (main) main.style.backgroundColor = color;
+    document.body.style.backgroundColor = color;
   }
 
   /**
