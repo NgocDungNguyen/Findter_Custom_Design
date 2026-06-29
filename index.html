@@ -954,56 +954,61 @@
         <!-- Filter Button (the "Filter By" offcanvas trigger button) -->
         <div class="config-box">
           <h2 class="section-title mb-1.5">Filter Button</h2>
-          <div class="h-row" style="border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:4px;">
-            <div class="h-cell" style="flex:1;"><label style="font-weight:600;">Enable custom design</label></div>
-            <label class="toggle-switch"><input type="checkbox" id="filter-btn-enabled"><span class="toggle-slider"></span></label>
+          <!-- Enable custom design - matches design-mode-row style -->
+          <div class="design-mode-row">
+            <label class="dm-label">Enable custom design</label>
+            <label class="toggle-switch design-toggle"><input type="checkbox" id="filter-btn-enabled"><span class="toggle-slider"></span></label>
           </div>
-          <!-- L1: Size + Transform + Weight -->
-          <div class="h-row">
-            <div class="h-cell"><label>Size</label>
-              <input type="range" id="filter-btn-size" min="10" max="20" value="13">
-              <span id="filter-btn-size-val" class="slider-val">13px</span>
-            </div>
-            <div class="h-cell"><label>Transform</label>
-              <select id="filter-btn-transform" class="micro-select">
-                <option value="none">None</option>
-                <option value="capitalize">Capitalize</option>
-                <option value="uppercase">Uppercase</option>
-              </select>
-            </div>
-            <div class="h-cell"><label>Weight</label>
-              <select id="filter-btn-weight" class="micro-select">
-                <option value="400" selected>Regular</option>
-                <option value="600">Semibold</option>
-                <option value="700">Bold</option>
-              </select>
-            </div>
-          </div>
-          <!-- L2: Text color + Background color -->
-          <div class="h-row">
-            <div class="h-cell"><label>Text color</label>
-              <div class="color-picker-compact">
-                <input type="color" id="filter-btn-text-color" value="#111827">
-                <input type="text" id="filter-btn-text-color-hex" value="#111827" readonly>
+          <hr class="design-mode-sep">
+          <!-- L1/L2/L3 faded when Enable custom design is OFF -->
+          <div id="filter-btn-custom-group" style="opacity:0.35;pointer-events:none;transition:opacity 0.2s;">
+            <!-- L1: Size + Transform + Weight -->
+            <div class="h-row">
+              <div class="h-cell"><label>Size</label>
+                <input type="range" id="filter-btn-size" min="10" max="20" value="13">
+                <span id="filter-btn-size-val" class="slider-val">13px</span>
+              </div>
+              <div class="h-cell"><label>Transform</label>
+                <select id="filter-btn-transform" class="micro-select">
+                  <option value="none">None</option>
+                  <option value="capitalize">Capitalize</option>
+                  <option value="uppercase">Uppercase</option>
+                </select>
+              </div>
+              <div class="h-cell"><label>Weight</label>
+                <select id="filter-btn-weight" class="micro-select">
+                  <option value="400" selected>Regular</option>
+                  <option value="600">Semibold</option>
+                  <option value="700">Bold</option>
+                </select>
               </div>
             </div>
-            <div class="h-cell"><label>Background color</label>
-              <div class="color-picker-compact">
-                <input type="color" id="filter-btn-bg-color" value="#ffffff">
-                <input type="text" id="filter-btn-bg-color-hex" value="#ffffff" readonly>
+            <!-- L2: Text color + Background color -->
+            <div class="h-row">
+              <div class="h-cell"><label>Text color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="filter-btn-text-color" value="#111827">
+                  <input type="text" id="filter-btn-text-color-hex" value="#111827" readonly>
+                </div>
+              </div>
+              <div class="h-cell"><label>Background color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="filter-btn-bg-color" value="#ffffff">
+                  <input type="text" id="filter-btn-bg-color-hex" value="#ffffff" readonly>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- L3: Border radius + Border color -->
-          <div class="h-row">
-            <div class="h-cell"><label>Border radius</label>
-              <input type="range" id="filter-btn-radius" min="0" max="50" value="6">
-              <span id="filter-btn-radius-val" class="slider-val">6px</span>
-            </div>
-            <div class="h-cell"><label>Border color</label>
-              <div class="color-picker-compact">
-                <input type="color" id="filter-btn-border-color" value="#d1d5db">
-                <input type="text" id="filter-btn-border-color-hex" value="#d1d5db" readonly>
+            <!-- L3: Border radius + Border color -->
+            <div class="h-row">
+              <div class="h-cell"><label>Border radius</label>
+                <input type="range" id="filter-btn-radius" min="0" max="50" value="6">
+                <span id="filter-btn-radius-val" class="slider-val">6px</span>
+              </div>
+              <div class="h-cell"><label>Border color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="filter-btn-border-color" value="#d1d5db">
+                  <input type="text" id="filter-btn-border-color-hex" value="#d1d5db" readonly>
+                </div>
               </div>
             </div>
           </div>
@@ -1384,21 +1389,22 @@
               </select>
             </div>
           </div>
-          <!-- L4: Enable custom design -->
-          <div class="h-row" style="margin-top:4px;">
-            <div class="h-cell" style="flex:1;"><label style="font-weight:600;">Enable custom design</label></div>
-            <label class="toggle-switch"><input type="checkbox" id="grid-custom-design"><span class="toggle-slider"></span></label>
+          <!-- Show button -->
+          <div class="h-row">
+            <div class="h-cell" style="flex:1;"><label>Show button</label></div>
+            <label class="toggle-switch"><input type="checkbox" id="grid-show-button"><span class="toggle-slider"></span></label>
           </div>
-          <hr style="border:none;border-top:1px solid #e5e7eb;margin:8px 0 6px;">
-          <!-- Custom design group: background color + show button -->
-          <div id="grid-custom-design-group" style="border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;opacity:0.35;pointer-events:none;transition:opacity 0.2s;">
-            <div class="h-row" style="margin:0;">
+          <!-- Enable custom design - matches design-mode-row style -->
+          <div class="design-mode-row" style="margin-top:4px;">
+            <label class="dm-label">Enable custom design</label>
+            <label class="toggle-switch design-toggle"><input type="checkbox" id="grid-custom-design"><span class="toggle-slider"></span></label>
+          </div>
+          <hr class="design-mode-sep">
+          <!-- Custom design group: background color only -->
+          <div id="grid-custom-design-group" style="opacity:0.35;pointer-events:none;transition:opacity 0.2s;">
+            <div class="h-row">
               <div class="h-cell"><label>Background</label>
                 <div class="color-picker-compact"><input type="color" id="grid-bg-color" value="#f3f4f6"><input type="text" id="grid-bg-color-hex" value="#f3f4f6" readonly></div>
-              </div>
-              <div class="h-cell" style="justify-content:flex-end;gap:6px;">
-                <label style="font-size:12px;font-weight:500;color:#374151;white-space:nowrap;">Show button</label>
-                <label class="toggle-switch"><input type="checkbox" id="grid-show-button"><span class="toggle-slider"></span></label>
               </div>
             </div>
           </div>
@@ -3669,6 +3675,22 @@ window.onload = () => {
     debouncedAutoSave();
   });
 
+  // Filter Button enable custom design toggle
+  function applyFilterBtnGroupState(checked) {
+    const group = document.getElementById('filter-btn-custom-group');
+    if (!group) return;
+    group.style.opacity = checked ? '1' : '0.35';
+    group.style.pointerEvents = checked ? '' : 'none';
+  }
+  const filterBtnEnabledEl = document.getElementById('filter-btn-enabled');
+  if (filterBtnEnabledEl) {
+    applyFilterBtnGroupState(filterBtnEnabledEl.checked);
+    filterBtnEnabledEl.addEventListener('change', function() {
+      applyFilterBtnGroupState(this.checked);
+      debouncedAutoSave();
+    });
+  }
+
   // Initialize toggles
   toggleSaleCustomField();
   toggleSoldoutCustomField();
@@ -3872,6 +3894,7 @@ function initFilterCollapsibles() {
 const DESIGN_TITLES_TOP = new Set([
   'ToolBar','Filter Bar',
   'Filter Option Label','Filter Value','Apply Filters Button',
+  'Product Card','Rating/Review',
   'Product Title','Vendor','Add to Cart Button',
   'Wishlist Settings','Quick View Settings',
   'Sale Badge','Sold Out Badge','Low Stock Badge',
