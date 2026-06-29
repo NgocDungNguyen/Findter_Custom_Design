@@ -1737,18 +1737,22 @@
             <h2 class="section-title">Price Settings</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-price" checked><span class="toggle-slider"></span></label>
           </div>
-          <div class="h-row">
-            <div class="h-cell"><label>Hide Price When</label>
-              <select id="hide-price" class="micro-select" style="width:160px;">
-                <option value="none">Never Hide</option>
-                <option value="all">Always Hide</option>
-                <option value="non-login">Guest Users Only</option>
-              </select>
+          <div style="border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;margin-bottom:6px;">
+            <div class="h-row">
+              <div class="h-cell"><label>Hide Price When</label>
+                <select id="hide-price" class="micro-select" style="width:160px;">
+                  <option value="none">Never Hide</option>
+                  <option value="all">Always Hide</option>
+                  <option value="non-login">Guest Users Only</option>
+                </select>
+              </div>
             </div>
-            <div class="h-cell">
-              <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer" style="font-weight:500;">
-                <input type="checkbox" id="hide-decimal" class="accent-blue-600 w-3.5 h-3.5"> Hide Decimal (.00)
-              </label>
+            <div class="h-row" style="margin-top:4px;">
+              <div class="h-cell">
+                <label class="flex items-center gap-1.5 text-[12px] text-gray-700 cursor-pointer" style="font-weight:500;">
+                  <input type="checkbox" id="hide-decimal" class="accent-blue-600 w-3.5 h-3.5"> Hide Decimal (.00)
+                </label>
+              </div>
             </div>
           </div>
           <div class="space-y-2 mt-2">
@@ -3911,27 +3915,14 @@ function initDesignModeToggles() {
       sel = designWrap.querySelector('.design-mode-toggle');
       designWrap.addEventListener('click', (e) => e.stopPropagation());
     } else {
-      // Price Settings: Design row ABOVE the first row (Hide Price/Hide Decimal),
-      // separator BELOW that row, rest of the section faded in Default mode.
-      const designRow = buildDesignRowOnly();
-      const sep = buildDesignSep();
-      const first = body.firstElementChild;
-      let next = first ? first.nextSibling : null;
-      while (next) {
-        const cur = next; next = cur.nextSibling;
-        customDiv.appendChild(cur);
-      }
-      if (first) {
-        body.insertBefore(designRow, first);
-        first.after(sep);
-        sep.after(customDiv);
-      } else {
-        body.appendChild(designRow);
-        body.appendChild(sep);
-        body.appendChild(customDiv);
-      }
-      sel = designRow.querySelector('.design-mode-toggle');
-      designRow.addEventListener('click', (e) => e.stopPropagation());
+      // Price Settings: ALL content (Hide Price/Hide Decimal bordered group + subsections)
+      // goes into customDiv so it all fades when Enable custom design is OFF.
+      const designWrap = buildDesignRow();
+      while (body.firstChild) customDiv.appendChild(body.firstChild);
+      body.appendChild(designWrap);
+      body.appendChild(customDiv);
+      sel = designWrap.querySelector('.design-mode-toggle');
+      designWrap.addEventListener('click', (e) => e.stopPropagation());
     }
 
     box.classList.add('design-default');
