@@ -136,6 +136,23 @@
       display: none;
     }
 
+    /* Filter Value color theming variables */
+    #filter-preview-panel {
+      --fv-text: #000000;
+      --fv-text-hover: #2563eb;
+      --fv-bg: #ffffff;
+      --fv-bg-hover: #f3f4f6;
+      --fv-bar-bg: #ffffff;
+    }
+
+    /* Separator line between filter options */
+    .fv-separator {
+      border: 0;
+      border-top: 1px solid var(--fv-text);
+      opacity: 0.3;
+      margin: 10px 0 12px 0;
+    }
+
     /* Filter-value search bar in live preview */
     .filter-preview-section .fv-search {
       position: relative;
@@ -143,22 +160,101 @@
     }
     .filter-preview-section .fv-search input {
       width: 100%;
-      border: 1px solid var(--fv-search-color, #000) !important;
+      border: 1px solid var(--fv-text) !important;
       border-radius: 0 !important;
       padding: 5px 8px 5px 26px !important;
       font-size: 12px !important;
-      color: var(--fv-search-color, #000) !important;
-      background: transparent;
+      color: var(--fv-text) !important;
+      background: var(--fv-bg) !important;
       outline: none;
     }
     .filter-preview-section .fv-search input::placeholder {
-      color: var(--fv-search-color, #000); opacity: 0.7;
+      color: var(--fv-text); opacity: 0.6;
     }
     .filter-preview-section .fv-search .fv-search-icon {
       position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
-      color: var(--fv-search-color, #000); font-size: 11px; pointer-events: none;
+      color: var(--fv-text); font-size: 11px; pointer-events: none;
     }
     .filter-preview-horizontal .filter-preview-section > .fv-search { display: none; }
+
+    /* Checklist display */
+    .fpv-checklist .filter-preview-values label { color: var(--fv-text); transition: color 0.15s; }
+    .fpv-checklist .filter-preview-values label span { color: var(--fv-text); transition: color 0.15s; }
+    .fpv-checklist .filter-preview-values label:hover span,
+    .fpv-checklist .filter-preview-values label:hover .count-badge { color: var(--fv-text-hover) !important; }
+    .fpv-checklist input[type="checkbox"].filter-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 13px; height: 13px;
+      border: 1.5px solid var(--fv-text);
+      background: var(--fv-bg);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .fpv-checklist input[type="checkbox"].filter-checkbox:checked::after {
+      content: '';
+      position: absolute; left: 3px; top: 0px;
+      width: 4px; height: 8px;
+      border: solid var(--fv-text);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    /* Box display */
+    .fpv-box { display: flex; flex-wrap: wrap; gap: 6px; }
+    .fpv-box .fpv-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px;
+      border: 1px solid var(--fv-text);
+      background: var(--fv-bg);
+      color: var(--fv-text);
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .fpv-box .fpv-chip:hover {
+      background: var(--fv-bg-hover);
+      color: var(--fv-text-hover);
+      border-color: var(--fv-text-hover);
+    }
+    .fpv-box .fpv-chip .count-badge { color: inherit; }
+
+    /* Price Range slider display */
+    .fpv-slider .fpv-range {
+      position: relative; height: 26px; margin: 4px 2px 4px 2px;
+    }
+    .fpv-slider .fpv-range input[type="range"] {
+      position: absolute; left: 0; right: 0; width: 100%;
+      background: transparent;
+      accent-color: var(--fv-text);
+      pointer-events: auto;
+      margin: 0;
+    }
+    .fpv-slider .fpv-range input[type="range"]::-webkit-slider-thumb {
+      background: var(--fv-text) !important;
+      border: 2px solid var(--fv-bg) !important;
+    }
+    .fpv-slider .fpv-inputs { display: flex; align-items: flex-end; gap: 8px; margin-top: 6px; }
+    .fpv-slider .fpv-inputs .fpv-io { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .fpv-slider .fpv-inputs .fpv-io label {
+      font-weight: 600;
+      color: var(--fv-text);
+    }
+    .fpv-slider .fpv-inputs input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--fv-text) !important;
+      background: var(--fv-bg) !important;
+      color: var(--fv-text) !important;
+      padding: 4px 6px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    /* Value count badge picks up text color / hover from parent */
+    .count-badge { color: var(--fv-text) !important; }
 
     .filter-preview-horizontal .filter-preview-section.open .filter-preview-values {
       position: absolute;
@@ -241,8 +337,8 @@
       gap: 2px 8px;
       padding: 6px 8px;
       margin-top: 4px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      background: var(--fv-bar-bg, #ffffff);
+      border: 1px solid var(--fv-text, #e5e7eb);
       border-radius: 6px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       max-height: 220px;
@@ -320,6 +416,14 @@
     .filter-preview-horizontal .filter-preview-section.open .filter-preview-values {
       display: grid;
     }
+    .filter-preview-horizontal .fpv-box-section.open .filter-preview-values.fpv-box {
+      display: flex;
+    }
+    .filter-preview-horizontal .fpv-slider.open .filter-preview-values {
+      display: block;
+    }
+    /* Hide separator lines in horizontal layout */
+    .filter-preview-horizontal .fv-separator { display: none; }
     
 
     /* Extra spacing for all sections */
@@ -812,14 +916,14 @@
             <!-- Line 2: Color + Background + Close Icon -->
             <div class="flex flex-wrap items-end gap-4">
               <div class="ctrl-row mb-0">
-                <label>Color</label>
+                <label>Text color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="filter-bar-text-color" value="#000000">
                   <input type="text" id="filter-bar-text-color-hex" value="#000000" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0">
-                <label>Background</label>
+                <label>Background color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="filter-bar-active-bg" value="#f3f4f6">
                   <input type="text" id="filter-bar-active-bg-hex" value="#f3f4f6" readonly>
@@ -852,7 +956,7 @@
             <!-- Line 2: Bar Background + Bar Width -->
             <div class="flex flex-wrap items-end gap-4">
               <div class="ctrl-row mb-0">
-                <label>Bar Background</label>
+                <label>Bar background color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="filter-bar-bg" value="#ffffff">
                   <input type="text" id="filter-bar-bg-hex" value="#ffffff" readonly>
@@ -881,14 +985,14 @@
 
             <div class="flex flex-nowrap items-end gap-3" id="opt-row-bottom">
               <div class="ctrl-row mb-0 flex-nowrap tight-label" id="opt-bg-control">
-                <label>Background</label>
+                <label>Background color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="opt-bg-color" value="#f3f4f6">
                   <input type="text" id="opt-bg-color-hex" value="#f3f4f6" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
-                <label>Color</label>
+                <label>Text color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="opt-color" value="#000000">
                   <input type="text" id="opt-color-hex" value="#000000" readonly>
@@ -923,20 +1027,10 @@
                 <input type="range" id="val-font-size" min="10" max="20" value="13" class="flex-1 max-w-[140px]">
                 <span id="val-font-val" class="slider-val">13px</span>
               </div>
-            </div>
-
-            <div class="flex flex-nowrap items-end gap-3">
-              <div class="ctrl-row mb-0 flex-nowrap tight-label">
-                <label>Color</label>
-                <div class="color-picker-compact">
-                  <input type="color" id="val-color" value="#000000">
-                  <input type="text" id="val-color-hex" value="#000000" readonly>
-                </div>
-              </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
                 <label>Weight</label>
                 <select id="val-weight" class="micro-select w-28">
-                    <option value="400" selected>Regular</option>
+                  <option value="400" selected>Regular</option>
                   <option value="700">Bold</option>
                 </select>
               </div>
@@ -946,14 +1040,62 @@
                   <option value="none">None</option>
                   <option value="capitalize">Capitalize</option>
                   <option value="uppercase">Uppercase</option>
-                  </select>
+                </select>
               </div>
             </div>
+
+            <div class="flex flex-wrap items-end gap-3">
+              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+                <label>Text color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="val-color" value="#000000">
+                  <input type="text" id="val-color-hex" value="#000000" readonly>
+                </div>
+              </div>
+              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+                <label>Text hover color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="val-text-hover-color" value="#2563eb">
+                  <input type="text" id="val-text-hover-color-hex" value="#2563eb" readonly>
+                </div>
+              </div>
+              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+                <label>Background color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="val-bg-color" value="#ffffff">
+                  <input type="text" id="val-bg-color-hex" value="#ffffff" readonly>
+                </div>
+              </div>
+              <div class="ctrl-row mb-0 flex-nowrap tight-label">
+                <label>Background hover color</label>
+                <div class="color-picker-compact">
+                  <input type="color" id="val-bg-hover-color" value="#f3f4f6">
+                  <input type="text" id="val-bg-hover-color-hex" value="#f3f4f6" readonly>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-gray-500 italic">Border color of value boxes, checkbox borders, search bars, price slider and separator lines all follow Text color automatically.</p>
           </div>
         </div>
         <!-- Filter Button (the "Filter By" offcanvas trigger button) -->
-        <div class="config-box">
+        <div class="config-box" style="position:relative;">
+          <div style="position:absolute; top:0; left:calc(100% + 12px); width:230px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; font-size:12px; line-height:1.4; color:#1e3a8a; box-shadow:0 1px 2px rgba(0,0,0,0.04); z-index:5;">
+            <div style="display:flex; align-items:flex-start; gap:8px;">
+              <i class="fas fa-info-circle" style="color:#2563eb; margin-top:2px;"></i>
+              <span>Filter button open the filter tab. You can see this button when it's set "off-canvas layout" in Filter layout.</span>
+            </div>
+            <div style="margin-top:10px; padding-top:10px; border-top:1px dashed #bfdbfe;">
+              <div style="font-size:10px; font-weight:600; color:#2563eb; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Live preview</div>
+              <div style="display:flex; justify-content:center; padding:6px; background:#ffffff; border:1px dashed #bfdbfe; border-radius:6px;">
+                <button type="button" id="filter-btn-preview" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-family:inherit; font-size:13px; font-weight:400; color:#111827; background:#ffffff; border:1px solid #d1d5db; border-radius:6px; cursor:default; text-transform:none;">
+                  <i class="fas fa-sliders-h" style="font-size:11px;"></i>
+                  <span>Filter</span>
+                </button>
+              </div>
+            </div>
+          </div>
           <h2 class="section-title mb-1.5">Filter Button</h2>
+
           <!-- Enable custom design - matches design-mode-row style -->
           <div class="design-mode-row">
             <label class="dm-label">Enable custom design</label>
@@ -1036,14 +1178,14 @@
             <!-- Line 2: Color + Background + Transform -->
             <div class="flex flex-nowrap items-end gap-3">
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
-                <label>Color</label>
+                <label>Text color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="btn-text-color" value="#ffffff">
                   <input type="text" id="btn-text-color-hex" value="#ffffff" readonly>
                 </div>
               </div>
               <div class="ctrl-row mb-0 flex-nowrap tight-label">
-                <label>Background</label>
+                <label>Background color</label>
                 <div class="color-picker-compact">
                   <input type="color" id="btn-bg-color" value="#2563eb">
                   <input type="text" id="btn-bg-color-hex" value="#2563eb" readonly>
@@ -1083,262 +1225,76 @@
             <div id="filter-preview-header-row" class="mb-2.5">
               <div id="filter-preview-title" class="text-blue-600 text-[11px] font-bold tracking-wide uppercase">Filter By</div>
               <div id="filter-preview-sections">
-              <div class="filter-preview-section mb-3.5">
+              <!-- 1. Category — Checklist display -->
+              <div class="filter-preview-section fpv-checklist mb-3.5">
                 <div id="preview-opt-label-1" class="text-[13px] font-semibold mb-1.5">Category</div>
                 <button type="button" class="filter-preview-select" aria-label="Category">Category</button>
                 <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
                 <div class="filter-preview-values">
                   <label class="flex items-center gap-1.5 cursor-pointer group">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
+                    <input type="checkbox" checked class="filter-checkbox w-3 h-3">
                     <span id="preview-val-1" class="text-[13px] flex-1">T-Shirts</span>
                     <span class="count-badge">(24)</span>
                   </label>
                   <label class="flex items-center gap-1.5 cursor-pointer group">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                    <input type="checkbox" class="filter-checkbox w-3 h-3">
                     <span id="preview-val-2" class="text-[13px] flex-1">Hoodies</span>
                     <span class="count-badge">(12)</span>
                   </label>
                   <label class="flex items-center gap-1.5 cursor-pointer group">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                    <input type="checkbox" class="filter-checkbox w-3 h-3">
                     <span class="text-[13px] flex-1">Jackets</span>
                     <span class="count-badge">(8)</span>
                   </label>
                   <label class="flex items-center gap-1.5 cursor-pointer group">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
+                    <input type="checkbox" class="filter-checkbox w-3 h-3">
                     <span class="text-[13px] flex-1">Pants</span>
                     <span class="count-badge">(31)</span>
                   </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Shirts</span><span class="count-badge">(19)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Dresses</span><span class="count-badge">(14)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Skirts</span><span class="count-badge">(9)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Shorts</span><span class="count-badge">(17)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Sweaters</span><span class="count-badge">(11)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Coats</span><span class="count-badge">(7)</span></label>
                 </div>
               </div>
-             
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-2" class="text-[13px] font-semibold mb-1.5">Price Range</div>
-                <button type="button" class="filter-preview-select" aria-label="Price Range">Price Range</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-4" class="text-[13px] flex-1">$0-50</span>
-                    <span class="count-badge">(45)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-5" class="text-[13px] flex-1">$50-150</span>
-                    <span class="count-badge">(67)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">$150-300</span>
-                    <span class="count-badge">(23)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">$300+</span>
-                    <span class="count-badge">(11)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1"><$25</span><span class="count-badge">(29)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">$25-75</span><span class="count-badge">(38)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">$75-200</span><span class="count-badge">(42)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">$200-500</span><span class="count-badge">(15)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">$500-1K</span><span class="count-badge">(8)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">$1K+</span><span class="count-badge">(3)</span></label>
-                </div>
-              </div>
-             
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-3" class="text-[13px] font-semibold mb-1.5">Color</div>
+
+              <hr class="fv-separator">
+
+              <!-- 2. Color — Box display -->
+              <div class="filter-preview-section fpv-box-section mb-3.5">
+                <div id="preview-opt-label-2" class="text-[13px] font-semibold mb-1.5">Color</div>
                 <button type="button" class="filter-preview-select" aria-label="Color">Color</button>
                 <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-6" class="text-[13px] flex-1">Black</span>
-                    <span class="count-badge">(89)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-7" class="text-[13px] flex-1">White</span>
-                    <span class="count-badge">(56)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Navy</span>
-                    <span class="count-badge">(34)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Red</span>
-                    <span class="count-badge">(19)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Blue</span><span class="count-badge">(47)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Green</span><span class="count-badge">(22)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Grey</span><span class="count-badge">(61)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Beige</span><span class="count-badge">(28)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Pink</span><span class="count-badge">(14)</span></label>
-                  <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3"><span class="text-[13px] flex-1">Yellow</span><span class="count-badge">(9)</span></label>
+                <div class="filter-preview-values fpv-box">
+                  <span class="fpv-chip"><span id="preview-val-6">Black</span><span class="count-badge">(89)</span></span>
+                  <span class="fpv-chip"><span id="preview-val-7">White</span><span class="count-badge">(56)</span></span>
+                  <span class="fpv-chip"><span>Navy</span><span class="count-badge">(34)</span></span>
+                  <span class="fpv-chip"><span>Red</span><span class="count-badge">(19)</span></span>
+                  <span class="fpv-chip"><span>Blue</span><span class="count-badge">(47)</span></span>
+                  <span class="fpv-chip"><span>Green</span><span class="count-badge">(22)</span></span>
                 </div>
               </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-4" class="text-[13px] font-semibold mb-1.5">Size</div>
-                <button type="button" class="filter-preview-select" aria-label="Size">Size</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
+
+              <hr class="fv-separator">
+
+              <!-- 3. Price Range — Slider display -->
+              <div class="filter-preview-section fpv-slider mb-3.5">
+                <div id="preview-opt-label-3" class="text-[13px] font-semibold mb-1.5">Price Range</div>
+                <button type="button" class="filter-preview-select" aria-label="Price Range">Price Range</button>
                 <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-8" class="text-[13px] flex-1">Small</span>
-                    <span class="count-badge">(18)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-9" class="text-[13px] flex-1">Medium</span>
-                    <span class="count-badge">(26)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Large</span>
-                    <span class="count-badge">(22)</span>
-                  </label>
+                  <div class="fpv-range">
+                    <input type="range" min="0" max="1000" value="50" class="fpv-range-min">
+                    <input type="range" min="0" max="1000" value="750" class="fpv-range-max">
+                  </div>
+                  <div class="fpv-inputs">
+                    <div class="fpv-io">
+                      <label>From</label>
+                      <input type="number" class="fpv-price-from" value="50" min="0">
+                    </div>
+                    <div class="fpv-io">
+                      <label>To</label>
+                      <input type="number" class="fpv-price-to" value="750" min="0">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-5" class="text-[13px] font-semibold mb-1.5">Brand</div>
-                <button type="button" class="filter-preview-select" aria-label="Brand">Brand</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-10" class="text-[13px] flex-1">Nike</span>
-                    <span class="count-badge">(42)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Adidas</span>
-                    <span class="count-badge">(38)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Puma</span>
-                    <span class="count-badge">(27)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-6" class="text-[13px] font-semibold mb-1.5">Material</div>
-                <button type="button" class="filter-preview-select" aria-label="Material">Material</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-11" class="text-[13px] flex-1">Cotton</span>
-                    <span class="count-badge">(34)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-12" class="text-[13px] flex-1">Linen</span>
-                    <span class="count-badge">(15)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Blend</span>
-                    <span class="count-badge">(21)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-7" class="text-[13px] font-semibold mb-1.5">Style</div>
-                <button type="button" class="filter-preview-select" aria-label="Style">Style</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-13" class="text-[13px] flex-1">Classic</span>
-                    <span class="count-badge">(28)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Sport</span>
-                    <span class="count-badge">(17)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Street</span>
-                    <span class="count-badge">(22)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-8" class="text-[13px] font-semibold mb-1.5">Fit</div>
-                <button type="button" class="filter-preview-select" aria-label="Fit">Fit</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-14" class="text-[13px] flex-1">Slim</span>
-                    <span class="count-badge">(12)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Regular</span>
-                    <span class="count-badge">(31)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Relaxed</span>
-                    <span class="count-badge">(9)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-9" class="text-[13px] font-semibold mb-1.5">Sleeve</div>
-                <button type="button" class="filter-preview-select" aria-label="Sleeve">Sleeve</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-15" class="text-[13px] flex-1">Short</span>
-                    <span class="count-badge">(29)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Long</span>
-                    <span class="count-badge">(13)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">None</span>
-                    <span class="count-badge">(6)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="filter-preview-section mb-3.5">
-                <div id="preview-opt-label-10" class="text-[13px] font-semibold mb-1.5">Pattern</div>
-                <button type="button" class="filter-preview-select" aria-label="Pattern">Pattern</button>
-                <div class="fv-search"><i class="fas fa-search fv-search-icon"></i><input type="text" placeholder="Search filter value" aria-label="Search filter value"></div>
-                <div class="filter-preview-values">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span id="preview-val-16" class="text-[13px] flex-1">Solid</span>
-                    <span class="count-badge">(40)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Stripe</span>
-                    <span class="count-badge">(11)</span>
-                  </label>
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="filter-checkbox accent-blue-600 w-3 h-3">
-                    <span class="text-[13px] flex-1">Graphic</span>
-                    <span class="count-badge">(14)</span>
-                  </label>
-                </div>
-              </div>
-              
+
               <div id="filter-preview-footer" class="mt-auto pt-2">
                 <button id="preview-btn" class="w-full py-2 text-[13px] font-semibold rounded-lg transition-all">Apply Filters</button>
                 <div id="filter-status" class="text-[11px] text-gray-400 mt-1.5 text-center h-3"></div>
@@ -2510,10 +2466,13 @@ function updateFilterPreview() {
       el.style.borderColor = '';
     }
   });
+  // Horizontal dropdown container background follows Filter Bar background, border follows Filter Value text
+  const _barBg = document.getElementById('filter-bar-bg')?.value || '#ffffff';
+  const _valTxt = document.getElementById('val-color')?.value || '#000000';
   document.querySelectorAll('#filter-preview-panel .filter-preview-values').forEach(el => {
     if (layout === 'horizontal') {
-      el.style.backgroundColor = optBg || '';
-      el.style.borderColor = optColor || '#e5e7eb';
+      el.style.backgroundColor = _barBg;
+      el.style.borderColor = _valTxt;
     } else {
       el.style.backgroundColor = '';
       el.style.borderColor = '';
@@ -2524,42 +2483,52 @@ function updateFilterPreview() {
   const valFontSize = document.getElementById('val-font-size').value+'px';
   const valTransform = document.getElementById('val-transform').value;
   const valColor = document.getElementById('val-color').value;
+  const valTextHover = document.getElementById('val-text-hover-color')?.value || '#2563eb';
+  const valBg = document.getElementById('val-bg-color')?.value || '#ffffff';
+  const valBgHover = document.getElementById('val-bg-hover-color')?.value || '#f3f4f6';
   const valWeight = document.getElementById('val-weight').value;
-  // Value labels (NOT count badges) — full inheritance from Filter Value
-  document.querySelectorAll('#filter-preview-panel .filter-preview-values label > span:not(.count-badge)').forEach(el => {
+  const barBgColor = document.getElementById('filter-bar-bg')?.value || '#ffffff';
+
+  // Push all Filter Value colors as CSS variables on the preview panel
+  const panelEl = document.getElementById('filter-preview-panel');
+  if (panelEl) {
+    panelEl.style.setProperty('--fv-text', valColor);
+    panelEl.style.setProperty('--fv-text-hover', valTextHover);
+    panelEl.style.setProperty('--fv-bg', valBg);
+    panelEl.style.setProperty('--fv-bg-hover', valBgHover);
+    panelEl.style.setProperty('--fv-bar-bg', barBgColor);
+  }
+
+  // Text styling for value labels, chips, slider labels (color handled by CSS vars)
+  document.querySelectorAll('#filter-preview-panel .filter-preview-values label > span:not(.count-badge), #filter-preview-panel .fpv-chip > span:not(.count-badge), #filter-preview-panel .fpv-slider .fpv-io label').forEach(el => {
     el.style.fontSize = valFontSize;
     el.style.textTransform = valTransform;
-    el.style.color = valColor;
     el.style.fontWeight = valWeight;
   });
-  // Count badges: Font + Size from Filter Value, Color = 70% opacity of valColor,
-  // Weight is NOT linked.
-  const valColorRgba = (function(hex){
-    const h = hex.replace('#','');
-    const r = parseInt(h.substring(0,2),16);
-    const g = parseInt(h.substring(2,4),16);
-    const b = parseInt(h.substring(4,6),16);
-    return 'rgba(' + r + ',' + g + ',' + b + ',0.7)';
-  })(valColor);
+  // Price number inputs share font size with Filter Value
+  document.querySelectorAll('#filter-preview-panel .fpv-slider input[type="number"]').forEach(el => {
+    el.style.fontSize = valFontSize;
+  });
+  // Count badges follow value font size / transform only (weight independent, color via CSS var)
   document.querySelectorAll('#filter-preview-panel .count-badge').forEach(el => {
     el.style.fontSize = valFontSize;
-    el.style.color = valColorRgba;
     el.style.backgroundColor = 'transparent';
-    // Intentionally do NOT set fontWeight — count badge weight is independent
     el.style.fontWeight = '';
     el.style.textTransform = '';
   });
 
-  // Filter-value search preview: inherit Filter Value color settings
-  document.querySelectorAll('.filter-preview-section .fv-search').forEach(el => {
-    el.style.setProperty('--fv-search-color', valColor);
-  });
-  document.querySelectorAll('.filter-preview-section .fv-search input').forEach(inp => {
-    inp.style.borderColor = valColor;
-    inp.style.color = valColor;
-  });
-  document.querySelectorAll('.filter-preview-section .fv-search-icon').forEach(ic => {
-    ic.style.color = valColor;
+  // Wire price-range sliders <-> number inputs (once)
+  document.querySelectorAll('#filter-preview-panel .fpv-slider').forEach(sec => {
+    if (sec.dataset.wired === '1') return;
+    sec.dataset.wired = '1';
+    const rMin = sec.querySelector('.fpv-range-min');
+    const rMax = sec.querySelector('.fpv-range-max');
+    const nFrom = sec.querySelector('.fpv-price-from');
+    const nTo = sec.querySelector('.fpv-price-to');
+    if (rMin && nFrom) rMin.addEventListener('input', () => { nFrom.value = rMin.value; });
+    if (rMax && nTo) rMax.addEventListener('input', () => { nTo.value = rMax.value; });
+    if (nFrom && rMin) nFrom.addEventListener('input', () => { rMin.value = nFrom.value; });
+    if (nTo && rMax) nTo.addEventListener('input', () => { rMax.value = nTo.value; });
   });
 
   const btn = document.getElementById('preview-btn');
@@ -2571,7 +2540,7 @@ function updateFilterPreview() {
   btn.style.color = document.getElementById('btn-text-color').value;
   btn.style.backgroundColor = document.getElementById('btn-bg-color').value;
   btn.style.fontWeight = document.getElementById('btn-weight').value;
-  syncHex('opt-color'); syncHex('opt-bg-color'); syncHex('val-color'); syncHex('btn-text-color');
+  syncHex('opt-color'); syncHex('opt-bg-color'); syncHex('val-color'); syncHex('val-text-hover-color'); syncHex('val-bg-color'); syncHex('val-bg-hover-color'); syncHex('btn-text-color');
   syncHex('btn-bg-color'); syncHex('filter-bar-bg');
   syncHex('filter-bar-text-color'); syncHex('filter-bar-close-color'); syncHex('filter-bar-active-bg');
   syncHex('filter-btn-text-color'); syncHex('filter-btn-bg-color'); syncHex('filter-btn-border-color');
@@ -3682,6 +3651,54 @@ window.onload = () => {
     group.style.opacity = checked ? '1' : '0.35';
     group.style.pointerEvents = checked ? '' : 'none';
   }
+
+  // Live preview of Filter Button inside the info note
+  (function initFilterBtnPreview() {
+    const preview = document.getElementById('filter-btn-preview');
+    if (!preview) return;
+    const label = preview.querySelector('span');
+    const enabledEl = document.getElementById('filter-btn-enabled');
+    const sizeEl = document.getElementById('filter-btn-size');
+    const transformEl = document.getElementById('filter-btn-transform');
+    const weightEl = document.getElementById('filter-btn-weight');
+    const textColorEl = document.getElementById('filter-btn-text-color');
+    const bgColorEl = document.getElementById('filter-btn-bg-color');
+    const radiusEl = document.getElementById('filter-btn-radius');
+    const borderColorEl = document.getElementById('filter-btn-border-color');
+
+    const DEFAULTS = {
+      size: '13', transform: 'none', weight: '400',
+      textColor: '#111827', bgColor: '#ffffff',
+      radius: '6', borderColor: '#d1d5db'
+    };
+
+    function render() {
+      const custom = enabledEl && enabledEl.checked;
+      const size = custom ? (sizeEl?.value || DEFAULTS.size) : DEFAULTS.size;
+      const transform = custom ? (transformEl?.value || DEFAULTS.transform) : DEFAULTS.transform;
+      const weight = custom ? (weightEl?.value || DEFAULTS.weight) : DEFAULTS.weight;
+      const textColor = custom ? (textColorEl?.value || DEFAULTS.textColor) : DEFAULTS.textColor;
+      const bgColor = custom ? (bgColorEl?.value || DEFAULTS.bgColor) : DEFAULTS.bgColor;
+      const radius = custom ? (radiusEl?.value || DEFAULTS.radius) : DEFAULTS.radius;
+      const borderColor = custom ? (borderColorEl?.value || DEFAULTS.borderColor) : DEFAULTS.borderColor;
+
+      preview.style.fontSize = size + 'px';
+      preview.style.textTransform = transform;
+      preview.style.fontWeight = weight;
+      preview.style.color = textColor;
+      preview.style.background = bgColor;
+      preview.style.borderRadius = radius + 'px';
+      preview.style.border = '1px solid ' + borderColor;
+    }
+
+    [enabledEl, sizeEl, transformEl, weightEl, textColorEl, bgColorEl, radiusEl, borderColorEl]
+      .filter(Boolean)
+      .forEach(el => {
+        el.addEventListener('input', render);
+        el.addEventListener('change', render);
+      });
+    render();
+  })();
   const filterBtnEnabledEl = document.getElementById('filter-btn-enabled');
   if (filterBtnEnabledEl) {
     applyFilterBtnGroupState(filterBtnEnabledEl.checked);
