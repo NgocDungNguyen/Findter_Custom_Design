@@ -1714,9 +1714,35 @@
             <h2 class="section-title">Rating/Review</h2>
             <label class="toggle-switch"><input type="checkbox" id="show-rating" checked><span class="toggle-slider"></span></label>
           </div>
-          <div style="padding:5px 9px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:5px;font-size:11px;color:#15803d;line-height:1.5;">
-            <i class="fas fa-circle-check" style="margin-right:4px;"></i>
-            Auto-integrates with <strong>Yotpo</strong> &amp; <strong>Judge.me</strong> - if either app is installed on your store, ratings and reviews will sync automatically.
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <!-- Judge.me card -->
+            <div id="rating-card-judgeme" onclick="selectRatingApp('judgeme')" style="cursor:pointer;border:1.5px solid #e5e7eb;border-radius:8px;padding:10px 10px 8px;transition:border-color .15s,background .15s;user-select:none;">
+              <input type="radio" name="rating-app" id="rating-app-judgeme" value="judgeme" style="display:none">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <img src="https://cdn.shopify.com/app-store/listing_images/8cada0f5da411a64e756606bb036f1ed/icon/CIfp9fWd34sDEAE=.png" alt="Judge.me" style="width:30px;height:30px;flex-shrink:0;border-radius:7px;object-fit:cover;">
+                <div style="line-height:1.35;">
+                  <div style="font-size:11.5px;font-weight:700;color:#111827;">Judge.me</div>
+                  <div style="font-size:11.5px;font-weight:700;color:#111827;">Product Reviews App</div>
+                </div>
+              </div>
+              <div id="judgeme-sel-btn" style="text-align:center;padding:3px 0;border-radius:5px;font-size:10.5px;font-weight:600;background:#fff;color:#9ca3af;border:1px solid #e5e7eb;transition:all .15s;">Select</div>
+            </div>
+            <!-- Yotpo card -->
+            <div id="rating-card-yotpo" onclick="selectRatingApp('yotpo')" style="cursor:pointer;border:1.5px solid #e5e7eb;border-radius:8px;padding:10px 10px 8px;transition:border-color .15s,background .15s;user-select:none;">
+              <input type="radio" name="rating-app" id="rating-app-yotpo" value="yotpo" style="display:none">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <img src="https://cdn.shopify.com/app-store/listing_images/659062da3dcade1068da9e28c3d120c5/icon/CIzTtYS0i4cDEAE=.png" alt="Yotpo" style="width:30px;height:30px;flex-shrink:0;border-radius:7px;object-fit:cover;">
+                <div style="line-height:1.35;">
+                  <div style="font-size:11.5px;font-weight:700;color:#111827;">Yotpo</div>
+                  <div style="font-size:11.5px;font-weight:700;color:#111827;">Product Reviews App</div>
+                </div>
+              </div>
+              <div id="yotpo-sel-btn" style="text-align:center;padding:3px 0;border-radius:5px;font-size:10.5px;font-weight:600;background:#fff;color:#9ca3af;border:1px solid #e5e7eb;transition:all .15s;">Select</div>
+            </div>
+          </div>
+          <div style="padding:5px 9px;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;font-size:11px;color:#92400e;line-height:1.5;">
+            <i class="fas fa-triangle-exclamation" style="margin-right:4px;"></i>
+            Select the app installed on your store - only one auto integration can be active at a time.
           </div>
         </div>
         <!-- PRICE SETTINGS -->
@@ -3339,8 +3365,7 @@ function collectAllSettings() {
 
     // ===== RATING =====
     showRating: getVal('show-rating'),
-    ratingType: getVal('rating-type'),
-    showReviewCount: getVal('show-review-count'),
+    ratingApp: document.querySelector('input[name="rating-app"]:checked')?.value || null,
 
     // ===== PRICES =====
     hidePrice: getVal('hide-price'),
@@ -3550,6 +3575,28 @@ function debouncedAutoSave() {
   autoSaveTimeout = setTimeout(() => {
     saveToLocalStorage();
   }, 300);
+}
+
+// ==================== RATING APP SELECTOR ====================
+function selectRatingApp(app) {
+  const clickedRadio = document.getElementById('rating-app-' + app);
+  const deselect = clickedRadio?.checked;
+  const apps = ['judgeme', 'yotpo'];
+  apps.forEach(a => {
+    const card  = document.getElementById('rating-card-' + a);
+    const btn   = document.getElementById(a + '-sel-btn');
+    const radio = document.getElementById('rating-app-' + a);
+    if (!card || !btn || !radio) return;
+    const selected = !deselect && (a === app);
+    radio.checked = selected;
+    card.style.borderColor = selected ? '#14b8a6' : '#e5e7eb';
+    card.style.background  = selected ? '#f0fdfa' : '';
+    btn.style.background   = selected ? '#14b8a6' : '#fff';
+    btn.style.color        = selected ? '#fff'    : '#9ca3af';
+    btn.style.borderColor  = selected ? '#14b8a6' : '#e5e7eb';
+    btn.textContent        = selected ? '✓ Selected' : 'Select';
+  });
+  debouncedAutoSave();
 }
 
 // ==================== INIT ====================
